@@ -8,46 +8,49 @@ const routes: Routes = [
   {
     path: 'login',
     loadChildren: () =>
-      import('./login/login.module').then((m) => m.LoginModule),
+      import('./features/login/login.module').then((m) => m.LoginModule),
   },
   {
     path: 'admin',
     loadChildren: () =>
-      import('./admin/admin.module').then((m) => m.AdminModule),
+      import('./features/admin/admin.module').then((m) => m.AdminModule),
     canActivate: [authGuard, roleGuard],
     data: { role: 'ADMIN' },
   },
   {
     path: 'reception',
     loadChildren: () =>
-      import('./front-desk/front-desk.module').then((m) => m.FrontDeskModule),
+      import('./features/front-desk/front-desk.module').then(
+        (m) => m.FrontDeskModule,
+      ),
     canActivate: [authGuard, roleGuard],
     data: { role: 'FRONT DESK' },
   },
   {
     path: 'doctor',
     loadChildren: () =>
-      import('./doctor/doctor.module').then((m) => m.DoctorModule),
+      import('./features/doctor/doctor.module').then((m) => m.DoctorModule),
     canActivate: [authGuard, roleGuard],
     data: { role: 'DOCTOR' },
   },
   {
     path: 'nurse',
     loadChildren: () =>
-      import('./nurse/nurse.module').then((m) => m.NurseModule),
+      import('./features/nurse/nurse.module').then((m) => m.NurseModule),
     canActivate: [authGuard, roleGuard],
     data: { role: 'NURSE' },
   },
   {
     path: 'billing',
     loadChildren: () =>
-      import('./billing/billing.module').then((m) => m.BillingModule),
+      import('./features/billing/billing.module').then((m) => m.BillingModule),
     canActivate: [authGuard, roleGuard],
     data: { role: 'BILLING' },
   },
   {
     path: 'lab',
-    loadChildren: () => import('./lab/lab.module').then((m) => m.LabModule),
+    loadChildren: () =>
+      import('./features/lab/lab.module').then((m) => m.LabModule),
     canActivate: [authGuard, roleGuard],
     data: { role: 'LAB' },
   },
