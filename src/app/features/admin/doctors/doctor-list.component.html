@@ -1,0 +1,208 @@
+<div class="card p-0 surface-card shadow-2 border-round-xl overflow-hidden">
+  <div class="p-4 bg-white border-bottom-1 border-gray-200">
+    <div
+      class="flex flex-column md:flex-row md:align-items-center justify-content-between gap-3"
+    >
+      <div>
+        <h2 class="text-2xl font-bold text-900 m-0">Doctors Directory</h2>
+        <p class="text-500 m-0 mt-1">
+          Manage hospital medical staff and their specialties.
+        </p>
+      </div>
+      <div class="flex align-items-center gap-2">
+        <span class="p-input-icon-left w-full md:w-auto">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            type="text"
+            placeholder="Search doctors..."
+            class="w-full md:w-15rem border-round-lg"
+          />
+        </span>
+        <p-button
+          label="Add Doctor"
+          icon="pi pi-plus"
+          styleClass="p-button-raised p-button-primary border-round-lg shadow-2"
+          (onClick)="openNew()"
+        ></p-button>
+      </div>
+    </div>
+  </div>
+
+  <p-table
+    [value]="doctors"
+    [rows]="10"
+    [paginator]="true"
+    responsiveLayout="stack"
+    breakpoint="960px"
+    styleClass="p-datatable-gridlines p-datatable-striped"
+    [rowHover]="true"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="bg-gray-50 text-700 font-bold py-3">Doctor Info</th>
+        <th class="bg-gray-50 text-700 font-bold py-3">Specialization</th>
+        <th class="bg-gray-50 text-700 font-bold py-3">Schedule Status</th>
+        <th
+          class="bg-gray-50 text-700 font-bold py-3 text-center"
+          style="width: 120px"
+        >
+          Actions
+        </th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-doctor>
+      <tr class="transition-all transition-duration-200">
+        <td>
+          <div class="flex align-items-center gap-3">
+            <p-avatar
+              [label]="doctor.name.charAt(0)"
+              shape="circle"
+              size="large"
+              styleClass="bg-indigo-100 text-indigo-700 font-bold shadow-1"
+            >
+            </p-avatar>
+            <div class="flex flex-column">
+              <span class="font-bold text-900">{{ doctor.name }}</span>
+              <span class="text-500 text-xs"
+                >ID: DOC-{{ doctor.id || "001" }}</span
+              >
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="flex align-items-center">
+            <i class="pi pi-tag text-indigo-400 mr-2"></i>
+            <span class="text-700 font-medium">{{
+              doctor.specialization
+            }}</span>
+          </div>
+        </td>
+        <td>
+          <span
+            class="status-pill"
+            [ngClass]="{
+              'status-available': doctor.availability === 'Available',
+              'status-busy': doctor.availability !== 'Available',
+            }"
+          >
+            <span class="status-dot"></span>
+            {{ doctor.availability }}
+          </span>
+        </td>
+        <td class="text-center">
+          <div class="flex justify-content-center gap-1">
+            <button
+              pButton
+              icon="pi pi-pencil"
+              class="p-button-rounded p-button-text p-button-info"
+              (click)="editDoctor(doctor)"
+            ></button>
+            <button
+              pButton
+              icon="pi pi-trash"
+              class="p-button-rounded p-button-text p-button-danger"
+              (click)="deleteDoctor(doctor)"
+            ></button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="4" class="text-center p-5">
+          <i class="pi pi-users text-400 text-5xl mb-3"></i>
+          <p class="text-600 font-medium">No doctors found in the directory.</p>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <p-dialog
+    [(visible)]="doctorDialog"
+    [style]="{ width: '500px' }"
+    header="Doctor Profile Configuration"
+    [modal]="true"
+    styleClass="p-fluid shadow-5"
+    [draggable]="false"
+    contentStyleClass="p-4"
+  >
+    <div class="flex flex-column gap-4">
+      <div class="field">
+        <label for="name" class="font-bold text-800 block mb-2"
+          >Full Name</label
+        >
+        <div class="p-inputgroup">
+          <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
+          <input
+            type="text"
+            pInputText
+            id="name"
+            [(ngModel)]="doctor.name"
+            placeholder="Dr. Jane Doe"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="specialization" class="font-bold text-800 block mb-2"
+          >Medical Specialization</label
+        >
+        <div class="p-inputgroup">
+          <span class="p-inputgroup-addon"
+            ><i class="pi pi-briefcase"></i
+          ></span>
+          <input
+            type="text"
+            pInputText
+            id="specialization"
+            [(ngModel)]="doctor.specialization"
+            placeholder="Cardiology"
+          />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="font-bold text-800 block mb-2">Availability Status</label>
+        <div class="grid px-2">
+          <div
+            *ngFor="let status of statuses"
+            class="col-6 flex align-items-center gap-2"
+          >
+            <p-radioButton
+              [name]="'status'"
+              [value]="status.value"
+              [(ngModel)]="doctor.availability"
+              [inputId]="status.value"
+            ></p-radioButton>
+            <label [for]="status.value" class="text-700 cursor-pointer">{{
+              status.label
+            }}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div class="flex justify-content-end gap-2 p-2">
+        <button
+          pButton
+          label="Discard"
+          icon="pi pi-times"
+          class="p-button-text text-600"
+          (click)="hideDialog()"
+        ></button>
+        <button
+          pButton
+          label="Save Changes"
+          icon="pi pi-check"
+          class="p-button-primary px-4 border-round-lg shadow-2"
+          (click)="saveDoctor()"
+        ></button>
+      </div>
+    </ng-template>
+  </p-dialog>
+</div>

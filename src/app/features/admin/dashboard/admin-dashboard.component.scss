@@ -1,0 +1,47 @@
+.stats-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    &:hover {
+        transform: translateY(-4px);
+    }
+}
+
+.status-pill-available {
+    background-color: #ecfdf5;
+    color: #059669;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid #10b981;
+}
+
+.status-pill-busy {
+    background-color: #fff7ed;
+    color: #d97706;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid #f59e0b;
+}
+
+.custom-table {
+    .p-datatable-tbody > tr > td {
+        padding: 1rem !important;
+        border-color: #f1f5f9;
+    }
+}
+
+.activity-timeline {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 8px;
+    
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 10px;
+    }
+}

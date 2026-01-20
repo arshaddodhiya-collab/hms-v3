@@ -1,15 +1,48 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { AdminDashboardComponent } from './admin-dashboard.component';
+import { FormsModule } from '@angular/forms';
+import { AdminRoutingModule } from './admin-routing.module';
 
+import { AdminDashboardComponent } from './dashboard/admin-dashboard.component';
+import { DoctorListComponent } from './doctors/doctor-list.component';
+import { UserManagementComponent } from './users/user-management.component';
+
+import { CardModule } from 'primeng/card';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { SidebarModule } from 'primeng/sidebar';
+import { BadgeModule } from 'primeng/badge';
+import { AvatarModule } from 'primeng/avatar';
+import { TooltipModule } from 'primeng/tooltip';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { PaginatorModule } from 'primeng/paginator';
+import { AdminLayoutComponent } from './layout/admin-layout.component';
 @NgModule({
-  declarations: [AdminDashboardComponent],
+  declarations: [
+    AdminLayoutComponent,
+    AdminDashboardComponent,
+    DoctorListComponent,
+    UserManagementComponent,
+  ],
   imports: [
     CommonModule,
+    FormsModule,
+    AdminRoutingModule,
+    CardModule,
+    TableModule,
     ButtonModule,
-    RouterModule.forChild([{ path: '', component: AdminDashboardComponent }]),
+    DialogModule,
+    InputTextModule,
+    DropdownModule,
+    InputSwitchModule,
+    SidebarModule,
+    BadgeModule,
+    AvatarModule,
+    RadioButtonModule,
   ],
 })
 export class AdminModule {}

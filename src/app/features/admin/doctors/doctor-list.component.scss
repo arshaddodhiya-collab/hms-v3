@@ -1,0 +1,37 @@
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.85rem;
+  border-radius: 2rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  gap: 8px;
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  &.status-available {
+    background-color: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+    .status-dot { background-color: #22c55e; box-shadow: 0 0 8px #22c55e; }
+  }
+
+  &.status-busy {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+    .status-dot { background-color: #ef4444; box-shadow: 0 0 8px #ef4444; }
+  }
+}
+
+// Dialog input group focus effect
+.p-inputgroup:focus-within {
+    .p-inputgroup-addon {
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+}
