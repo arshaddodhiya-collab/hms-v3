@@ -1,0 +1,15 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
+import { NurseDashboardComponent } from './nurse-dashboard.component';
+
+@NgModule({
+  declarations: [NurseDashboardComponent],
+  imports: [
+    CommonModule,
+    ButtonModule,
+    RouterModule.forChild([{ path: '', component: NurseDashboardComponent }]),
+  ],
+})
+export class NurseModule {}
