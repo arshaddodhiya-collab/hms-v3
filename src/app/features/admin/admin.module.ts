@@ -20,6 +20,8 @@ import { AvatarModule } from 'primeng/avatar';
 import { TooltipModule } from 'primeng/tooltip';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { PaginatorModule } from 'primeng/paginator';
+import { ToolbarModule } from 'primeng/toolbar';
+import { RippleModule } from 'primeng/ripple';
 import { AdminLayoutComponent } from './layout/admin-layout.component';
 @NgModule({
   declarations: [
@@ -43,6 +45,9 @@ import { AdminLayoutComponent } from './layout/admin-layout.component';
     BadgeModule,
     AvatarModule,
     RadioButtonModule,
+    ToolbarModule,
+    RippleModule,
+    PaginatorModule,
   ],
 })
 export class AdminModule {}

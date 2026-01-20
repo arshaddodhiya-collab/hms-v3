@@ -1,131 +1,109 @@
-<div class="layout-wrapper flex min-h-screen bg-gray-50 font-sans">
-  <aside
-    class="layout-sidebar bg-slate-900 shadow-lg flex flex-column transition-all transition-duration-300"
-    [class.hidden]="!sidebarVisible"
-    [class.flex]="sidebarVisible"
-    style="width: 280px; position: fixed; height: 100vh; z-index: 1100"
+<div class="min-h-screen flex relative lg:static surface-ground">
+  <!-- Desktop Sidebar -->
+  <div
+    class="h-screen hidden lg:block flex-shrink-0 absolute lg:static left-0 top-0 z-1 border-right-1 surface-border select-none"
+    style="width: 280px; background-color: var(--surface-overlay)"
   >
-    <div
-      class="sidebar-header p-4 flex align-items-center justify-content-between border-bottom-1 border-white-alpha-10"
-    >
-      <div class="flex align-items-center gap-3">
-        <div
-          class="bg-indigo-500 border-round-xl flex align-items-center justify-content-center shadow-2"
-          style="width: 40px; height: 40px"
-        >
-          <i class="pi pi-heart-fill text-black text-xl"></i>
-        </div>
-        <div class="flex flex-column">
-          <span class="text-xl font-bold text-black line-height-1">HMS</span>
-          <span class="text-xs text-indigo-300 font-medium uppercase mt-1"
-            >Administrator</span
-          >
-        </div>
-      </div>
-      <button
-        pButton
-        icon="pi pi-times"
-        class="p-button-rounded p-button-text text-black lg:hidden"
-        (click)="sidebarVisible = false"
-      ></button>
-    </div>
-
-    <nav class="sidebar-content flex-grow-1 p-3 overflow-y-auto mt-2">
-      <ul class="list-none p-0 m-0 flex flex-column gap-1">
-        <li class="px-3 py-2">
-          <small
-            class="text-indigo-300 font-semibold uppercase tracking-widest text-xs"
-            >Main Menu</small
-          >
-        </li>
-
-        <li>
-          <a
-            routerLink="/admin/dashboard"
-            routerLinkActive="active-link"
-            [routerLinkActiveOptions]="{ exact: true }"
-            class="nav-item flex align-items-center p-3 border-round-lg text-gray-400 no-underline transition-all hover:bg-white-alpha-10"
-          >
-            <i class="pi pi-th-large mr-3 text-lg"></i>
-            <span class="font-semibold">Dashboard</span>
-          </a>
-        </li>
-
-        <li>
-          <a
-            routerLink="/admin/doctors"
-            routerLinkActive="active-link"
-            class="nav-item flex align-items-center p-3 border-round-lg text-gray-400 no-underline transition-all hover:bg-white-alpha-10"
-          >
-            <i class="pi pi-users mr-3 text-lg"></i>
-            <span class="font-semibold">Doctors</span>
-          </a>
-        </li>
-
-        <li>
-          <a
-            routerLink="/admin/users"
-            routerLinkActive="active-link"
-            class="nav-item flex align-items-center p-3 border-round-lg text-gray-400 no-underline transition-all hover:bg-white-alpha-10"
-          >
-            <i class="pi pi-id-card mr-3 text-lg"></i>
-            <span class="font-semibold">User Management</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
-
-    <div class="p-3 bg-slate-800-opacity">
+    <div class="flex flex-column h-full">
       <div
-        class="flex align-items-center gap-3 p-3 border-round-xl bg-white-alpha-5 border-1 border-white-alpha-10"
+        class="flex align-items-center justify-content-center px-4 pt-3 flex-shrink-0"
+        style="height: 60px"
       >
-        <div class="flex flex-column flex-grow-1 overflow-hidden">
-          <span
-            class="font-bold text-black text-sm white-space-nowrap overflow-hidden text-overflow-ellipsis"
-            >Admin User</span
-          >
-        </div>
+        <span class="text-2xl font-bold text-primary">HMS Admin</span>
+      </div>
+      <div class="overflow-y-auto mt-3">
+        <ul class="list-none p-3 m-0">
+          <li *ngFor="let item of menuItems">
+            <a
+              pRipple
+              [routerLink]="item.route"
+              routerLinkActive="bg-primary-reverse text-primary"
+              class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full"
+            >
+              <i [class]="item.icon + ' mr-2 text-xl'"></i>
+              <span class="font-medium">{{ item.label }}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="mt-auto p-3">
+        <a
+          pRipple
+          (click)="logout()"
+          class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full"
+        >
+          <i class="pi pi-sign-out mr-2 text-xl"></i>
+          <span class="font-medium">Logout</span>
+        </a>
+      </div>
+    </div>
+  </div>
 
+  <!-- Mobile Sidebar -->
+  <p-sidebar [(visible)]="sidebarVisible" styleClass="w-20rem">
+    <div class="flex flex-column h-full">
+      <div
+        class="flex align-items-center justify-content-center px-4 pt-3 flex-shrink-0"
+        style="height: 60px"
+      >
+        <span class="text-2xl font-bold text-primary">HMS Admin</span>
+      </div>
+      <div class="overflow-y-auto mt-3">
+        <ul class="list-none p-3 m-0">
+          <li *ngFor="let item of menuItems">
+            <a
+              pRipple
+              [routerLink]="item.route"
+              routerLinkActive="bg-primary-reverse text-primary"
+              (click)="sidebarVisible = false"
+              class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full"
+            >
+              <i [class]="item.icon + ' mr-2 text-xl'"></i>
+              <span class="font-medium">{{ item.label }}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="mt-auto p-3">
+        <a
+          pRipple
+          (click)="logout()"
+          class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full"
+        >
+          <i class="pi pi-sign-out mr-2 text-xl"></i>
+          <span class="font-medium">Logout</span>
+        </a>
+      </div>
+    </div>
+  </p-sidebar>
+
+  <div class="min-h-screen flex flex-column relative flex-auto">
+    <!-- Topbar -->
+    <div
+      class="flex justify-content-between align-items-center px-5 surface-overlay relative lg:static border-bottom-1 surface-border"
+      style="height: 60px"
+    >
+      <div class="flex">
         <button
           pButton
-          icon="pi pi-id-card"
-          class="p-button-rounded p-button-danger shadow-2"
-          style="width: 2.5rem; height: 2.5rem"
-          (click)="logout()"
-          pTooltip="Logout"
-          tooltipPosition="top"
+          class="p-button-text p-button-secondary lg:hidden mr-2"
+          icon="pi pi-bars"
+          (click)="sidebarVisible = true"
         ></button>
       </div>
-    </div>
-  </aside>
-
-  <main
-    class="layout-main flex flex-column flex-grow-1"
-    [style.margin-left.px]="sidebarVisible ? 280 : 0"
-    style="transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
-  >
-    <header
-      class="bg-white border-bottom-1 border-gray-200 px-4 py-3 sticky top-0 z-4 shadow-sm"
-    >
-      <div class="flex align-items-center justify-content-between">
-        <div class="flex align-items-center gap-3">
-          <button
-            pButton
-            icon="pi pi-bars"
-            class="p-button-text p-button-rounded text-gray-600"
-            (click)="sidebarVisible = !sidebarVisible"
-          ></button>
-          <h1 class="text-xl font-bold text-gray-800 m-0 hidden md:block">
-            Hospital Management System
-          </h1>
-        </div>
+      <div class="flex align-items-center">
+        <p-avatar icon="pi pi-user" shape="circle" styleClass="mr-2"></p-avatar>
+        <span class="font-medium text-700">Admin</span>
       </div>
-    </header>
+    </div>
 
-    <div class="layout-content p-4 md:p-6">
-      <div class="fadein animation-duration-500">
+    <!-- Main Content -->
+    <div class="p-5 flex flex-column flex-auto">
+      <div
+        class="border-2 border-dashed surface-border border-round surface-section flex-auto p-4"
+      >
         <router-outlet></router-outlet>
       </div>
     </div>
-  </main>
+  </div>
 </div>

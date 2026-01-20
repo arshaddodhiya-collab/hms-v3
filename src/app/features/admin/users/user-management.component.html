@@ -1,121 +1,72 @@
-<div class="card p-0 surface-card shadow-3 border-round-xl overflow-hidden">
-  <div class="p-4 bg-white border-bottom-1 border-gray-100">
-    <div
-      class="flex flex-column md:flex-row md:align-items-center justify-content-between gap-3"
-    >
-      <div>
-        <h2 class="text-2xl font-bold text-900 m-0">Access Control</h2>
-        <p class="text-500 m-0 mt-1">
-          Manage system permissions and account security states.
-        </p>
-      </div>
-      <div class="flex gap-2">
-        <button
-          pButton
-          icon="pi pi-user-plus"
-          label="Invite User"
-          class="p-button-outlined p-button-indigo border-round-lg"
-        ></button>
-        <button
-          pButton
-          icon="pi pi-download"
-          class="p-button-text p-button-secondary border-round-lg"
-          pTooltip="Export CSV"
-        ></button>
-      </div>
-    </div>
-  </div>
-
+<div class="card">
   <p-table
+    #dt
     [value]="users"
     [rows]="10"
     [paginator]="true"
-    responsiveLayout="scroll"
-    styleClass="p-datatable-customers custom-user-table"
+    [globalFilterFields]="['username', 'role', 'status']"
+    [tableStyle]="{ 'min-width': '75rem' }"
     [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [showCurrentPageReport]="true"
   >
+    <ng-template pTemplate="caption">
+      <div class="flex align-items-center justify-content-between">
+        <h5 class="m-0">Manage Users</h5>
+        <span class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            type="text"
+            (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+            placeholder="Search..."
+          />
+        </span>
+      </div>
+    </ng-template>
     <ng-template pTemplate="header">
       <tr>
-        <th class="bg-gray-50 text-700 font-bold py-3" style="min-width: 15rem">
-          User Account
+        <th pSortableColumn="username">
+          Username <p-sortIcon field="username"></p-sortIcon>
         </th>
-        <th class="bg-gray-50 text-700 font-bold py-3">Access Level</th>
-        <th class="bg-gray-50 text-700 font-bold py-3">Last Activity</th>
-        <th class="bg-gray-50 text-700 font-bold py-3">Account Status</th>
+        <th pSortableColumn="role">
+          Role <p-sortIcon field="role"></p-sortIcon>
+        </th>
+        <th pSortableColumn="status">
+          Status <p-sortIcon field="status"></p-sortIcon>
+        </th>
       </tr>
     </ng-template>
-
     <ng-template pTemplate="body" let-user>
-      <tr class="transition-colors hover:bg-gray-50">
+      <tr>
         <td>
-          <div class="flex align-items-center gap-3">
-            <p-avatar
-              [label]="user.username.charAt(0).toUpperCase()"
-              shape="circle"
-              size="large"
-              [styleClass]="
-                user.status === 'Active'
-                  ? 'bg-indigo-500 text-white shadow-1'
-                  : 'bg-gray-300 text-white'
-              "
-            >
-            </p-avatar>
-            <div class="flex flex-column">
-              <span class="font-bold text-900 line-height-2">{{
-                user.username
-              }}</span>
-              <span class="text-500 text-xs">{{
-                user.email || "no-email@hms.com"
-              }}</span>
-            </div>
-          </div>
+          <span class="p-column-title">Username</span>
+          {{ user.username }}
         </td>
-
         <td>
+          <span class="p-column-title">Role</span>
           <p-dropdown
             [options]="roles"
             [(ngModel)]="user.role"
             (onChange)="onRoleChange(user)"
-            styleClass="w-full md:w-11rem border-round-lg shadow-none border-gray-200"
             appendTo="body"
-          >
-            <ng-template pTemplate="selectedItem">
-              <div class="flex align-items-center gap-2" *ngIf="user.role">
-                <i class="pi pi-shield text-indigo-500 text-sm"></i>
-                <span class="font-medium">{{ user.role }}</span>
-              </div>
-            </ng-template>
-          </p-dropdown>
+          ></p-dropdown>
         </td>
-
         <td>
-          <span class="text-700 text-sm font-medium">
-            <i class="pi pi-clock text-400 mr-2 text-xs"></i>
-            {{ user.lastActive || "2 hours ago" }}
-          </span>
-        </td>
-
-        <td>
-          <div class="flex align-items-center gap-3">
-            <p-inputSwitch
-              [(ngModel)]="userStatusHelper[user.id]"
-              (onChange)="onStatusMapChange(user, $event)"
-              styleClass="custom-switch"
-            >
-            </p-inputSwitch>
-            <div
-              class="px-2 py-1 border-round-md text-xs font-bold uppercase tracking-wider"
-              [ngClass]="
-                user.status === 'Active'
-                  ? 'bg-green-100 text-green-700'
-                  : 'bg-gray-100 text-gray-600'
-              "
-            >
-              {{ user.status }}
-            </div>
-          </div>
+          <span class="p-column-title">Status</span>
+          <p-inputSwitch
+            [(ngModel)]="userStatusHelper[user.id]"
+            (onChange)="onStatusMapChange(user, $event)"
+          ></p-inputSwitch>
+          <span class="ml-2">{{ user.status }}</span>
         </td>
       </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="flex align-items-center justify-content-between">
+        In total there are {{ users ? users.length : 0 }} users.
+      </div>
     </ng-template>
   </p-table>
 </div>
