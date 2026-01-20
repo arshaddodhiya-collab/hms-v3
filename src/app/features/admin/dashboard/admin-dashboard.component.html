@@ -1,185 +1,116 @@
 <div class="grid p-fluid fadein animation-duration-400">
   <ng-container *ngIf="stats$ | async as stats">
-    <div class="col-12 md:col-6 lg:col-3">
-      <div
-        class="stats-card surface-card shadow-1 p-4 border-round-xl border-1 border-gray-100 hover:shadow-3 transition-all cursor-pointer"
-      >
+    <div
+      class="col-12 md:col-6 lg:col-3"
+      *ngFor="
+        let item of [
+          {
+            label: 'Patients',
+            val: stats.totalPatients,
+            icon: 'pi-users',
+            color: 'blue',
+            trend: '24 new',
+          },
+          {
+            label: 'Appointments',
+            val: stats.todayAppointments,
+            icon: 'pi-calendar',
+            color: 'orange',
+            trend: '+52%',
+          },
+          {
+            label: 'Doctors',
+            val: stats.totalDoctors,
+            icon: 'pi-briefcase',
+            color: 'cyan',
+            trend: '14 active',
+          },
+          {
+            label: 'Pending Bills',
+            val: stats.pendingBills,
+            icon: 'pi-wallet',
+            color: 'purple',
+            trend: '12 overdue',
+          },
+        ]
+      "
+    >
+      <div class="bg-white p-3 border-round-lg border-1 border-200 shadow-sm">
         <div class="flex justify-content-between mb-3">
           <div>
-            <span
-              class="block text-500 font-semibold mb-2 uppercase text-xs tracking-wider"
-              >Total Patients</span
-            >
-            <div class="text-900 font-bold text-3xl">
-              {{ stats.totalPatients | number }}
-            </div>
+            <span class="block text-500 font-medium mb-2">{{
+              item.label
+            }}</span>
+            <div class="text-900 font-bold text-2xl">{{ item.val }}</div>
           </div>
           <div
-            class="flex align-items-center justify-content-center bg-indigo-50 border-round-lg"
-            style="width: 3.5rem; height: 3.5rem"
+            class="flex align-items-center justify-content-center border-round"
+            [ngClass]="'bg-' + item.color + '-50'"
+            style="width: 2.5rem; height: 2.5rem"
           >
-            <i class="pi pi-users text-indigo-500 text-2xl"></i>
+            <i
+              class="pi text-xl"
+              [ngClass]="[item.icon, 'text-' + item.color + '-500']"
+            ></i>
           </div>
         </div>
-        <div class="flex align-items-center gap-2">
-          <span
-            class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 border-round"
-          >
-            <i class="pi pi-arrow-up text-xs mr-1"></i>24
-          </span>
-          <span class="text-500 text-sm">since last visit</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-12 md:col-6 lg:col-3">
-      <div
-        class="stats-card surface-card shadow-1 p-4 border-round-xl border-1 border-gray-100 hover:shadow-3 transition-all cursor-pointer"
-      >
-        <div class="flex justify-content-between mb-3">
-          <div>
-            <span
-              class="block text-500 font-semibold mb-2 uppercase text-xs tracking-wider"
-              >Appointments</span
-            >
-            <div class="text-900 font-bold text-3xl">
-              {{ stats.todayAppointments }}
-            </div>
-          </div>
-          <div
-            class="flex align-items-center justify-content-center bg-orange-50 border-round-lg"
-            style="width: 3.5rem; height: 3.5rem"
-          >
-            <i class="pi pi-calendar text-orange-500 text-2xl"></i>
-          </div>
-        </div>
-        <div class="flex align-items-center gap-2">
-          <span
-            class="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-1 border-round"
-          >
-            +52%
-          </span>
-          <span class="text-500 text-sm">vs last week</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-12 md:col-6 lg:col-3">
-      <div
-        class="stats-card surface-card shadow-1 p-4 border-round-xl border-1 border-gray-100 hover:shadow-3 transition-all cursor-pointer"
-      >
-        <div class="flex justify-content-between mb-3">
-          <div>
-            <span
-              class="block text-500 font-semibold mb-2 uppercase text-xs tracking-wider"
-              >Active Staff</span
-            >
-            <div class="text-900 font-bold text-3xl">
-              {{ stats.totalDoctors }}
-            </div>
-          </div>
-          <div
-            class="flex align-items-center justify-content-center bg-teal-50 border-round-lg"
-            style="width: 3.5rem; height: 3.5rem"
-          >
-            <i class="pi pi-briefcase text-teal-500 text-2xl"></i>
-          </div>
-        </div>
-        <div class="flex align-items-center gap-2">
-          <span
-            class="w-1rem h-1rem bg-green-500 border-circle border-2 border-white shadow-1"
-          ></span>
-          <span class="text-500 text-sm font-medium">14 On-duty now</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-12 md:col-6 lg:col-3">
-      <div
-        class="stats-card surface-card shadow-1 p-4 border-round-xl border-1 border-gray-100 hover:shadow-3 transition-all cursor-pointer"
-      >
-        <div class="flex justify-content-between mb-3">
-          <div>
-            <span
-              class="block text-500 font-semibold mb-2 uppercase text-xs tracking-wider"
-              >Revenue Risk</span
-            >
-            <div class="text-900 font-bold text-3xl">
-              {{ stats.pendingBills }}
-            </div>
-          </div>
-          <div
-            class="flex align-items-center justify-content-center bg-pink-50 border-round-lg"
-            style="width: 3.5rem; height: 3.5rem"
-          >
-            <i class="pi pi-wallet text-pink-500 text-2xl"></i>
-          </div>
-        </div>
-        <div class="flex align-items-center gap-2">
-          <span class="text-pink-600 font-bold text-sm">12 overdue</span>
-          <span class="text-500 text-sm">• Action required</span>
-        </div>
+        <span
+          class="text-sm font-semibold"
+          [ngClass]="
+            item.color === 'purple' ? 'text-pink-500' : 'text-green-500'
+          "
+        >
+          {{ item.trend }}
+        </span>
+        <span class="text-500 text-sm ml-1">this period</span>
       </div>
     </div>
   </ng-container>
 
-  <div class="col-12 lg:col-7 mt-3">
+  <div class="col-12 lg:col-8 mt-2">
     <div
-      class="surface-card shadow-1 border-round-xl border-1 border-gray-100 p-0 overflow-hidden h-full"
+      class="bg-white border-round-lg border-1 border-200 shadow-sm overflow-hidden"
     >
       <div
-        class="flex align-items-center justify-content-between p-4 bg-gray-50 border-bottom-1 border-gray-100"
+        class="p-3 border-bottom-1 border-100 flex justify-content-between align-items-center"
       >
-        <div class="flex flex-column">
-          <span class="text-xl font-bold text-900">Medical Directory</span>
-          <span class="text-sm text-500"
-            >Live availability of specialized staff</span
-          >
-        </div>
+        <span class="text-lg font-bold text-900">Medical Directory</span>
         <button
           pButton
-          icon="pi pi-filter"
-          class="p-button-outlined p-button-sm p-button-secondary border-round-lg"
+          icon="pi pi-plus"
+          label="Add New"
+          class="p-button-text p-button-sm"
         ></button>
       </div>
 
       <p-table
         [value]="(doctors$ | async) || []"
         [rows]="5"
-        responsiveLayout="scroll"
-        styleClass="p-datatable-sm custom-table"
+        styleClass="p-datatable-flush"
       >
         <ng-template pTemplate="header">
           <tr>
-            <th class="bg-white text-500 font-semibold">Doctor</th>
-            <th class="bg-white text-500 font-semibold">Department</th>
-            <th class="bg-white text-500 font-semibold">Status</th>
+            <th class="text-500 font-medium bg-transparent">Name</th>
+            <th class="text-500 font-medium bg-transparent">Specialty</th>
+            <th class="text-500 font-medium bg-transparent text-right">
+              Status
+            </th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-doctor>
-          <tr class="hover:bg-gray-50 transition-colors">
-            <td>
-              <div class="flex align-items-center gap-3">
-                <p-avatar
-                  [label]="doctor.name.charAt(0)"
-                  shape="circle"
-                  class="shadow-1"
-                ></p-avatar>
-                <span class="font-bold text-800">{{ doctor.name }}</span>
-              </div>
-            </td>
-            <td>
-              <span class="text-600">{{ doctor.specialization }}</span>
-            </td>
-            <td>
+          <tr>
+            <td class="font-semibold text-800">{{ doctor.name }}</td>
+            <td class="text-600">{{ doctor.specialization }}</td>
+            <td class="text-right">
               <span
-                [class]="
+                [ngClass]="
                   doctor.availability === 'Available'
-                    ? 'status-pill-available'
-                    : 'status-pill-busy'
+                    ? 'text-green-600'
+                    : 'text-orange-600'
                 "
+                class="text-xs font-bold uppercase tracking-wide"
               >
-                {{ doctor.availability }}
+                ● {{ doctor.availability }}
               </span>
             </td>
           </tr>
@@ -188,69 +119,40 @@
     </div>
   </div>
 
-  <div class="col-12 lg:col-5 mt-3">
-    <div
-      class="surface-card shadow-1 border-round-xl border-1 border-gray-100 p-4 h-full"
-    >
-      <div class="flex align-items-center justify-content-between mb-4">
-        <span class="text-xl font-bold text-900">System Logs</span>
-        <button
-          pButton
-          label="History"
-          icon="pi pi-external-link"
-          class="p-button-text p-button-sm font-bold"
-        ></button>
-      </div>
+  <div class="col-12 lg:col-4 mt-2">
+    <div class="bg-white border-round-lg border-1 border-200 shadow-sm p-3">
+      <span class="block text-lg font-bold text-900 mb-3">Recent Activity</span>
 
-      <div class="activity-timeline">
+      <div class="flex flex-column gap-3">
         <div
-          class="flex align-items-start mb-4 relative"
-          *ngFor="let activity of recentActivities$ | async; let last = last"
+          *ngFor="let activity of recentActivities$ | async"
+          class="flex gap-3"
         >
           <div
-            *ngIf="!last"
-            class="absolute left-2 top-4 h-full border-left-1 border-200"
-            style="margin-left: 0.45rem"
-          ></div>
-
-          <div
-            class="z-1 w-2rem h-2rem flex align-items-center justify-content-center border-circle mr-3 flex-shrink-0 shadow-1"
+            class="w-1rem h-1rem border-circle mt-1 flex-shrink-0"
             [ngClass]="{
-              'bg-blue-500 text-white': activity.type === 'info',
-              'bg-green-500 text-white': activity.type === 'success',
-              'bg-orange-500 text-white': activity.type === 'warning',
-              'bg-red-500 text-white': activity.type === 'error',
+              'bg-blue-500': activity.type === 'info',
+              'bg-green-500': activity.type === 'success',
+              'bg-orange-500': activity.type === 'warning',
+              'bg-red-500': activity.type === 'error',
             }"
-          >
-            <i
-              class="pi text-xs"
-              [ngClass]="{
-                'pi-info': activity.type === 'info',
-                'pi-check': activity.type === 'success',
-                'pi-exclamation-triangle': activity.type === 'warning',
-                'pi-times': activity.type === 'error',
-              }"
-            ></i>
-          </div>
-
-          <div class="flex-column flex flex-grow-1">
-            <div class="flex justify-content-between align-items-center mb-1">
-              <span class="text-900 font-semibold text-sm">{{
-                activity.message
-              }}</span>
-              <span class="text-400 text-xs font-medium">{{
-                activity.time
-              }}</span>
-            </div>
-            <div class="flex align-items-center gap-2">
-              <span class="text-500 text-xs">Performed by</span>
-              <span class="text-indigo-600 text-xs font-bold">{{
-                activity.user
-              }}</span>
-            </div>
+          ></div>
+          <div class="flex flex-column">
+            <span class="text-sm text-800 font-medium line-height-2">{{
+              activity.message
+            }}</span>
+            <span class="text-xs text-500"
+              >{{ activity.time }} • {{ activity.user }}</span
+            >
           </div>
         </div>
       </div>
+
+      <button
+        pButton
+        label="View All Logs"
+        class="p-button-outlined p-button-secondary w-full mt-4 border-round-md"
+      ></button>
     </div>
   </div>
 </div>
