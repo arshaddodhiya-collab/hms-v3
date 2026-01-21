@@ -1,0 +1,45 @@
+<div class="card">
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h5>Billing & Invoices</h5>
+    <button pButton label="New Invoice" icon="pi pi-plus"></button>
+  </div>
+
+  <p-table [value]="invoices" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Invoice ID</th>
+        <th>Patient Name</th>
+        <th>Date</th>
+        <th>Amount</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-invoice>
+      <tr>
+        <td>{{ invoice.id }}</td>
+        <td>{{ invoice.patientName }}</td>
+        <td>{{ invoice.date }}</td>
+        <td>{{ invoice.amount | currency }}</td>
+        <td>
+          <p-tag
+            [value]="invoice.status"
+            [severity]="getSeverity(invoice.status)"
+          ></p-tag>
+        </td>
+        <td>
+          <button
+            pButton
+            icon="pi pi-eye"
+            class="p-button-rounded p-button-text mr-2"
+          ></button>
+          <button
+            pButton
+            icon="pi pi-print"
+            class="p-button-rounded p-button-text"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

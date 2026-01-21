@@ -4,6 +4,7 @@ import { FrontDeskLayoutComponent } from './layout/front-desk-layout.component';
 import { FrontDeskDashboardComponent } from './front-desk-dashboard/front-desk-dashboard.component';
 import { RegisterPatientComponent } from './register-patient/register-patient.component';
 import { AppointmentListComponent } from './appointments/appointment-list.component';
+import { BillingComponent } from './billing/billing.component';
 
 const routes: Routes = [
   {
@@ -14,6 +15,7 @@ const routes: Routes = [
       { path: 'dashboard', component: FrontDeskDashboardComponent },
       { path: 'register', component: RegisterPatientComponent },
       { path: 'appointments', component: AppointmentListComponent },
+      { path: 'billing', component: BillingComponent },
     ],
   },
 ];

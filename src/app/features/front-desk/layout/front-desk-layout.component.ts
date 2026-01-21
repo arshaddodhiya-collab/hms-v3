@@ -18,7 +18,7 @@ export class FrontDeskLayoutComponent {
       icon: 'pi pi-calendar',
       route: '/reception/appointments',
     },
-    { label: 'Billing', icon: 'pi pi-wallet', route: '/billing' },
+    { label: 'Billing', icon: 'pi pi-wallet', route: '/reception/billing' },
     { label: 'Lab Tests', icon: 'pi pi-box', route: '/lab' },
   ];
 }

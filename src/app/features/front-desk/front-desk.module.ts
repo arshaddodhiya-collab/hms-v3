@@ -7,6 +7,7 @@ import { FrontDeskLayoutComponent } from './layout/front-desk-layout.component';
 import { FrontDeskDashboardComponent } from './front-desk-dashboard/front-desk-dashboard.component';
 import { RegisterPatientComponent } from './register-patient/register-patient.component';
 import { AppointmentListComponent } from './appointments/appointment-list.component';
+import { BillingComponent } from './billing/billing.component';
 
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -30,6 +31,7 @@ import { CoreModule } from '../../core/core.module';
     FrontDeskDashboardComponent,
     RegisterPatientComponent,
     AppointmentListComponent,
+    BillingComponent,
   ],
   imports: [
     CommonModule,
