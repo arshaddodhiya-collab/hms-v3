@@ -17,12 +17,13 @@ import { MessageService } from 'primeng/api';
           >
         </div>
 
-        <div>
+        <form (ngSubmit)="login()">
           <label for="username" class="block text-900 font-medium mb-2"
             >Username</label
           >
           <input
             id="username"
+            name="username"
             type="text"
             pInputText
             class="w-full mb-3"
@@ -35,6 +36,7 @@ import { MessageService } from 'primeng/api';
           >
           <input
             id="password"
+            name="password"
             type="password"
             pInputText
             class="w-full mb-3"
@@ -45,17 +47,17 @@ import { MessageService } from 'primeng/api';
           <button
             pButton
             pRipple
+            type="submit"
             label="Sign In"
             icon="pi pi-user"
             class="w-full"
-            (click)="login()"
             [loading]="loading"
           ></button>
 
           <div *ngIf="error" class="text-red-500 mt-2 text-center">
             {{ error }}
           </div>
-        </div>
+        </form>
       </div>
     </div>
   `,

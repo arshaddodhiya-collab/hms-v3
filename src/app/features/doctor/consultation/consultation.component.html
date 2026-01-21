@@ -1,0 +1,114 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card border-left-3 border-blue-500 mb-3 p-2">
+      <div
+        class="flex flex-column md:flex-row justify-content-between align-items-center"
+      >
+        <div class="mb-2 md:mb-0">
+          <h4 class="m-0">{{ patient.name }}</h4>
+          <span class="text-500">ID: {{ patient.id }}</span>
+        </div>
+        <div class="text-left md:text-right">
+          <div class="font-bold">
+            {{ patient.gender }}, {{ patient.age }} Years
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card">
+      <p-tabView>
+        <p-tabPanel header="Diagnosis & Notes">
+          <div class="p-fluid">
+            <label class="block mb-2">Clinical Notes / Diagnosis</label>
+            <textarea
+              pInputTextarea
+              [(ngModel)]="diagnosisNote"
+              rows="10"
+              placeholder="Enter symptoms, diagnosis, and observation..."
+            ></textarea>
+          </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Prescription">
+          <div class="grid p-fluid align-items-end">
+            <div class="col-12 md:col-5">
+              <label>Medicine Name</label>
+              <input
+                pInputText
+                [(ngModel)]="medicineName"
+                placeholder="e.g. Paracetamol"
+              />
+            </div>
+            <div class="col-12 md:col-5">
+              <label>Dosage</label>
+              <input
+                pInputText
+                [(ngModel)]="medicineDosage"
+                placeholder="e.g. 500mg, Twice a day"
+              />
+            </div>
+            <div class="col-12 md:col-2">
+              <button
+                pButton
+                label="Add"
+                icon="pi pi-plus"
+                (click)="addMedicine()"
+              ></button>
+            </div>
+          </div>
+
+          <p-table [value]="prescription" styleClass="mt-3">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Medicine</th>
+                <th>Dosage</th>
+                <th style="width: 5rem"></th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-med let-i="rowIndex">
+              <tr>
+                <td>{{ med.name }}</td>
+                <td>{{ med.dosage }}</td>
+                <td>
+                  <button
+                    pButton
+                    icon="pi pi-trash"
+                    class="p-button-danger p-button-sm p-button-text"
+                    (click)="removeMedicine(i)"
+                  ></button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-tabPanel>
+
+        <p-tabPanel header="Lab Orders">
+          <h5>Select required tests:</h5>
+          <div class="flex flex-column gap-2">
+            <div *ngFor="let test of labTests" class="field-checkbox">
+              <p-checkbox
+                [value]="test.key"
+                [(ngModel)]="selectedTests"
+                [inputId]="test.key"
+              ></p-checkbox>
+              <label [for]="test.key">{{ test.name }}</label>
+            </div>
+          </div>
+        </p-tabPanel>
+      </p-tabView>
+
+      <div class="flex justify-content-end mt-4">
+        <button
+          pButton
+          label="Complete Consultation"
+          icon="pi pi-check"
+          class="p-button-success"
+          (click)="finishConsultation()"
+        ></button>
+      </div>
+    </div>
+  </div>
+</div>
