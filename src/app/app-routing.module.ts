@@ -41,13 +41,6 @@ const routes: Routes = [
     data: { role: 'NURSE' },
   },
   {
-    path: 'billing',
-    loadChildren: () =>
-      import('./features/billing/billing.module').then((m) => m.BillingModule),
-    canActivate: [authGuard, roleGuard],
-    data: { role: 'BILLING' },
-  },
-  {
     path: 'lab',
     loadChildren: () =>
       import('./features/lab/lab.module').then((m) => m.LabModule),
