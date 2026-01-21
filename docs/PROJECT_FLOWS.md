@@ -85,45 +85,45 @@ The core lifecycle of the system revolves around the Patient.
 
 ```mermaid
 flowchart TD
-    %% Nodes
-    Arrive(Patient Arrives)
-    RegStep[Registration / Check-In]
-    ApptStep[Book Appointment]
-    Wait[Waiting Area]
-    Consult[Doctor Consultation]
-    TestDec{Need Tests?}
-    MedsDec{Need Meds?}
-    Lab[Lab Tests]
-    Pharm[Pharmacy]
-    Bill[Billing / Invoice]
-    Pay[Payment]
-    Discharge((Discharge))
+    %% Actors / Nodes
+    P((Patient))
+    FD[Front Desk]
+    DOC[Doctor]
+    LAB[Lab Tech]
+    PHARM[Pharmacy]
+    BILL[Billing]
+    
+    %% Databases
+    DB_P[(Patient Records)]
+    DB_A[(Appointments)]
 
-    %% Data Stores
-    DB_P[(Patient DB)]
-    DB_A[(Appointment DB)]
-
-    %% Connections
-    Arrive --> RegStep
-    RegStep -->|Create/Update| DB_P
-    RegStep --> ApptStep
-    ApptStep -->|Save| DB_A
-    ApptStep --> Wait
-    Wait --> Consult
+    %% Flow Steps
     
-    Consult --> TestDec
-    TestDec -->|Yes| Lab
-    Lab -->|Results| Consult
-    TestDec -->|No| MedsDec
+    %% 1. Entry
+    P -->|1. Arrives| FD
     
-    MedsDec -->|Yes| Pharm
-    Pharm --> Bill
-    MedsDec -->|No| Bill
+    %% 2. Registration & Booking
+    FD -->|2. Register| DB_P
+    FD -->|3. Book| DB_A
+    DB_A -.->|Notify| DOC
     
-    Lab --> Bill
+    %% 3. Consultation
+    DOC -->|4. Consult| P
     
-    Bill --> Pay
-    Pay --> Discharge
+    %% 4. Tests & Meds
+    DOC -->|5. Order Tests| LAB
+    LAB -->|6. Results| DOC
+    
+    DOC -->|7. Prescribe| PHARM
+    
+    %% 5. Billing
+    DOC -->|8. Done| BILL
+    LAB -.->|Charges| BILL
+    PHARM -.->|Charges| BILL
+    
+    %% 6. Exit
+    BILL -->|9. Invoice| P
+    P -->|10. Pay| BILL
 ```
 
 ## 4. Current Implementation Status vs. Flow
