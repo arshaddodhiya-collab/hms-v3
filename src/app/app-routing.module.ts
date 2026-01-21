@@ -17,15 +17,15 @@ const routes: Routes = [
     canActivate: [authGuard, roleGuard],
     data: { role: 'ADMIN' },
   },
-  // {
-  //   path: 'reception',
-  //   loadChildren: () =>
-  //     import('./features/front-desk/front-desk.module').then(
-  //       (m) => m.FrontDeskModule,
-  //     ),
-  //   canActivate: [authGuard, roleGuard],
-  //   data: { role: 'FRONT DESK' },
-  // },
+  {
+    path: 'reception',
+    loadChildren: () =>
+      import('./features/front-desk/front-desk.module').then(
+        (m) => m.FrontDeskModule,
+      ),
+    canActivate: [authGuard, roleGuard],
+    data: { role: 'FRONT DESK' },
+  },
   {
     path: 'doctor',
     loadChildren: () =>
@@ -40,13 +40,13 @@ const routes: Routes = [
     canActivate: [authGuard, roleGuard],
     data: { role: 'NURSE' },
   },
-  // {
-  //   path: 'billing',
-  //   loadChildren: () =>
-  //     import('./features/billing/billing.module').then((m) => m.BillingModule),
-  //   canActivate: [authGuard, roleGuard],
-  //   data: { role: 'BILLING' },
-  // },
+  {
+    path: 'billing',
+    loadChildren: () =>
+      import('./features/billing/billing.module').then((m) => m.BillingModule),
+    canActivate: [authGuard, roleGuard],
+    data: { role: 'BILLING' },
+  },
   {
     path: 'lab',
     loadChildren: () =>
