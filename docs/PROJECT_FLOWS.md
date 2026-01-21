@@ -84,34 +84,46 @@ The core lifecycle of the system revolves around the Patient.
 ## 3. Visual Flow Diagram
 
 ```mermaid
-graph TD
-    %% Actors
-    P[Patient]
-    FD[Front Desk]
-    DOC[Doctor]
-    LAB[Lab Tech]
-    BILL[Billing/Front Desk]
+flowchart TD
+    %% Nodes
+    Arrive(Patient Arrives)
+    RegStep[Registration / Check-In]
+    ApptStep[Book Appointment]
+    Wait[Waiting Area]
+    Consult[Doctor Consultation]
+    TestDec{Need Tests?}
+    MedsDec{Need Meds?}
+    Lab[Lab Tests]
+    Pharm[Pharmacy]
+    Bill[Billing / Invoice]
+    Pay[Payment]
+    Discharge((Discharge))
 
-    %% Flow
-    P -->|Arrives| FD
-    FD -->|1. Register| P_Record[(Patient DB)]
-    FD -->|2. Book Appt| Appt_DB[(Appointments)]
+    %% Data Stores
+    DB_P[(Patient DB)]
+    DB_A[(Appointment DB)]
+
+    %% Connections
+    Arrive --> RegStep
+    RegStep -->|Create/Update| DB_P
+    RegStep --> ApptStep
+    ApptStep -->|Save| DB_A
+    ApptStep --> Wait
+    Wait --> Consult
     
-    Appt_DB --> DOC
-    DOC -->|3. Consult| P
+    Consult --> TestDec
+    TestDec -->|Yes| Lab
+    Lab -->|Results| Consult
+    TestDec -->|No| MedsDec
     
-    %% Decisions
-    DOC -->|Prescribe Meds| PHARM[Pharmacy]
-    DOC -->|Order Tests| LAB
+    MedsDec -->|Yes| Pharm
+    Pharm --> Bill
+    MedsDec -->|No| Bill
     
-    LAB -->|4. Test Results| DOC
+    Lab --> Bill
     
-    DOC -->|Treatment Complete| BILL
-    PHARM -->|Meds Given| BILL
-    LAB -->|Tests Done| BILL
-    
-    BILL -->|5. Generate Invoice| P
-    P -->|6. Payment| BILL
+    Bill --> Pay
+    Pay --> Discharge
 ```
 
 ## 4. Current Implementation Status vs. Flow
