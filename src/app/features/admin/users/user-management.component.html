@@ -5,22 +5,26 @@
     [rows]="10"
     [paginator]="true"
     [globalFilterFields]="['username', 'role', 'status']"
-    [tableStyle]="{ 'min-width': '75rem' }"
+    [tableStyle]="{ 'min-width': '60rem' }"
     [rowHover]="true"
     dataKey="id"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [showCurrentPageReport]="true"
+    [responsiveLayout]="'scroll'"
   >
     <ng-template pTemplate="caption">
-      <div class="flex align-items-center justify-content-between">
-        <h5 class="m-0">Manage Users</h5>
-        <span class="p-input-icon-left">
+      <div
+        class="flex flex-column md:flex-row align-items-center justify-content-between"
+      >
+        <h5 class="m-0 mb-2 md:mb-0">Manage Users</h5>
+        <span class="p-input-icon-left w-full md:w-auto">
           <i class="pi pi-search"></i>
           <input
             pInputText
             type="text"
             (input)="dt.filterGlobal($any($event.target).value, 'contains')"
             placeholder="Search..."
+            class="w-full"
           />
         </span>
       </div>
