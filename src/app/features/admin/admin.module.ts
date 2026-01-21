@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminRoutingModule } from './admin-routing.module';
+import { CoreModule } from '../../core/core.module';
 
 import { AdminDashboardComponent } from './dashboard/admin-dashboard.component';
 import { DoctorListComponent } from './doctors/doctor-list.component';
@@ -17,12 +18,12 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { SidebarModule } from 'primeng/sidebar';
 import { BadgeModule } from 'primeng/badge';
 import { AvatarModule } from 'primeng/avatar';
-import { TooltipModule } from 'primeng/tooltip';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { PaginatorModule } from 'primeng/paginator';
 import { ToolbarModule } from 'primeng/toolbar';
 import { RippleModule } from 'primeng/ripple';
 import { AdminLayoutComponent } from './layout/admin-layout.component';
+
 @NgModule({
   declarations: [
     AdminLayoutComponent,
@@ -34,6 +35,7 @@ import { AdminLayoutComponent } from './layout/admin-layout.component';
     CommonModule,
     FormsModule,
     AdminRoutingModule,
+    CoreModule,
     CardModule,
     TableModule,
     ButtonModule,

@@ -22,6 +22,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TagModule } from 'primeng/tag';
+import { CoreModule } from '../../core/core.module';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { TagModule } from 'primeng/tag';
     ToastModule,
     ToolbarModule,
     TagModule,
+    CoreModule,
   ],
 })
 export class FrontDeskModule {}
