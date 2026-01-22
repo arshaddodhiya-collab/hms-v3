@@ -1,15 +1,37 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { LabRoutingModule } from './lab-routing.module';
+import { CoreModule } from '../../core/core.module';
+
+// Components
+import { LabLayoutComponent } from './layout/lab-layout.component';
+import { LabDashboardComponent } from './dashboard/lab-dashboard.component';
+import { TestRequestsComponent } from './test-requests/test-requests.component';
+import { ReportsComponent } from './reports/reports.component';
+
+// PrimeNG Modules
 import { ButtonModule } from 'primeng/button';
-import { LabDashboardComponent } from './lab-dashboard.component';
+import { CardModule } from 'primeng/card';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
+import { InputTextModule } from 'primeng/inputtext';
 
 @NgModule({
-  declarations: [LabDashboardComponent],
+  declarations: [
+    LabLayoutComponent,
+    LabDashboardComponent,
+    TestRequestsComponent,
+    ReportsComponent,
+  ],
   imports: [
     CommonModule,
+    LabRoutingModule,
+    CoreModule,
     ButtonModule,
-    RouterModule.forChild([{ path: '', component: LabDashboardComponent }]),
+    CardModule,
+    TableModule,
+    TagModule,
+    InputTextModule,
   ],
 })
 export class LabModule {}
