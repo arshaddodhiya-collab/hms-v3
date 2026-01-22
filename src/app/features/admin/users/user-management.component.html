@@ -49,7 +49,7 @@
           {{ user.username }}
         </td>
         <td>
-          <span class="p-column-title">Role</span>
+          <!-- <span class="p-column-title">Role</span> -->
           <p-dropdown
             [options]="roles"
             [(ngModel)]="user.role"
@@ -57,13 +57,16 @@
             appendTo="body"
           ></p-dropdown>
         </td>
-        <td>
-          <span class="p-column-title">Status</span>
-          <p-inputSwitch
-            [(ngModel)]="userStatusHelper[user.id]"
-            (onChange)="onStatusMapChange(user, $event)"
-          ></p-inputSwitch>
-          <span class="ml-2">{{ user.status }}</span>
+        <td class="w-17rem">
+          <div class="flex justify-content-start align-items-center w-full">
+            <p-inputSwitch
+              [(ngModel)]="userStatusHelper[user.id]"
+              (onChange)="onStatusMapChange(user, $event)"
+            ></p-inputSwitch>
+            <span class="ml-2">{{
+              userStatusHelper[user.id] ? "Active" : "Inactive"
+            }}</span>
+          </div>
         </td>
       </tr>
     </ng-template>
