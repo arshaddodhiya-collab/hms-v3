@@ -22,6 +22,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { PaginatorModule } from 'primeng/paginator';
 import { ToolbarModule } from 'primeng/toolbar';
 import { RippleModule } from 'primeng/ripple';
+import { TagModule } from 'primeng/tag';
 import { AdminLayoutComponent } from './layout/admin-layout.component';
 
 @NgModule({
@@ -50,6 +51,7 @@ import { AdminLayoutComponent } from './layout/admin-layout.component';
     ToolbarModule,
     RippleModule,
     PaginatorModule,
+    TagModule,
   ],
 })
 export class AdminModule {}
