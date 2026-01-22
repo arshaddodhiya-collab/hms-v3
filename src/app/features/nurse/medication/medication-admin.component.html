@@ -1,0 +1,41 @@
+<div class="card">
+  <h5>Medication Administration Record (MAR)</h5>
+  <p-table [value]="orders" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Patient Name</th>
+        <th>Medicine</th>
+        <th>Dosage</th>
+        <th>Schedule</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-order>
+      <tr>
+        <td>{{ order.patientName }}</td>
+        <td>{{ order.medicine }}</td>
+        <td>{{ order.dosage }}</td>
+        <td>{{ order.schedule }}</td>
+        <td>
+          <p-tag
+            [value]="order.status"
+            [severity]="order.status === 'Given' ? 'success' : 'warning'"
+          ></p-tag>
+        </td>
+        <td>
+          <button
+            *ngIf="order.status === 'Pending'"
+            pButton
+            label="Mark Given"
+            class="p-button-sm"
+            (click)="markGiven(order)"
+          ></button>
+          <span *ngIf="order.status === 'Given'" class="text-green-500"
+            ><i class="pi pi-check"></i> Given</span
+          >
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
