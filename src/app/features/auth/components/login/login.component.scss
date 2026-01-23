@@ -1,0 +1,7 @@
+/* Login specific styles - minimal due to PrimeFlex */
+:host ::ng-deep {
+    .p-card-title {
+        text-align: center;
+        color: var(--primary-color);
+    }
+}

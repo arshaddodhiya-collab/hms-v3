@@ -1,0 +1,69 @@
+<div
+  class="flex align-items-center justify-content-center min-h-screen bg-blue-50"
+>
+  <p-card
+    header="Sign in to HMS"
+    [style]="{ width: '25rem' }"
+    styleClass="shadow-4"
+  >
+    <ng-template pTemplate="subtitle">
+      <div class="text-center mb-4">Hospital Management System</div>
+    </ng-template>
+
+    <form (ngSubmit)="onLogin()" class="flex flex-column gap-3">
+      <div class="p-field">
+        <label
+          for="username"
+          class="block mb-2 text-sm font-medium text-color-secondary"
+          >Username</label
+        >
+        <span class="p-input-icon-left w-full">
+          <i class="pi pi-user"></i>
+          <input
+            id="username"
+            type="text"
+            pInputText
+            [(ngModel)]="username"
+            name="username"
+            placeholder="Username"
+            class="w-full"
+            required
+          />
+        </span>
+      </div>
+
+      <div class="p-field">
+        <label
+          for="password"
+          class="block mb-2 text-sm font-medium text-color-secondary"
+          >Password</label
+        >
+        <span class="p-input-icon-left w-full">
+          <i class="pi pi-lock"></i>
+          <input
+            id="password"
+            type="password"
+            pInputText
+            [(ngModel)]="password"
+            name="password"
+            placeholder="Password"
+            class="w-full"
+            required
+          />
+        </span>
+      </div>
+
+      <div *ngIf="error" class="p-message p-message-error p-2 text-sm">
+        {{ error }}
+      </div>
+
+      <p-button
+        label="Sign In"
+        icon="pi pi-sign-in"
+        type="submit"
+        styleClass="w-full"
+      >
+      </p-button>
+    </form>
+  </p-card>
+</div>

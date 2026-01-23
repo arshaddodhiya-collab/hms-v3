@@ -1,0 +1,25 @@
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-status-badge',
+  template: `
+    <p-tag [value]="status" [severity]="getSeverity()" [rounded]="true"></p-tag>
+  `,
+})
+export class StatusBadgeComponent {
+  @Input() status: string = '';
+  @Input() type: 'success' | 'warning' | 'error' | 'info' = 'info';
+
+  getSeverity(): 'success' | 'warning' | 'danger' | 'info' | undefined {
+    switch (this.type) {
+      case 'success':
+        return 'success';
+      case 'warning':
+        return 'warning';
+      case 'error':
+        return 'danger';
+      default:
+        return 'info';
+    }
+  }
+}
