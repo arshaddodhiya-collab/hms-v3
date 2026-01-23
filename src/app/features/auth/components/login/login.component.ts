@@ -18,12 +18,15 @@ export class LoginComponent {
   ) {}
 
   onLogin() {
-    // Simulating a basic check
     if (this.username && this.password) {
-      this.authService.login();
-      this.router.navigate(['/dashboard']);
+      const success = this.authService.login(this.username, this.password);
+      if (success) {
+        this.router.navigate(['/dashboard']);
+      } else {
+        this.error = 'Invalid username or password';
+      }
     } else {
-      this.error = 'Please enter valid credentials';
+      this.error = 'Please enter username and password';
     }
   }
 }

@@ -1,41 +1,57 @@
 import { Injectable } from '@angular/core';
-import { PERMISSIONS } from '../constants/permissions.constants';
-import { of } from 'rxjs';
+import { Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { MOCK_USERS, MockUser } from '../config/mock-users.config';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MockAuthService {
-  private isLoggedIn = true; // Simulating logged in state
+  private currentUserSubject = new BehaviorSubject<MockUser | null>(null);
+  public currentUser$ = this.currentUserSubject.asObservable();
 
-  // Simulating a "Doctor" role access for now, can be changed to test others
-  private userPermissions = [
-    PERMISSIONS.MOD_DASHBOARD,
-    PERMISSIONS.MOD_PATIENTS,
-    PERMISSIONS.MOD_APPOINTMENTS,
-    PERMISSIONS.MOD_CONSULTATION,
-    PERMISSIONS.ACT_VIEW,
-    PERMISSIONS.ACT_CREATE,
-  ];
+  constructor(private router: Router) {
+    const savedUser = localStorage.getItem('hms_user');
+    if (savedUser) {
+      this.currentUserSubject.next(JSON.parse(savedUser));
+    }
+  }
 
-  login() {
-    this.isLoggedIn = true;
+  login(username: string, password: string): boolean {
+    const user = MOCK_USERS.find(
+      (u) => u.username === username && u.password === password,
+    );
+
+    if (user) {
+      this.currentUserSubject.next(user);
+      localStorage.setItem('hms_user', JSON.stringify(user));
+      return true;
+    }
+    return false;
   }
 
   logout() {
-    this.isLoggedIn = false;
+    this.currentUserSubject.next(null);
+    localStorage.removeItem('hms_user');
+    this.router.navigate(['/auth/login']);
   }
 
   isAuthenticated(): boolean {
-    return this.isLoggedIn;
+    return !!this.currentUserSubject.value;
   }
 
   hasPermission(permission: string): boolean {
+    const user = this.currentUserSubject.value;
+    if (!user) return false;
     if (!permission) return true;
-    return this.userPermissions.includes(permission);
+    return user.permissions.includes(permission);
   }
 
-  getUserPermissions() {
-    return of(this.userPermissions);
+  getUserRole(): string {
+    return this.currentUserSubject.value?.role || '';
+  }
+
+  getCurrentUser(): MockUser | null {
+    return this.currentUserSubject.value;
   }
 }
