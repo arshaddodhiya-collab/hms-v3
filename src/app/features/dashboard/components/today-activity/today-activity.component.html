@@ -1,0 +1,27 @@
+<div class="card">
+  <h5 class="mb-3">Today's Activity</h5>
+  <p-table [value]="activities" [tableStyle]="{ 'min-width': '100%' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th *ngFor="let col of cols">{{ col.header }}</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-activity>
+      <tr>
+        <td>{{ activity.time }}</td>
+        <td>{{ activity.description }}</td>
+        <td>
+          <app-status-badge
+            [status]="activity.status"
+            [type]="activity.status === 'Critical' ? 'error' : 'success'"
+          ></app-status-badge>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="3">No activities for your role today.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

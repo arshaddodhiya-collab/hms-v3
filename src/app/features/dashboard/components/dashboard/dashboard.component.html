@@ -1,0 +1,54 @@
+<div class="p-4 bg-gray-50 min-h-screen">
+  <!-- Header Section -->
+  <div class="flex justify-content-between align-items-center mb-5">
+    <div>
+      <h1 class="text-3xl font-bold text-900 m-0">Dashboard</h1>
+      <p class="text-600 mt-2">
+        Welcome back,
+        <span class="font-bold capitalize">{{ username }}</span> ({{
+          userRole
+        }})
+      </p>
+    </div>
+    <p-button
+      label="Logout"
+      icon="pi pi-power-off"
+      styleClass="p-button-danger p-button-text"
+      (click)="onLogout()"
+    ></p-button>
+  </div>
+
+  <!-- Dynamic Stats -->
+  <div class="mb-5">
+    <app-stats-cards></app-stats-cards>
+  </div>
+
+  <!-- Two Column Layout for Activity and Charts (Chart placeholder) -->
+  <div class="grid">
+    <div class="col-12 xl:col-8">
+      <app-today-activity></app-today-activity>
+    </div>
+    <div class="col-12 xl:col-4">
+      <div class="card p-3 bg-white shadow-2 border-round h-full">
+        <h5 class="mb-3">Quick Actions</h5>
+        <div class="flex flex-column gap-2">
+          <p-button
+            label="New Patient"
+            icon="pi pi-user-plus"
+            styleClass="p-button-outlined w-full text-left"
+          ></p-button>
+          <p-button
+            label="Book Appointment"
+            icon="pi pi-calendar-plus"
+            styleClass="p-button-outlined w-full text-left"
+          ></p-button>
+          <p-button
+            label="View Reports"
+            icon="pi pi-file"
+            styleClass="p-button-outlined w-full text-left"
+          ></p-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

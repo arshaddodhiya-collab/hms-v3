@@ -1,0 +1,46 @@
+<div
+  class="h-full flex flex-column bg-white shadow-2"
+  style="width: 280px; height: 100vh"
+>
+  <!-- Logo Area -->
+  <div class="p-4 flex align-items-center gap-2 border-bottom-1 surface-border">
+    <div class="bg-blue-600 text-white border-round p-2 font-bold text-xl">
+      HMS
+    </div>
+    <span class="font-bold text-xl text-900">Hospital Tech</span>
+  </div>
+
+  <!-- Menu Items -->
+  <div class="flex-grow-1 overflow-y-auto p-3">
+    <ul class="list-none p-0 m-0 flex flex-column gap-1">
+      <li *ngFor="let item of menuItems">
+        <a
+          [routerLink]="item.route"
+          class="flex align-items-center cursor-pointer p-3 border-round transition-duration-150 transition-colors w-full no-underline"
+          [ngClass]="{
+            'bg-blue-50 text-blue-600': isActive(item.route),
+            'text-700 hover:surface-100': !isActive(item.route),
+          }"
+        >
+          <i class="pi pi-{{ item.icon }} mr-2 text-lg"></i>
+          <span class="font-medium">{{ item.label }}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- User Profile (Bottom) -->
+  <div class="p-3 border-top-1 surface-border">
+    <div class="flex align-items-center gap-2 p-2 border-round surface-100">
+      <p-avatar
+        icon="pi pi-user"
+        styleClass="bg-blue-100 text-blue-600"
+        shape="circle"
+      ></p-avatar>
+      <div class="flex flex-column">
+        <span class="font-bold text-sm text-900">User Profile</span>
+        <span class="text-xs text-600">Logged In</span>
+      </div>
+    </div>
+  </div>
+</div>
