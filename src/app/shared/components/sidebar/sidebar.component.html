@@ -28,16 +28,27 @@
 
   <!-- User Profile (Bottom) -->
   <div class="p-3 border-top-1 surface-border">
-    <div class="flex align-items-center gap-2 p-2 border-round surface-100">
-      <p-avatar
-        icon="pi pi-user"
-        styleClass="bg-blue-100 text-blue-600"
-        shape="circle"
-      ></p-avatar>
-      <div class="flex flex-column">
-        <span class="font-bold text-sm text-900">User Profile</span>
-        <span class="text-xs text-600">Logged In</span>
+    <div
+      class="flex align-items-center gap-2 p-2 border-round surface-100 justify-content-between"
+    >
+      <div class="flex align-items-center gap-2">
+        <p-avatar
+          icon="pi pi-user"
+          styleClass="bg-blue-100 text-blue-600"
+          shape="circle"
+        ></p-avatar>
+        <div class="flex flex-column">
+          <span class="font-bold text-sm text-900">User Profile</span>
+          <span class="text-xs text-600">Logged In</span>
+        </div>
       </div>
+      <button
+        pButton
+        icon="pi pi-power-off"
+        class="p-button-rounded p-button-text p-button-danger p-button-sm"
+        pTooltip="Sign Out"
+        (click)="onLogout()"
+      ></button>
     </div>
   </div>
 </div>

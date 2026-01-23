@@ -38,4 +38,8 @@ export class SidebarComponent implements OnInit {
   isActive(route: string): boolean {
     return this.currentRoute.includes(route);
   }
+
+  onLogout(): void {
+    this.authService.logout();
+  }
 }

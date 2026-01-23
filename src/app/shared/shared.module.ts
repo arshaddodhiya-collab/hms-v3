@@ -15,6 +15,9 @@ import { SidebarModule } from 'primeng/sidebar';
 import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
 import { TagModule } from 'primeng/tag';
+import { ToolbarModule } from 'primeng/toolbar';
+import { RippleModule } from 'primeng/ripple';
+import { TooltipModule } from 'primeng/tooltip';
 
 import { PageHeaderComponent } from './components/page-header.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog.component';
@@ -45,7 +48,10 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     SidebarModule,
     AvatarModule,
     BadgeModule,
+    BadgeModule,
     TagModule,
+    ToolbarModule,
+    RippleModule,
   ],
   exports: [
     CommonModule,
@@ -69,7 +75,10 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     SidebarModule,
     AvatarModule,
     BadgeModule,
+    BadgeModule,
     TagModule,
+    ToolbarModule,
+    RippleModule,
   ],
 })
 export class SharedModule {}

@@ -1,0 +1,18 @@
+<div class="card">
+  <app-page-header
+    title="Patient Details"
+    icon="pi pi-user"
+    [showBack]="true"
+  ></app-page-header>
+
+  <div class="grid">
+    <div class="col-12 md:col-6">
+      <p><strong>Name:</strong> {{ patient.name }}</p>
+      <p><strong>Age:</strong> {{ patient.age }}</p>
+    </div>
+    <div class="col-12 md:col-6">
+      <p><strong>Gender:</strong> {{ patient.gender }}</p>
+      <p><strong>Contact:</strong> {{ patient.contact }}</p>
+    </div>
+  </div>
+</div>

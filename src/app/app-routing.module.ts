@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard, PermissionGuard } from './core/guards/guards';
 
 const routes: Routes = [
   {
@@ -13,6 +14,15 @@ const routes: Routes = [
       import('./features/dashboard/dashboard.module').then(
         (m) => m.DashboardModule,
       ),
+  },
+  {
+    path: 'patients',
+    loadChildren: () =>
+      import('./features/patients/patients.module').then(
+        (m) => m.PatientsModule,
+      ),
+    canActivate: [AuthGuard, PermissionGuard],
+    data: { permission: 'MOD_PATIENTS' },
   },
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
 ];

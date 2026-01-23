@@ -41,7 +41,9 @@ export class PermissionGuard implements CanActivate {
     if (!requiredPermission) {
       return true;
     }
-    if (this.authService.hasPermission(requiredPermission)) {
+    const hasPerm = this.authService.hasPermission(requiredPermission);
+
+    if (hasPerm) {
       return true;
     }
     // Redirect to unauthorized or dashboard if no permission
