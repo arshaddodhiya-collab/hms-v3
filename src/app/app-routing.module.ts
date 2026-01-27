@@ -25,6 +25,15 @@ const routes: Routes = [
     data: { permission: 'MOD_PATIENTS' },
   },
   {
+    path: 'appointments',
+    loadChildren: () =>
+      import('./features/appointments/appointments.module').then(
+        (m) => m.AppointmentsModule,
+      ),
+    canActivate: [AuthGuard, PermissionGuard],
+    data: { permission: 'MOD_APPOINTMENTS' },
+  },
+  {
     path: 'error',
     loadChildren: () =>
       import('./features/error/error.module').then((m) => m.ErrorModule),

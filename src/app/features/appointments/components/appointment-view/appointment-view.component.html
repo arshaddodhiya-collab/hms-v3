@@ -1,0 +1,23 @@
+<div class="card">
+  <app-page-header
+    title="Appointment Details"
+    icon="pi pi-calendar"
+    [showBack]="true"
+  ></app-page-header>
+
+  <div class="grid">
+    <div class="col-12 md:col-6">
+      <p><strong>Patient:</strong> {{ appointment.patientName }}</p>
+      <p><strong>Doctor:</strong> {{ appointment.doctorName }}</p>
+      <p><strong>Date:</strong> {{ appointment.date }}</p>
+    </div>
+    <div class="col-12 md:col-6">
+      <p><strong>Time:</strong> {{ appointment.time }}</p>
+      <p>
+        <strong>Status:</strong>
+        <p-tag [value]="appointment.status" severity="success"></p-tag>
+      </p>
+      <p><strong>Notes:</strong> {{ appointment.notes }}</p>
+    </div>
+  </div>
+</div>

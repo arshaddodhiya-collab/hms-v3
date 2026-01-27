@@ -1,0 +1,55 @@
+<div class="card">
+  <app-page-header title="Appointments" icon="pi pi-calendar"></app-page-header>
+
+  <p-toolbar styleClass="mb-4 gap-2">
+    <ng-template pTemplate="left">
+      <button
+        *appHasPermission="'CMP_APPOINTMENT_CREATE'"
+        pButton
+        pRipple
+        label="New Appointment"
+        icon="pi pi-plus"
+        class="p-button-success mr-2"
+        routerLink="create"
+      ></button>
+    </ng-template>
+  </p-toolbar>
+
+  <p-table [value]="appointments" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>ID</th>
+        <th>Patient</th>
+        <th>Doctor</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-appointment>
+      <tr>
+        <td>{{ appointment.id }}</td>
+        <td>{{ appointment.patientName }}</td>
+        <td>{{ appointment.doctorName }}</td>
+        <td>{{ appointment.date }}</td>
+        <td>{{ appointment.time }}</td>
+        <td>
+          <p-tag
+            [value]="appointment.status"
+            [severity]="getStatusSeverity(appointment.status)"
+          ></p-tag>
+        </td>
+        <td>
+          <button
+            pButton
+            pRipple
+            icon="pi pi-eye"
+            class="p-button-rounded p-button-info mr-2"
+            [routerLink]="[appointment.id]"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
