@@ -24,7 +24,13 @@ const routes: Routes = [
     canActivate: [AuthGuard, PermissionGuard],
     data: { permission: 'MOD_PATIENTS' },
   },
+  {
+    path: 'error',
+    loadChildren: () =>
+      import('./features/error/error.module').then((m) => m.ErrorModule),
+  },
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
+  { path: '**', redirectTo: '/error/not-found' },
 ];
 
 @NgModule({
