@@ -24,6 +24,7 @@ import { ConfirmDialogComponent } from './components/confirm-dialog.component';
 import { TableComponent } from './components/table.component';
 import { StatusBadgeComponent } from './components/status-badge.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { HasPermissionDirective } from './directives/has-permission.directive';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     TableComponent,
     StatusBadgeComponent,
     SidebarComponent,
+    HasPermissionDirective,
   ],
   imports: [
     CommonModule,
@@ -52,6 +54,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     TagModule,
     ToolbarModule,
     RippleModule,
+    TooltipModule,
   ],
   exports: [
     CommonModule,
@@ -64,6 +67,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     TableComponent,
     StatusBadgeComponent,
     SidebarComponent,
+    HasPermissionDirective,
     // PrimeNG Modules
     ButtonModule,
     InputTextModule,
@@ -79,6 +83,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     TagModule,
     ToolbarModule,
     RippleModule,
+    TooltipModule,
   ],
 })
 export class SharedModule {}
