@@ -34,6 +34,13 @@ const routes: Routes = [
     data: { permission: 'MOD_APPOINTMENTS' },
   },
   {
+    path: 'triage',
+    loadChildren: () =>
+      import('./features/triage/triage.module').then((m) => m.TriageModule),
+    canActivate: [AuthGuard, PermissionGuard],
+    data: { permission: 'MOD_TRIAGE' },
+  },
+  {
     path: 'error',
     loadChildren: () =>
       import('./features/error/error.module').then((m) => m.ErrorModule),

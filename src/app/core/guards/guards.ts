@@ -53,6 +53,7 @@ export class PermissionGuard implements CanActivate {
     }
     // Redirect to unauthorized or dashboard if no permission
     console.warn('Access denied. Missing permission:', requiredPermission);
+    this.router.navigate(['/error/unauthorized']);
     return false;
   }
 }

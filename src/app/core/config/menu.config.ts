@@ -21,9 +21,9 @@ export const MENU_CONFIG = [
   },
   {
     label: 'Triage',
+    icon: 'pi pi-heart-fill',
     route: '/triage',
-    permission: PERMISSIONS.MOD_TRIAGE,
-    icon: 'monitor_heart',
+    permission: 'MOD_TRIAGE',
   },
   {
     label: 'Consultation',
