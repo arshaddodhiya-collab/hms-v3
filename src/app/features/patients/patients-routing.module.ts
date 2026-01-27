@@ -11,25 +11,13 @@ const routes: Routes = [
     path: '',
     component: PatientListComponent,
     canActivate: [PermissionGuard],
-    data: { permission: 'CMP_PATIENT_LIST' }, // Assuming this permission, will define shortly
-  },
-  {
-    path: 'register',
-    component: PatientRegisterComponent,
-    canActivate: [PermissionGuard],
-    data: { permission: 'CMP_PATIENT_ADD' },
+    data: { permission: 'CMP_PATIENT_LIST' },
   },
   {
     path: ':id',
     component: PatientViewComponent,
     canActivate: [PermissionGuard],
     data: { permission: 'CMP_PATIENT_VIEW' },
-  },
-  {
-    path: ':id/edit',
-    component: PatientEditComponent,
-    canActivate: [PermissionGuard],
-    data: { permission: 'CMP_PATIENT_EDIT' },
   },
 ];
 

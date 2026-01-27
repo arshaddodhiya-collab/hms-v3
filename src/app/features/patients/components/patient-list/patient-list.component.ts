@@ -17,7 +17,47 @@ export class PatientListComponent implements OnInit {
     },
   ];
 
+  displayDialog: boolean = false;
+  patient: any = {};
+  submitted: boolean = false;
+
   constructor() {}
 
   ngOnInit(): void {}
+
+  openNew() {
+    this.patient = {};
+    this.submitted = false;
+    this.displayDialog = true;
+  }
+
+  editPatient(patient: any) {
+    this.patient = { ...patient };
+    this.displayDialog = true;
+  }
+
+  hideDialog() {
+    this.displayDialog = false;
+    this.submitted = false;
+  }
+
+  savePatient() {
+    this.submitted = true;
+
+    if (this.patient.name?.trim()) {
+      if (this.patient.id) {
+        // Update
+        const index = this.patients.findIndex((x) => x.id === this.patient.id);
+        this.patients[index] = this.patient;
+      } else {
+        // Create
+        this.patient.id = this.patients.length + 1; // Simple ID generation
+        this.patients.push(this.patient);
+      }
+
+      this.patients = [...this.patients];
+      this.displayDialog = false;
+      this.patient = {};
+    }
+  }
 }
