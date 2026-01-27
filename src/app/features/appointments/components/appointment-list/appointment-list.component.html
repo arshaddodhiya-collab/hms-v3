@@ -1,36 +1,41 @@
-<div class="card">
-  <app-page-header title="Appointments" icon="pi pi-calendar"></app-page-header>
+<div class="card p-0">
+  <div
+    class="p-4 flex justify-content-between align-items-center border-bottom-1 surface-border"
+  >
+    <h2 class="m-0 font-bold text-900">Appointments</h2>
+    <button
+      *appHasPermission="'CMP_APPOINTMENT_CREATE'"
+      pButton
+      pRipple
+      label="New Appointment"
+      icon="pi pi-plus"
+      class="p-button-primary"
+      (click)="openNew()"
+      pTooltip="Schedule a new appointment"
+      tooltipPosition="bottom"
+    ></button>
+  </div>
 
-  <p-toolbar styleClass="mb-4 gap-2">
-    <ng-template pTemplate="left">
-      <button
-        *appHasPermission="'CMP_APPOINTMENT_CREATE'"
-        pButton
-        pRipple
-        label="New Appointment"
-        icon="pi pi-plus"
-        class="p-button-success mr-2"
-        (click)="openNew()"
-      ></button>
-    </ng-template>
-  </p-toolbar>
-
-  <p-table [value]="appointments" [tableStyle]="{ 'min-width': '50rem' }">
+  <p-table
+    [value]="appointments"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    styleClass="p-datatable-striped"
+  >
     <ng-template pTemplate="header">
       <tr>
-        <th>ID</th>
-        <th>Patient</th>
-        <th>Doctor</th>
-        <th>Date</th>
-        <th>Time</th>
-        <th>Status</th>
-        <th>Actions</th>
+        <th class="bg-gray-50 text-900">ID</th>
+        <th class="bg-gray-50 text-900">Patient</th>
+        <th class="bg-gray-50 text-900">Doctor</th>
+        <th class="bg-gray-50 text-900">Date</th>
+        <th class="bg-gray-50 text-900">Time</th>
+        <th class="bg-gray-50 text-900">Status</th>
+        <th class="bg-gray-50 text-900 text-center">Actions</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-appointment>
-      <tr>
+      <tr class="hover:surface-hover transition-colors transition-duration-200">
         <td>{{ appointment.id }}</td>
-        <td>{{ appointment.patientName }}</td>
+        <td class="font-medium text-900">{{ appointment.patientName }}</td>
         <td>{{ appointment.doctorName }}</td>
         <td>{{ appointment.date }}</td>
         <td>{{ appointment.time }}</td>
@@ -38,23 +43,28 @@
           <p-tag
             [value]="appointment.status"
             [severity]="getStatusSeverity(appointment.status)"
+            styleClass="uppercase text-xs"
           ></p-tag>
         </td>
-        <td>
+        <td class="text-center">
           <button
             pButton
             pRipple
             icon="pi pi-eye"
-            class="p-button-rounded p-button-info mr-2"
+            class="p-button-rounded p-button-text p-button-info mr-2"
             [routerLink]="[appointment.id]"
+            pTooltip="View Details"
+            tooltipPosition="top"
           ></button>
           <button
             *appHasPermission="'CMP_APPOINTMENT_EDIT'"
             pButton
             pRipple
             icon="pi pi-pencil"
-            class="p-button-rounded p-button-warning"
+            class="p-button-rounded p-button-text p-button-warning"
             (click)="editAppointment(appointment)"
+            pTooltip="Edit Appointment"
+            tooltipPosition="top"
           ></button>
         </td>
       </tr>

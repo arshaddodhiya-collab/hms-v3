@@ -1,69 +1,74 @@
 <div
-  class="flex align-items-center justify-content-center min-h-screen bg-blue-50"
+  class="flex align-items-center justify-content-center min-h-screen surface-ground px-4"
 >
-  <p-card
-    header="Sign in to HMS"
-    [style]="{ width: '25rem' }"
-    styleClass="shadow-4"
+  <div
+    class="surface-card p-4 shadow-6 border-round-xl w-full"
+    style="max-width: 400px"
   >
-    <ng-template pTemplate="subtitle">
-      <div class="text-center mb-4">Hospital Management System</div>
-    </ng-template>
+    <div class="text-center mb-5">
+      <div class="text-900 text-3xl font-bold mb-3">Welcome Back</div>
+      <span class="text-600 font-medium line-height-3"
+        >Sign in to continue to HMS</span
+      >
+    </div>
 
-    <form (ngSubmit)="onLogin()" class="flex flex-column gap-3">
-      <div class="p-field">
-        <label
-          for="username"
-          class="block mb-2 text-sm font-medium text-color-secondary"
+    <form (ngSubmit)="onLogin()">
+      <div class="mb-4">
+        <label for="username" class="block text-900 font-medium mb-2"
           >Username</label
         >
         <span class="p-input-icon-left w-full">
-          <i class="pi pi-user"></i>
+          <i class="pi pi-user text-500"></i>
           <input
             id="username"
             type="text"
             pInputText
             [(ngModel)]="username"
             name="username"
-            placeholder="Username"
+            placeholder="Enter your username"
             class="w-full"
             required
+            [ngClass]="{ 'ng-invalid ng-dirty': error }"
           />
         </span>
       </div>
 
-      <div class="p-field">
-        <label
-          for="password"
-          class="block mb-2 text-sm font-medium text-color-secondary"
+      <div class="mb-5">
+        <label for="password" class="block text-900 font-medium mb-2"
           >Password</label
         >
         <span class="p-input-icon-left w-full">
-          <i class="pi pi-lock"></i>
+          <i class="pi pi-lock text-500"></i>
           <input
             id="password"
             type="password"
             pInputText
             [(ngModel)]="password"
             name="password"
-            placeholder="Password"
+            placeholder="Enter your password"
             class="w-full"
             required
           />
         </span>
       </div>
 
-      <div *ngIf="error" class="p-message p-message-error p-2 text-sm">
-        {{ error }}
+      <div
+        *ngIf="error"
+        class="flex align-items-center p-3 mb-4 bg-red-50 text-red-700 border-round"
+      >
+        <i class="pi pi-exclamation-circle mr-2"></i>
+        <span class="font-medium">{{ error }}</span>
       </div>
 
-      <p-button
+      <button
+        pButton
+        pRipple
         label="Sign In"
-        icon="pi pi-sign-in"
+        icon="pi pi-arrow-right"
+        iconPos="right"
         type="submit"
-        styleClass="w-full"
-      >
-      </p-button>
+        class="w-full p-button-lg"
+      ></button>
     </form>
-  </p-card>
+  </div>
 </div>

@@ -1,17 +1,89 @@
-<div class="card">
-  <app-page-header
-    title="Register Patient"
-    icon="pi pi-user-plus"
-    [showBack]="true"
-  ></app-page-header>
+<div class="surface-card p-4 shadow-2 border-round">
+  <div class="flex align-items-center justify-content-between mb-4">
+    <h2 class="text-900 font-bold m-0">Register New Patient</h2>
+    <button
+      pButton
+      pRipple
+      icon="pi pi-arrow-left"
+      label="Back"
+      class="p-button-text"
+      routerLink=".."
+      pTooltip="Return to patient list"
+      tooltipPosition="right"
+    ></button>
+  </div>
+
   <div class="p-fluid grid formgrid">
+    <div class="col-12 mb-4">
+      <div class="text-500 font-medium mb-2">Personal Information</div>
+      <div class="p-divider p-component mb-3"></div>
+    </div>
+
     <div class="field col-12 md:col-6">
-      <label htmlFor="firstname">Firstname</label>
-      <input pInputText id="firstname" type="text" />
+      <label htmlFor="firstname" class="font-medium">Firstname</label>
+      <input
+        pInputText
+        id="firstname"
+        type="text"
+        placeholder="Enter first name"
+      />
     </div>
     <div class="field col-12 md:col-6">
-      <label htmlFor="lastname">Lastname</label>
-      <input pInputText id="lastname" type="text" />
+      <label htmlFor="lastname" class="font-medium">Lastname</label>
+      <input
+        pInputText
+        id="lastname"
+        type="text"
+        placeholder="Enter last name"
+      />
+    </div>
+
+    <div class="field col-12 md:col-6">
+      <label htmlFor="age" class="font-medium">Age</label>
+      <input pInputText id="age" type="number" placeholder="Age" />
+    </div>
+    <div class="field col-12 md:col-6">
+      <label htmlFor="gender" class="font-medium">Gender</label>
+      <p-dropdown
+        [options]="['Male', 'Female', 'Other']"
+        placeholder="Select Gender"
+      ></p-dropdown>
+    </div>
+
+    <div class="col-12 mb-4 mt-4">
+      <div class="text-500 font-medium mb-2">Contact Details</div>
+      <div class="p-divider p-component mb-3"></div>
+    </div>
+
+    <div class="field col-12 md:col-6">
+      <label htmlFor="phone" class="font-medium">Phone Number</label>
+      <input
+        pInputText
+        id="phone"
+        type="text"
+        placeholder="+1 (555) 000-0000"
+      />
+    </div>
+    <div class="field col-12 md:col-6">
+      <label htmlFor="email" class="font-medium">Email</label>
+      <input
+        pInputText
+        id="email"
+        type="email"
+        placeholder="patient@example.com"
+      />
+    </div>
+
+    <div class="col-12 flex justify-content-end mt-4">
+      <button
+        pButton
+        pRipple
+        label="Register Patient"
+        icon="pi pi-check"
+        class="w-auto"
+        pTooltip="Save patient details"
+        tooltipPosition="left"
+      ></button>
     </div>
   </div>
 </div>

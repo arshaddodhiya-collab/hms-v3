@@ -1,47 +1,61 @@
-<div class="card">
-  <app-page-header title="Patients" icon="pi pi-users"></app-page-header>
+<div class="card p-0">
+  <div
+    class="p-4 flex justify-content-between align-items-center border-bottom-1 surface-border"
+  >
+    <h2 class="m-0 font-bold text-900">Patients</h2>
+    <button
+      *appHasPermission="'CMP_PATIENT_ADD'"
+      pButton
+      pRipple
+      label="New Patient"
+      icon="pi pi-plus"
+      class="p-button-primary"
+      (click)="openNew()"
+      pTooltip="Register a new patient"
+      tooltipPosition="bottom"
+    ></button>
+  </div>
 
-  <p-toolbar styleClass="mb-4 gap-2">
-    <ng-template pTemplate="left">
-      <button
-        *appHasPermission="'CMP_PATIENT_ADD'"
-        pButton
-        pRipple
-        label="New Patient"
-        icon="pi pi-plus"
-        class="p-button-success mr-2"
-        (click)="openNew()"
-        pTooltip="Add New Patient"
-        tooltipPosition="bottom"
-      ></button>
-    </ng-template>
-  </p-toolbar>
-
-  <p-table [value]="patients" [tableStyle]="{ 'min-width': '50rem' }">
+  <p-table
+    [value]="patients"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    styleClass="p-datatable-striped"
+  >
     <ng-template pTemplate="header">
       <tr>
-        <th>Name</th>
-        <th>Age</th>
-        <th>Gender</th>
-        <th>Contact</th>
-        <th>Actions</th>
+        <th class="bg-gray-50 text-900">Name</th>
+        <th class="bg-gray-50 text-900">Age</th>
+        <th class="bg-gray-50 text-900">Gender</th>
+        <th class="bg-gray-50 text-900">Contact</th>
+        <th class="bg-gray-50 text-900 text-center">Actions</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-patient>
-      <tr>
-        <td>{{ patient.name }}</td>
+      <tr class="hover:surface-hover transition-colors transition-duration-200">
+        <td class="font-medium text-900">{{ patient.name }}</td>
         <td>{{ patient.age }}</td>
-        <td>{{ patient.gender }}</td>
-        <td>{{ patient.contact }}</td>
         <td>
+          <span
+            [class]="
+              'px-2 py-1 border-round text-sm font-medium ' +
+              (patient.gender?.toLowerCase() === 'male'
+                ? 'bg-blue-50 text-blue-600'
+                : 'bg-pink-50 text-pink-600')
+            "
+          >
+            {{ patient.gender }}
+          </span>
+        </td>
+        <td>{{ patient.contact }}</td>
+        <td class="text-center">
           <button
             *appHasPermission="'CMP_PATIENT_VIEW'"
             pButton
             pRipple
             icon="pi pi-eye"
-            class="p-button-rounded p-button-info mr-2"
+            class="p-button-rounded p-button-text p-button-info mr-2"
             [routerLink]="[patient.id]"
-            pTooltip="View Patient"
+            pTooltip="View Details"
             tooltipPosition="top"
           ></button>
           <button
@@ -49,9 +63,9 @@
             pButton
             pRipple
             icon="pi pi-pencil"
-            class="p-button-rounded p-button-warning"
+            class="p-button-rounded p-button-text p-button-warning"
             (click)="editPatient(patient)"
-            pTooltip="Edit Patient"
+            pTooltip="Edit Record"
             tooltipPosition="top"
           ></button>
         </td>

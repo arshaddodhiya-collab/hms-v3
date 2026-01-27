@@ -8,6 +8,7 @@ import {
 } from '@angular/router';
 import { MockAuthService } from '../services/mock-auth.service';
 import { Observable } from 'rxjs';
+import { MessageService } from 'primeng/api';
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +35,7 @@ export class PermissionGuard implements CanActivate {
   constructor(
     private authService: MockAuthService,
     private router: Router,
+    private messageService: MessageService,
   ) {}
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
@@ -53,6 +55,11 @@ export class PermissionGuard implements CanActivate {
     }
     // Redirect to unauthorized or dashboard if no permission
     console.warn('Access denied. Missing permission:', requiredPermission);
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Access Denied',
+      detail: 'You do not have permission to access this resource',
+    });
     this.router.navigate(['/error/unauthorized']);
     return false;
   }

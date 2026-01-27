@@ -14,6 +14,18 @@ const routes: Routes = [
     data: { permission: 'CMP_APPOINTMENT_LIST' },
   },
   {
+    path: 'create',
+    component: AppointmentCreateComponent,
+    canActivate: [PermissionGuard],
+    data: { permission: 'CMP_APPOINTMENT_CREATE' },
+  },
+  {
+    path: 'edit/:id',
+    component: AppointmentEditComponent,
+    canActivate: [PermissionGuard],
+    data: { permission: 'CMP_APPOINTMENT_EDIT' },
+  },
+  {
     path: ':id',
     component: AppointmentViewComponent,
     canActivate: [PermissionGuard],

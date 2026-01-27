@@ -1,52 +1,76 @@
-<div class="h-full flex flex-column bg-white shadow-2" style="width: 280px">
-  <!-- Logo Area -->
-  <div class="p-4 flex align-items-center gap-2 border-bottom-1 surface-border">
-    <div class="bg-blue-600 text-black border-round p-2 font-bold text-xl">
-      HMS
+<div
+  class="h-full flex flex-column bg-white shadow-3 border-right-2 surface-border"
+  style="width: 290px"
+>
+  <div class="p-4 flex align-items-center gap-3">
+    <div
+      class="bg-blue-600 text-white border-round flex align-items-center justify-content-center shadow-2"
+      style="width: 40px; height: 40px"
+    >
+      <i class="pi pi-heart-fill text-xl"></i>
     </div>
-    <span class="font-bold text-xl text-900">Hospital Tech</span>
+    <div class="flex flex-column">
+      <span class="font-bold text-xl line-height-1 text-900">HMS</span>
+      <span class="text-xs font-semibold text-500 uppercase tracking-wider"
+        >Hospital Tech</span
+      >
+    </div>
   </div>
 
-  <!-- Menu Items -->
-  <div class="flex-grow-1 overflow-y-auto p-3 h-full">
+  <div class="flex-grow-1 overflow-y-auto px-3 py-2">
+    <small class="text-500 font-bold block mb-2 ml-3">MAIN MENU</small>
+
     <ul class="list-none p-0 m-0 flex flex-column gap-1">
       <li *ngFor="let item of menuItems">
         <a
           [routerLink]="item.route"
-          class="flex align-items-center cursor-pointer p-3 border-round transition-duration-150 transition-colors w-full no-underline"
+          routerLinkActive="active-link"
+          class="nav-item flex align-items-center cursor-pointer p-3 border-round transition-duration-200 no-underline"
           [ngClass]="{
-            'bg-blue-50 text-blue-600': isActive(item.route),
-            'text-700 hover:surface-100': !isActive(item.route),
+            'bg-blue-50 text-blue-700 font-semibold': isActive(item.route),
+            'text-600 hover:surface-100': !isActive(item.route),
           }"
         >
-          <i class="pi pi-{{ item.icon }} mr-2 text-lg"></i>
-          <span class="font-medium">{{ item.label }}</span>
+          <i
+            class="pi pi-{{ item.icon }} mr-3 text-lg"
+            [ngClass]="{ 'text-blue-600': isActive(item.route) }"
+          ></i>
+          <span>{{ item.label }}</span>
+
+          <span
+            *ngIf="item.badge"
+            class="ml-auto bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 border-round"
+          >
+            {{ item.badge }}
+          </span>
         </a>
       </li>
     </ul>
   </div>
 
-  <!-- User Profile (Bottom) -->
-  <div class="p-3 border-top-1 surface-border">
+  <div class="p-3">
     <div
-      class="flex align-items-center gap-2 p-2 border-round surface-100 justify-content-between"
+      class="flex align-items-center gap-3 p-3 border-round-xl bg-gray-50 border-1 border-50"
     >
-      <div class="flex align-items-center gap-2">
-        <p-avatar
-          icon="pi pi-user"
-          styleClass="bg-blue-100 text-blue-600"
-          shape="circle"
-        ></p-avatar>
-        <div class="flex flex-column">
-          <span class="font-bold text-sm text-900">User Profile</span>
-          <span class="text-xs text-600">Logged In</span>
-        </div>
+      <p-avatar
+        image="assets/demo/images/avatar.png"
+        icon="pi pi-user"
+        styleClass="bg-blue-500 text-white shadow-1"
+        shape="circle"
+        size="large"
+      ></p-avatar>
+
+      <div class="flex flex-column">
+        <span class="font-bold text-sm text-900">User Profile</span>
+        <span class="text-xs text-600">Logged In</span>
       </div>
+
       <button
         pButton
         icon="pi pi-power-off"
         class="p-button-rounded p-button-text p-button-danger p-button-sm"
         pTooltip="Sign Out"
+        tooltipPosition="top"
         (click)="onLogout()"
       ></button>
     </div>

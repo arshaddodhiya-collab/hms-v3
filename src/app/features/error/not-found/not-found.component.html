@@ -1,18 +1,25 @@
 <div
   class="flex flex-column align-items-center justify-content-center min-h-screen surface-ground"
 >
-  <div class="surface-card p-4 shadow-2 border-round w-full lg:w-4 text-center">
-    <div class="text-900 text-6xl font-bold mb-2">404</div>
-    <div class="text-900 text-3xl font-medium mb-4">Not Found</div>
-    <div class="text-600 mb-5">
-      The resource you are looking for does not exist.
+  <div class="surface-card p-5 shadow-2 border-round w-full lg:w-4 text-center">
+    <div class="flex justify-content-center mb-4">
+      <div
+        class="bg-blue-50 border-circle flex align-items-center justify-content-center"
+        style="width: 100px; height: 100px"
+      >
+        <i class="pi pi-compass text-blue-500 text-6xl"></i>
+      </div>
+    </div>
+    <div class="text-900 text-4xl font-bold mb-2">Page Not Found</div>
+    <div class="text-600 font-medium mb-5 line-height-3">
+      The resource you are looking for does not exist or has been moved.
     </div>
     <button
       pButton
       pRipple
       label="Go to Dashboard"
       icon="pi pi-home"
-      class="p-button-primary"
+      class="p-button-primary p-button-raised w-full"
       routerLink="/"
     ></button>
   </div>

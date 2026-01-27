@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-patient-list',
@@ -21,7 +22,7 @@ export class PatientListComponent implements OnInit {
   patient: any = {};
   submitted: boolean = false;
 
-  constructor() {}
+  constructor(private messageService: MessageService) {}
 
   ngOnInit(): void {}
 
@@ -58,6 +59,11 @@ export class PatientListComponent implements OnInit {
       this.patients = [...this.patients];
       this.displayDialog = false;
       this.patient = {};
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Patient Saved',
+      });
     }
   }
 }

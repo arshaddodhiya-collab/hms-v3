@@ -1,63 +1,97 @@
-<div class="card">
-  <app-page-header
-    title="Triage: Vitals Entry"
-    icon="pi pi-heart-fill"
-    [showBack]="true"
-  ></app-page-header>
+<div class="surface-card p-4 shadow-2 border-round">
+  <div class="flex align-items-center justify-content-between mb-4">
+    <h2 class="text-900 font-bold m-0">Triage: Vitals Entry</h2>
+    <button
+      pButton
+      pRipple
+      icon="pi pi-arrow-left"
+      label="Back"
+      class="p-button-text"
+      [routerLink]="['/triage']"
+      pTooltip="Go back"
+      tooltipPosition="right"
+    ></button>
+  </div>
 
   <div class="p-fluid grid formgrid">
     <div class="col-12 md:col-6 field">
-      <label>Temperature (°C)</label>
-      <input
-        pInputText
-        type="number"
-        [(ngModel)]="vitals.temperature"
-        placeholder="36.5"
-      />
+      <label class="font-medium text-900">Temperature (°C)</label>
+      <div class="p-inputgroup">
+        <span class="p-inputgroup-addon bg-orange-50 text-orange-500"
+          ><i class="pi pi-sun"></i
+        ></span>
+        <input
+          pInputText
+          type="number"
+          [(ngModel)]="vitals.temperature"
+          placeholder="36.5"
+        />
+      </div>
     </div>
     <div class="col-12 md:col-6 field">
-      <label>SpO₂ (%)</label>
-      <input
-        pInputText
-        type="number"
-        [(ngModel)]="vitals.spo2"
-        placeholder="98"
-      />
-    </div>
-
-    <div class="col-12 md:col-6 field">
-      <label>Systolic BP (mmHg)</label>
-      <input
-        pInputText
-        type="number"
-        [(ngModel)]="vitals.systolic"
-        placeholder="120"
-      />
-    </div>
-    <div class="col-12 md:col-6 field">
-      <label>Diastolic BP (mmHg)</label>
-      <input
-        pInputText
-        type="number"
-        [(ngModel)]="vitals.diastolic"
-        placeholder="80"
-      />
+      <label class="font-medium text-900">SpO₂ (%)</label>
+      <div class="p-inputgroup">
+        <span class="p-inputgroup-addon bg-cyan-50 text-cyan-500"
+          ><i class="pi pi-caret-up"></i
+        ></span>
+        <input
+          pInputText
+          type="number"
+          [(ngModel)]="vitals.spo2"
+          placeholder="98"
+        />
+      </div>
     </div>
 
     <div class="col-12 md:col-6 field">
-      <label>Pulse (bpm)</label>
-      <input
-        pInputText
-        type="number"
-        [(ngModel)]="vitals.pulse"
-        placeholder="72"
-      />
+      <label class="font-medium text-900">Systolic BP (mmHg)</label>
+      <div class="p-inputgroup">
+        <span class="p-inputgroup-addon bg-blue-50 text-blue-500"
+          ><i class="pi pi-heart"></i
+        ></span>
+        <input
+          pInputText
+          type="number"
+          [(ngModel)]="vitals.systolic"
+          placeholder="120"
+        />
+      </div>
+    </div>
+    <div class="col-12 md:col-6 field">
+      <label class="font-medium text-900">Diastolic BP (mmHg)</label>
+      <div class="p-inputgroup">
+        <span class="p-inputgroup-addon bg-blue-50 text-blue-500"
+          ><i class="pi pi-heart"></i
+        ></span>
+        <input
+          pInputText
+          type="number"
+          [(ngModel)]="vitals.diastolic"
+          placeholder="80"
+        />
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6 field">
+      <label class="font-medium text-900">Pulse (bpm)</label>
+      <div class="p-inputgroup">
+        <span class="p-inputgroup-addon bg-purple-50 text-purple-500"
+          ><i class="pi pi-clock"></i
+        ></span>
+        <input
+          pInputText
+          type="number"
+          [(ngModel)]="vitals.pulse"
+          placeholder="72"
+        />
+      </div>
     </div>
 
     <div class="col-12 md:col-6 field"></div>
+    <div class="col-12"><div class="p-divider"></div></div>
 
     <div class="col-12 md:col-4 field">
-      <label>Weight (kg)</label>
+      <label class="font-medium text-900">Weight (kg)</label>
       <input
         pInputText
         type="number"
@@ -67,7 +101,7 @@
       />
     </div>
     <div class="col-12 md:col-4 field">
-      <label>Height (cm)</label>
+      <label class="font-medium text-900">Height (cm)</label>
       <input
         pInputText
         type="number"
@@ -77,29 +111,35 @@
       />
     </div>
     <div class="col-12 md:col-4 field">
-      <label>BMI</label>
+      <label class="font-medium text-900">BMI</label>
       <input
         pInputText
         type="number"
         [(ngModel)]="vitals.bmi"
         [disabled]="true"
-        class="bg-blue-50 font-bold"
+        class="bg-gray-100 font-bold text-900 opacity-100"
       />
     </div>
   </div>
 
-  <div class="flex justify-content-end gap-2 mt-4">
+  <div
+    class="flex justify-content-end gap-2 mt-4 border-top-1 surface-border pt-4"
+  >
     <button
       pButton
       label="Cancel"
-      class="p-button-secondary"
+      class="p-button-secondary p-button-text"
       (click)="cancel()"
+      pTooltip="Discard changes"
+      tooltipPosition="left"
     ></button>
     <button
       pButton
       label="Save Vitals"
       class="p-button-primary"
       (click)="saveVitals()"
+      pTooltip="Save vitals entry"
+      tooltipPosition="left"
     ></button>
   </div>
 </div>

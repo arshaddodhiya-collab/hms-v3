@@ -15,6 +15,8 @@ import { Location } from '@angular/common';
           icon="pi pi-arrow-left"
           class="p-button-rounded p-button-text p-button-secondary"
           (click)="onBack()"
+          pTooltip="Go back"
+          tooltipPosition="right"
         ></button>
         <i *ngIf="icon" [class]="icon" class="text-2xl text-primary mr-2"></i>
         <h1 class="text-xl font-bold m-0 text-900">{{ title }}</h1>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-vitals-entry',
@@ -22,6 +23,7 @@ export class VitalsEntryComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private messageService: MessageService,
   ) {}
 
   ngOnInit(): void {
@@ -46,6 +48,11 @@ export class VitalsEntryComponent implements OnInit {
     );
     // Mimic API call
     setTimeout(() => {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Vitals Saved',
+      });
       this.router.navigate(['/appointments']);
     }, 500);
   }

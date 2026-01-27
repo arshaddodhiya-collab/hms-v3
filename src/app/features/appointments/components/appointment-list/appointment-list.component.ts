@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
 import { formatDate } from '@angular/common';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-appointment-list',
@@ -35,7 +36,10 @@ export class AppointmentListComponent implements OnInit {
     { label: 'Cancelled', value: 'Cancelled' },
   ];
 
-  constructor(@Inject(LOCALE_ID) private locale: string) {}
+  constructor(
+    @Inject(LOCALE_ID) private locale: string,
+    private messageService: MessageService,
+  ) {}
 
   ngOnInit(): void {}
 
@@ -96,6 +100,11 @@ export class AppointmentListComponent implements OnInit {
       this.appointments = [...this.appointments];
       this.displayDialog = false;
       this.appointment = {};
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Appointment Saved',
+      });
     }
   }
 

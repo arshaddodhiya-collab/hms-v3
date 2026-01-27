@@ -1,18 +1,29 @@
-<div class="card">
-  <app-page-header
-    title="Patient Vitals"
-    icon="pi pi-heart"
-    [showBack]="true"
-  ></app-page-header>
+<div class="surface-card p-4 shadow-2 border-round">
+  <div class="flex align-items-center justify-content-between mb-4">
+    <h2 class="text-900 font-bold m-0">Patient Vitals</h2>
+    <button
+      pButton
+      pRipple
+      icon="pi pi-arrow-left"
+      label="Back"
+      class="p-button-text"
+      [routerLink]="['/triage']"
+      pTooltip="Return to list"
+      tooltipPosition="right"
+    ></button>
+  </div>
 
   <div class="grid mt-2">
     <div class="col-12 md:col-6 lg:col-3">
       <div
-        class="surface-card shadow-2 p-3 border-round border-left-3 border-blue-500"
+        class="surface-0 shadow-2 p-3 border-round border-left-3 border-blue-500 h-full hover:surface-50 transition-colors transition-duration-200"
       >
-        <div class="text-500 font-medium mb-1">Blood Pressure</div>
+        <div class="flex justify-content-between">
+          <div class="text-500 font-medium mb-2">Blood Pressure</div>
+          <i class="pi pi-heart text-blue-500"></i>
+        </div>
         <div
-          class="text-xl font-bold"
+          class="text-3xl font-bold text-900"
           [ngClass]="{
             'text-red-500':
               isEmergency('systolic', vitals.systolic) ||
@@ -20,62 +31,76 @@
           }"
         >
           {{ vitals.systolic }}/{{ vitals.diastolic }}
-          <small class="text-500 font-normal">mmHg</small>
+          <small class="text-500 font-normal text-lg">mmHg</small>
         </div>
       </div>
     </div>
     <div class="col-12 md:col-6 lg:col-3">
       <div
-        class="surface-card shadow-2 p-3 border-round border-left-3 border-orange-500"
+        class="surface-0 shadow-2 p-3 border-round border-left-3 border-orange-500 h-full hover:surface-50 transition-colors transition-duration-200"
       >
-        <div class="text-500 font-medium mb-1">Temperature</div>
+        <div class="flex justify-content-between">
+          <div class="text-500 font-medium mb-2">Temperature</div>
+          <i class="pi pi-sun text-orange-500"></i>
+        </div>
         <div
-          class="text-xl font-bold"
+          class="text-3xl font-bold text-900"
           [ngClass]="{
             'text-red-500': isEmergency('temp', vitals.temperature),
           }"
         >
           {{ vitals.temperature }}
-          <small class="text-500 font-normal">°C</small>
+          <small class="text-500 font-normal text-lg">°C</small>
         </div>
       </div>
     </div>
     <div class="col-12 md:col-6 lg:col-3">
       <div
-        class="surface-card shadow-2 p-3 border-round border-left-3 border-cyan-500"
+        class="surface-0 shadow-2 p-3 border-round border-left-3 border-cyan-500 h-full hover:surface-50 transition-colors transition-duration-200"
       >
-        <div class="text-500 font-medium mb-1">SpO2</div>
+        <div class="flex justify-content-between">
+          <div class="text-500 font-medium mb-2">SpO2</div>
+          <i class="pi pi-caret-up text-cyan-500"></i>
+        </div>
         <div
-          class="text-xl font-bold"
+          class="text-3xl font-bold text-900"
           [ngClass]="{ 'text-red-500': isEmergency('spo2', vitals.spo2) }"
         >
-          {{ vitals.spo2 }} <small class="text-500 font-normal">%</small>
+          {{ vitals.spo2 }}
+          <small class="text-500 font-normal text-lg">%</small>
         </div>
       </div>
     </div>
     <div class="col-12 md:col-6 lg:col-3">
       <div
-        class="surface-card shadow-2 p-3 border-round border-left-3 border-purple-500"
+        class="surface-0 shadow-2 p-3 border-round border-left-3 border-purple-500 h-full hover:surface-50 transition-colors transition-duration-200"
       >
-        <div class="text-500 font-medium mb-1">Pulse</div>
-        <div class="text-xl font-bold">
-          {{ vitals.pulse }} <small class="text-500 font-normal">bpm</small>
+        <div class="flex justify-content-between">
+          <div class="text-500 font-medium mb-2">Pulse</div>
+          <i class="pi pi-clock text-purple-500"></i>
+        </div>
+        <div class="text-3xl font-bold text-900">
+          {{ vitals.pulse }}
+          <small class="text-500 font-normal text-lg">bpm</small>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="mt-4 p-3 surface-100 border-round">
-    <h4 class="m-0 mb-2 text-700">Anthropometry</h4>
-    <div class="flex gap-4">
-      <div>
-        Weight: <strong>{{ vitals.weight }} kg</strong>
+  <div class="mt-5">
+    <h4 class="m-0 mb-3 text-900 font-bold">Anthropometry</h4>
+    <div class="flex flex-wrap gap-4 p-4 surface-50 border-round">
+      <div class="flex-1 text-center border-right-1 surface-border">
+        <div class="text-500 mb-1">Weight</div>
+        <strong class="text-xl text-900">{{ vitals.weight }} kg</strong>
       </div>
-      <div>
-        Height: <strong>{{ vitals.height }} cm</strong>
+      <div class="flex-1 text-center border-right-1 surface-border">
+        <div class="text-500 mb-1">Height</div>
+        <strong class="text-xl text-900">{{ vitals.height }} cm</strong>
       </div>
-      <div>
-        BMI: <strong>{{ vitals.bmi }}</strong>
+      <div class="flex-1 text-center">
+        <div class="text-500 mb-1">BMI</div>
+        <strong class="text-xl text-900">{{ vitals.bmi }}</strong>
       </div>
     </div>
   </div>
