@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-appointment-list',
@@ -34,7 +35,7 @@ export class AppointmentListComponent implements OnInit {
     { label: 'Cancelled', value: 'Cancelled' },
   ];
 
-  constructor() {}
+  constructor(@Inject(LOCALE_ID) private locale: string) {}
 
   ngOnInit(): void {}
 
@@ -46,6 +47,19 @@ export class AppointmentListComponent implements OnInit {
 
   editAppointment(appointment: any) {
     this.appointment = { ...appointment };
+    if (this.appointment.time) {
+      const today = new Date();
+      const [time, period] = this.appointment.time.split(' ');
+      let [hours, minutes] = time.split(':');
+      hours = parseInt(hours);
+      minutes = parseInt(minutes);
+
+      if (period === 'PM' && hours < 12) hours += 12;
+      if (period === 'AM' && hours === 12) hours = 0;
+
+      today.setHours(hours, minutes, 0);
+      this.appointment.time = today;
+    }
     this.displayDialog = true;
   }
 
@@ -58,6 +72,14 @@ export class AppointmentListComponent implements OnInit {
     this.submitted = true;
 
     if (this.appointment.patientName?.trim()) {
+      if (this.appointment.time instanceof Date) {
+        this.appointment.time = formatDate(
+          this.appointment.time,
+          'shortTime',
+          this.locale,
+        );
+      }
+
       if (this.appointment.id) {
         // Update
         const index = this.appointments.findIndex(

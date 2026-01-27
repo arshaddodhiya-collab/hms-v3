@@ -13,7 +13,7 @@ export class AppointmentEditComponent implements OnInit {
     patientName: 'John Doe',
     doctorName: 'Dr. Smith',
     date: '2023-10-25',
-    time: '10:00 AM',
+    time: new Date('2023-10-25T10:00:00'),
     status: 'Confirmed',
   };
 

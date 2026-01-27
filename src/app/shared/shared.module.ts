@@ -19,6 +19,7 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { RippleModule } from 'primeng/ripple';
 import { TooltipModule } from 'primeng/tooltip';
 import { DropdownModule } from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
 
 import { PageHeaderComponent } from './components/page-header.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog.component';
@@ -57,6 +58,7 @@ import { HasPermissionDirective } from './directives/has-permission.directive';
     RippleModule,
     TooltipModule,
     DropdownModule,
+    CalendarModule,
   ],
   exports: [
     CommonModule,
@@ -87,6 +89,7 @@ import { HasPermissionDirective } from './directives/has-permission.directive';
     RippleModule,
     TooltipModule,
     DropdownModule,
+    CalendarModule,
   ],
 })
 export class SharedModule {}

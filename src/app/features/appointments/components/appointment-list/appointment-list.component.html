@@ -96,21 +96,25 @@
     <div class="formgrid grid">
       <div class="field col">
         <label for="date">Date</label>
-        <input
-          type="date"
-          pInputText
+        <p-calendar
           id="date"
           [(ngModel)]="appointment.date"
-        />
+          [showIcon]="true"
+          appendTo="body"
+          dateFormat="dd/mm/yy"
+          placeholder="Select Date"
+        ></p-calendar>
       </div>
       <div class="field col">
         <label for="time">Time</label>
-        <input
-          type="time"
-          pInputText
+        <p-calendar
           id="time"
           [(ngModel)]="appointment.time"
-        />
+          [timeOnly]="true"
+          hourFormat="12"
+          [showIcon]="true"
+          appendTo="body"
+        ></p-calendar>
       </div>
     </div>
     <div class="field" *ngIf="appointment.id">
