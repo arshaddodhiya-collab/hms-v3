@@ -28,6 +28,11 @@ export class AppointmentListComponent implements OnInit {
   displayDialog: boolean = false;
   appointment: any = {};
   submitted: boolean = false;
+  statuses: any[] = [
+    { label: 'Confirmed', value: 'Confirmed' },
+    { label: 'Pending', value: 'Pending' },
+    { label: 'Cancelled', value: 'Cancelled' },
+  ];
 
   constructor() {}
 
@@ -62,7 +67,7 @@ export class AppointmentListComponent implements OnInit {
       } else {
         // Create
         this.appointment.id = Math.floor(Math.random() * 1000);
-        this.appointment.status = 'Pending';
+        this.appointment.status = this.appointment.status || 'Pending';
         this.appointments.push(this.appointment);
       }
 
