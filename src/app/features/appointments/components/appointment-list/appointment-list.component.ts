@@ -25,9 +25,52 @@ export class AppointmentListComponent implements OnInit {
     },
   ];
 
+  displayDialog: boolean = false;
+  appointment: any = {};
+  submitted: boolean = false;
+
   constructor() {}
 
   ngOnInit(): void {}
+
+  openNew() {
+    this.appointment = {};
+    this.submitted = false;
+    this.displayDialog = true;
+  }
+
+  editAppointment(appointment: any) {
+    this.appointment = { ...appointment };
+    this.displayDialog = true;
+  }
+
+  hideDialog() {
+    this.displayDialog = false;
+    this.submitted = false;
+  }
+
+  saveAppointment() {
+    this.submitted = true;
+
+    if (this.appointment.patientName?.trim()) {
+      if (this.appointment.id) {
+        // Update
+        const index = this.appointments.findIndex(
+          (x) => x.id === this.appointment.id,
+        );
+        this.appointments[index] = this.appointment;
+      } else {
+        // Create
+        this.appointment.id = Math.floor(Math.random() * 1000);
+        this.appointment.status = 'Pending';
+        this.appointments.push(this.appointment);
+      }
+
+      this.appointments = [...this.appointments];
+      this.displayDialog = false;
+      this.appointment = {};
+    }
+  }
 
   getStatusSeverity(status: string): 'success' | 'warning' | 'danger' | 'info' {
     switch (status) {

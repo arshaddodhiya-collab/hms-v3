@@ -10,7 +10,7 @@
         label="New Appointment"
         icon="pi pi-plus"
         class="p-button-success mr-2"
-        routerLink="create"
+        (click)="openNew()"
       ></button>
     </ng-template>
   </p-toolbar>
@@ -48,8 +48,89 @@
             class="p-button-rounded p-button-info mr-2"
             [routerLink]="[appointment.id]"
           ></button>
+          <button
+            *appHasPermission="'CMP_APPOINTMENT_EDIT'"
+            pButton
+            pRipple
+            icon="pi pi-pencil"
+            class="p-button-rounded p-button-warning"
+            (click)="editAppointment(appointment)"
+          ></button>
         </td>
       </tr>
     </ng-template>
   </p-table>
 </div>
+
+<p-dialog
+  [(visible)]="displayDialog"
+  [style]="{ width: '450px' }"
+  header="Appointment Details"
+  [modal]="true"
+  styleClass="p-fluid"
+>
+  <ng-template pTemplate="content">
+    <div class="field">
+      <label for="patientName">Patient Name</label>
+      <input
+        type="text"
+        pInputText
+        id="patientName"
+        [(ngModel)]="appointment.patientName"
+        required
+        autofocus
+      />
+      <small class="p-error" *ngIf="submitted && !appointment.patientName"
+        >Patient Name is required.</small
+      >
+    </div>
+    <div class="field">
+      <label for="doctorName">Doctor Name</label>
+      <input
+        type="text"
+        pInputText
+        id="doctorName"
+        [(ngModel)]="appointment.doctorName"
+      />
+    </div>
+    <div class="formgrid grid">
+      <div class="field col">
+        <label for="date">Date</label>
+        <input
+          type="date"
+          pInputText
+          id="date"
+          [(ngModel)]="appointment.date"
+        />
+      </div>
+      <div class="field col">
+        <label for="time">Time</label>
+        <input
+          type="time"
+          pInputText
+          id="time"
+          [(ngModel)]="appointment.time"
+        />
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      pRipple
+      label="Cancel"
+      icon="pi pi-times"
+      class="p-button-text"
+      (click)="hideDialog()"
+    ></button>
+    <button
+      pButton
+      pRipple
+      label="Save"
+      icon="pi pi-check"
+      class="p-button-text"
+      (click)="saveAppointment()"
+    ></button>
+  </ng-template>
+</p-dialog>

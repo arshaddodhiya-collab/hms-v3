@@ -4,6 +4,7 @@ import { PermissionGuard } from '../../core/guards/guards';
 import { AppointmentListComponent } from './components/appointment-list/appointment-list.component';
 import { AppointmentCreateComponent } from './components/appointment-create/appointment-create.component';
 import { AppointmentViewComponent } from './components/appointment-view/appointment-view.component';
+import { AppointmentEditComponent } from './components/appointment-edit/appointment-edit.component';
 
 const routes: Routes = [
   {
@@ -11,12 +12,6 @@ const routes: Routes = [
     component: AppointmentListComponent,
     canActivate: [PermissionGuard],
     data: { permission: 'CMP_APPOINTMENT_LIST' },
-  },
-  {
-    path: 'create',
-    component: AppointmentCreateComponent,
-    canActivate: [PermissionGuard],
-    data: { permission: 'CMP_APPOINTMENT_CREATE' },
   },
   {
     path: ':id',
