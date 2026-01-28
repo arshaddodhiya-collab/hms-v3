@@ -22,6 +22,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { TabViewModule } from 'primeng/tabview';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { CheckboxModule } from 'primeng/checkbox';
 
 import { PageHeaderComponent } from './components/page-header.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog.component';
@@ -63,6 +64,7 @@ import { HasPermissionDirective } from './directives/has-permission.directive';
     CalendarModule,
     TabViewModule,
     InputTextareaModule,
+    CheckboxModule,
   ],
   exports: [
     CommonModule,
@@ -96,6 +98,7 @@ import { HasPermissionDirective } from './directives/has-permission.directive';
     CalendarModule,
     TabViewModule,
     InputTextareaModule,
+    CheckboxModule,
   ],
 })
 export class SharedModule {}

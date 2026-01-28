@@ -27,15 +27,15 @@ export const MENU_CONFIG = [
   },
   {
     label: 'Consultation',
+    icon: 'user-edit',
     route: '/consultation',
     permission: PERMISSIONS.MOD_CONSULTATION,
-    icon: 'user-edit',
   },
   {
     label: 'Lab',
+    icon: 'filter',
     route: '/lab',
     permission: PERMISSIONS.MOD_LAB,
-    icon: 'desktop',
   },
   {
     label: 'Billing',

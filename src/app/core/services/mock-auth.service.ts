@@ -13,7 +13,18 @@ export class MockAuthService {
   constructor(private router: Router) {
     const savedUser = localStorage.getItem('hms_user');
     if (savedUser) {
-      this.currentUserSubject.next(JSON.parse(savedUser));
+      const user = JSON.parse(savedUser);
+      // Refresh user data from config to get latest permissions
+      const configUser = MOCK_USERS.find((u) => u.username === user.username);
+
+      if (configUser) {
+        this.currentUserSubject.next(configUser);
+        // Update local storage with fresh data
+        localStorage.setItem('hms_user', JSON.stringify(configUser));
+      } else {
+        // Fallback if user no longer exists in config
+        this.currentUserSubject.next(user);
+      }
     }
   }
 

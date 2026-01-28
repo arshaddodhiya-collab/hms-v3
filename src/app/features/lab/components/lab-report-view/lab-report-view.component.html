@@ -1,0 +1,83 @@
+<div class="card" *ngIf="request">
+  <div
+    class="flex justify-content-between align-items-center mb-4 print-hidden"
+  >
+    <button
+      pButton
+      icon="pi pi-arrow-left"
+      label="Back"
+      class="p-button-text"
+      (click)="goBack()"
+    ></button>
+    <button
+      pButton
+      icon="pi pi-print"
+      label="Print"
+      class="p-button-outlined"
+      (click)="print()"
+    ></button>
+  </div>
+
+  <div class="report-container p-4 border-1 border-300 border-round surface-0">
+    <div class="text-center mb-5">
+      <h1 class="m-0 text-primary">PMS Lab Report</h1>
+      <p class="text-500 m-0">123 Hospital Way, Health City</p>
+    </div>
+
+    <div class="grid mb-4 border-bottom-1 border-300 pb-3">
+      <div class="col-6">
+        <div class="text-sm text-500">Patient Name</div>
+        <div class="font-bold text-lg">{{ request.patientName }}</div>
+        <div class="text-sm text-500 mt-2">Patient ID</div>
+        <div class="font-bold">{{ request.patientId }}</div>
+      </div>
+      <div class="col-6 text-right">
+        <div class="text-sm text-500">Request ID</div>
+        <div class="font-bold">{{ request.id }}</div>
+        <div class="text-sm text-500 mt-2">Date</div>
+        <div class="font-bold">
+          {{
+            request.completedDate || request.requestDate | date: "mediumDate"
+          }}
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <h3 class="mb-3">{{ request.testName }}</h3>
+      <p-table [value]="request.results || []" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Parameter</th>
+            <th>Result</th>
+            <th>Unit</th>
+            <th>Ref. Range</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-result>
+          <tr [ngClass]="{ 'bg-red-50': result.isAbnormal }">
+            <td class="font-bold">{{ result.parameter }}</td>
+            <td [ngClass]="{ 'text-red-500 font-bold': result.isAbnormal }">
+              {{ result.value }}
+            </td>
+            <td>{{ result.unit }}</td>
+            <td>{{ result.referenceRange }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <div class="grid mt-5 pt-3 border-top-1 border-300">
+      <div class="col-8">
+        <div class="text-sm text-500 mb-1">Technician Notes</div>
+        <div class="font-italic text-600">
+          {{ request.technicianNotes || "None" }}
+        </div>
+      </div>
+      <div class="col-4 text-right">
+        <div class="text-sm text-500">Doctor</div>
+        <div class="font-bold">{{ request.doctorName }}</div>
+      </div>
+    </div>
+  </div>
+</div>

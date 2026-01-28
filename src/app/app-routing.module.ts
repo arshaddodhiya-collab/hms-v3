@@ -50,6 +50,13 @@ const routes: Routes = [
     data: { permission: 'MOD_CONSULTATION' },
   },
   {
+    path: 'lab',
+    loadChildren: () =>
+      import('./features/lab/lab.module').then((m) => m.LabModule),
+    canActivate: [AuthGuard, PermissionGuard],
+    data: { permission: 'MOD_LAB' },
+  },
+  {
     path: 'error',
     loadChildren: () =>
       import('./features/error/error.module').then((m) => m.ErrorModule),

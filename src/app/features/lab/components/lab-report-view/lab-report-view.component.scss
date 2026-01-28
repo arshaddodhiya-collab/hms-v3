@@ -1,0 +1,18 @@
+@media print {
+    .print-hidden {
+        display: none !important;
+    }
+    .card {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+    .report-container {
+        border: none !important;
+    }
+    /* Ensure background colors print */
+    :host ::ng-deep * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}
