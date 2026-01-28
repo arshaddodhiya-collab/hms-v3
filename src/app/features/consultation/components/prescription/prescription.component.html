@@ -1,0 +1,72 @@
+<div class="card">
+  <h4>Prescription</h4>
+
+  <!-- Add Medicine Form -->
+  <div class="p-fluid grid formgrid mb-4">
+    <div class="field col-12 md:col-4">
+      <label>Medicine Name</label>
+      <input pInputText [(ngModel)]="newMed.name" placeholder="Paracetamol" />
+    </div>
+    <div class="field col-12 md:col-3">
+      <label>Dosage</label>
+      <input pInputText [(ngModel)]="newMed.dosage" placeholder="500mg" />
+    </div>
+    <div class="field col-12 md:col-3">
+      <label>Frequency</label>
+      <p-dropdown
+        [options]="frequencies"
+        [(ngModel)]="newMed.frequency"
+        placeholder="Select"
+        [style]="{ width: '100%' }"
+        appendTo="body"
+      ></p-dropdown>
+    </div>
+    <div class="field col-12 md:col-2">
+      <label>Duration</label>
+      <input pInputText [(ngModel)]="newMed.duration" placeholder="5 days" />
+    </div>
+    <div class="col-12 flex justify-content-end">
+      <button
+        pButton
+        label="Add"
+        icon="pi pi-plus"
+        (click)="addMedicine()"
+        [disabled]="!newMed.name"
+        class="p-button-outlined w-auto"
+      ></button>
+    </div>
+  </div>
+
+  <!-- Medicines Table -->
+  <p-table
+    [value]="medicines"
+    styleClass="p-datatable-sm"
+    *ngIf="medicines.length > 0"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Medicine</th>
+        <th>Dosage</th>
+        <th>Frequency</th>
+        <th>Duration</th>
+        <th style="width: 4rem"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-med let-i="rowIndex">
+      <tr>
+        <td>{{ med.name }}</td>
+        <td>{{ med.dosage }}</td>
+        <td>{{ med.frequency }}</td>
+        <td>{{ med.duration }}</td>
+        <td>
+          <button
+            pButton
+            icon="pi pi-trash"
+            class="p-button-text p-button-danger p-button-sm"
+            (click)="removeMedicine(i)"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

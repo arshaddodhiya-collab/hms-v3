@@ -1,0 +1,59 @@
+<div class="card">
+  <app-page-header
+    title="Consultation"
+    icon="pi pi-stethoscope"
+    [showBack]="true"
+  ></app-page-header>
+
+  <!-- Patient Context -->
+  <div
+    class="surface-ground p-3 border-round mb-3 flex align-items-center gap-3"
+  >
+    <p-avatar
+      icon="pi pi-user"
+      size="large"
+      shape="circle"
+      styleClass="bg-blue-500 text-white"
+    ></p-avatar>
+    <div>
+      <div class="text-xl font-bold">{{ patient.name }}</div>
+      <div class="text-500">
+        <span>{{ patient.age }} Years</span> •
+        <span>{{ patient.gender }}</span> • <span>ID: {{ patient.id }}</span>
+      </div>
+    </div>
+    <div class="ml-auto">
+      <button
+        pButton
+        label="Finish Consultation"
+        icon="pi pi-check"
+        class="p-button-success"
+        (click)="finishConsultation()"
+      ></button>
+    </div>
+  </div>
+
+  <p-tabView>
+    <p-tabPanel header="Vitals (Triage)" leftIcon="pi pi-heart">
+      <!-- Reusing Vitals View from Triage Module -->
+      <app-vitals-view></app-vitals-view>
+    </p-tabPanel>
+
+    <p-tabPanel header="Diagnosis & Notes" leftIcon="pi pi-book">
+      <app-diagnosis-notes></app-diagnosis-notes>
+    </p-tabPanel>
+
+    <p-tabPanel header="Prescription" leftIcon="pi pi-file-edit">
+      <app-prescription></app-prescription>
+    </p-tabPanel>
+
+    <p-tabPanel header="Lab Reports" leftIcon="pi pi-file">
+      <div
+        class="flex flex-column align-items-center justify-content-center p-5 text-gray-500"
+      >
+        <i class="pi pi-file text-5xl mb-3"></i>
+        <span>No lab reports available for this visit.</span>
+      </div>
+    </p-tabPanel>
+  </p-tabView>
+</div>

@@ -41,6 +41,15 @@ const routes: Routes = [
     data: { permission: 'MOD_TRIAGE' },
   },
   {
+    path: 'consultation',
+    loadChildren: () =>
+      import('./features/consultation/consultation.module').then(
+        (m) => m.ConsultationModule,
+      ),
+    canActivate: [AuthGuard, PermissionGuard],
+    data: { permission: 'MOD_CONSULTATION' },
+  },
+  {
     path: 'error',
     loadChildren: () =>
       import('./features/error/error.module').then((m) => m.ErrorModule),

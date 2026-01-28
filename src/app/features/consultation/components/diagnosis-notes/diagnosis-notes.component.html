@@ -1,0 +1,35 @@
+<div class="card p-fluid">
+  <h4>Clinical Notes</h4>
+  <div class="field">
+    <label for="chiefComplaint">Chief Complaint</label>
+    <textarea
+      id="chiefComplaint"
+      pInputTextarea
+      [(ngModel)]="chiefComplaint"
+      rows="3"
+      placeholder="Patient's main concern..."
+    ></textarea>
+  </div>
+
+  <div class="field">
+    <label for="diagnosis">Diagnosis</label>
+    <textarea
+      id="diagnosis"
+      pInputTextarea
+      [(ngModel)]="diagnosis"
+      rows="3"
+      placeholder="Provisional or final diagnosis..."
+    ></textarea>
+  </div>
+
+  <div class="field">
+    <label for="notes">Internal Notes</label>
+    <textarea
+      id="notes"
+      pInputTextarea
+      [(ngModel)]="notes"
+      rows="3"
+      placeholder="Private notes..."
+    ></textarea>
+  </div>
+</div>
