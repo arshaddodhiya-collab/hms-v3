@@ -1,69 +1,104 @@
-# Authentication & Access Control Flow
+# Access Control & Permissions Guide
 
-This document explains how the Auth module and Role-Based Access Control (RBAC) work in the HMS.
+This document explains the Role-Based Access Control (RBAC) architecture in HMS v3.
 
-## 1. The Login Flow
-1.  **User Interaction**: User enters `username` and `password` in `LoginComponent`.
-2.  **Service Call**: Component calls `MockAuthService.login(username, password)`.
-3.  **Authentication**:
-    -   The service searches the `MOCK_USERS` array (in `mock-users.config.ts`) for a match.
-    -   **Success**:
-        -   The full `User` object (including their specific `permissions` list) is pushed to the `currentUserSubject`.
-        -   The user object is saved to `localStorage` (to survive page reloads).
-        -   Returns `true`.
-    -   **Failure**: Returns `false`.
-4.  **Navigation**: On success, `LoginComponent` navigates to `/dashboard`.
+## 1. Architecture Overview
 
-## 2. Access Control (Guards)
-Once logged in, two Guards protect the routes (`app-routing.module.ts`):
+ The application uses a **Permission-Based** security model (not just Role-Based). This means access is granted based on specific *capabilities* (e.g., `CMP_VITALS_WRITE`) rather than just the user's role name.
 
--   **AuthGuard**:
-    -   Checks `AuthService.isAuthenticated()`.
-    -   If not logged in, redirects to `/auth/login`.
--   **PermissionGuard**:
-    -   Checks the `data: { permission: '...' }` on the route.
-    -   Verifies if the *current user's* permission list contains that specific code.
-    -   Example: To access `/admin`, user needs `MOD_ADMIN`.
+### Components
+1.  **Constants** (`permissions.constants.ts`): Single source of truth for all permission keys.
+2.  **User Config** (`mock-users.config.ts`): Maps Roles (Doctor, Nurse) to a list of Permissions.
+3.  **Auth Service** (`mock-auth.service.ts`): Holds the current user state and checks `user.permissions.includes(requiredPermission)`.
+4.  **Guards** (`guards.ts`): Protects URL routes.
+5.  **Directives** (`has-permission.directive.ts`): Hides/Shows UI elements (buttons, divs).
 
-## 3. Role Examples & Permissions
+---
 
-Here is how different users experience the system based on their assigned permissions.
+## 2. Enforcement Mechanisms
+
+### A. Route Protection (Page Access)
+Used in `*-routing.module.ts`. Prevents unauthorized users from even loading a page.
+
+```typescript
+{
+  path: 'consultation',
+  component: ConsultationListComponent,
+  canActivate: [PermissionGuard],
+  data: { permission: 'MOD_CONSULTATION' } // Only users with this permission can enter
+}
+```
+
+### B. UI Hiding (Element Access)
+Used in HTML templates. Hides buttons or sections user shouldn't touch.
+
+```html
+<!-- Only users with WRITE permission see the Edit button -->
+<button *appHasPermission="'CMP_CONSULTATION_WRITE'" label="Edit"></button>
+```
+
+### C. Menu Filtering (Sidebar)
+Used in `sidebar.component.ts`. Filters the navigation menu based on permissions.
+*   The Sidebar iterates through `MENU_CONFIG`.
+*   If `AuthService.hasPermission(item.permission)` is false, the link is hidden.
+
+---
+
+## 3. Permission Matrix
+
+| Permission | Description | Admin | Doctor | Nurse | Reception | Lab |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **Modules (Sidebar)** | | | | | | |
+| `MOD_DASHBOARD` | Access Dashboard | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `MOD_PATIENTS` | Access Patient List | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `MOD_APPOINTMENTS` | Access Calendar | ✅ | ✅ | ✅ | ✅ | ❌ |
+| `MOD_TRIAGE` | Access Vitals/Triage | ✅ | ✅ | ✅ | ❌ | ❌ |
+| `MOD_CONSULTATION` | Access Doctor Notes | ✅ | ✅ | ✅ | ❌ | ❌ |
+| `MOD_LAB` | Access Lab Results | ✅ | ❌ | ❌ | ❌ | ✅ |
+| `MOD_BILLING` | Access Payments | ✅ | ❌ | ❌ | ✅ | ❌ |
+| **Actions** | | | | | | |
+| `CMP_VITALS_WRITE` | Enter Triage Vitals | ✅ | ❌ | ✅ | ❌ | ❌ |
+| `CMP_VITALS_READ` | View Vitals | ✅ | ✅ | ✅ | ❌ | ❌ |
+| `CMP_CONSULTATION_WRITE` | Write Diagnosis/Rx | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `CMP_CONSULTATION_READ` | Read Diagnosis/Rx | ✅ | ✅ | ✅ | ❌ | ❌ |
+
+---
+
+## 4. User Roles & Workflows
 
 ### 👮 Administrator (`admin`)
--   **Permissions**: Has **ALL** permissions (`MOD_ADMIN`, `MOD_PATIENTS`, `MOD_BILLING`, etc.).
--   **Experience**: Can see every menu item. Can access every route. Can delete/edit data everywhere.
+*   **Access**: Everything.
+*   **Workflow**: System setup, override actions, full visibility.
 
 ### 👨‍⚕️ Doctor (`doctor`)
--   **Permissions**: `MOD_PATIENTS`, `MOD_APPOINTMENTS`, `MOD_CONSULTATION`, `MOD_TRIAGE`.
--   **Experience**:
-    -   ✅ Can view Patient List and Medical Records.
-    -   ✅ Can Start Consultation and Prescribe Medicine.
-    -   ❌ **Cannot** access Billing or Admin Setup (Menu items hidden, Routes blocked).
+*   **Focus**: Clinical Care.
+*   **Workflow**:
+    1.  View **Dashboard** for schedule.
+    2.  Check **Triage** (Read-Only) to see Vitals.
+    3.  Go to **Consultation**.
+    4.  **Write** Diagnosis and Prescriptions.
+*   **Restrictions**: Cannot see Billing or perform Lab Entry.
 
 ### 👩‍⚕️ Nurse (`nurse`)
--   **Permissions**: `MOD_PATIENTS`, `MOD_TRIAGE`, `MOD_APPOINTMENTS` (View only).
--   **Experience**:
-    -   ✅ Can enter Triage Vitals (BP, Pulse).
-    -   ✅ Can see Patient List.
-    -   ❌ **Cannot** Prescribe Medicine (No `ACT_CREATE` on Consultation).
-    -   ❌ **Cannot** access Billing.
+*   **Focus**: Patient Intake & Care.
+*   **Workflow**:
+    1.  Check **Appointments**.
+    2.  Go to **Triage**.
+    3.  **Enter** Vitals (`CMP_VITALS_WRITE`).
+    4.  Can **Read** Consultation notes (`CMP_CONSULTATION_READ`) to follow up on instructions.
+*   **Restrictions**: Cannot Prescribe Medicine (`CMP_CONSULTATION_WRITE` denied) or see Billing.
 
-### 🧪 Lab Technician (`lab`)
--   **Permissions**: `MOD_LAB`, `MOD_PATIENTS` (Basic View).
--   **Experience**:
-    -   ✅ Can view Lab Requests.
-    -   ✅ Can enter Test Results (`CMP_LAB_ENTRY`).
-    -   ❌ **Cannot** see Doctor's Consultation notes.
+### 💁 Reception (`reception`)
+*   **Focus**: Front Desk.
+*   **Workflow**:
+    1.  **Register** Patients.
+    2.  **Book** Appointments.
+    3.  **Billing** & Invoices.
+*   **Restrictions**: No access to Clinical Data (Triage, Consultation, Lab).
 
-### 💁 Front Desk (`reception`)
--   **Permissions**: `MOD_APPOINTMENTS`, `MOD_BILLING`, `MOD_PATIENTS`.
--   **Experience**:
-    -   ✅ Can Register new Patients (`CMP_PATIENT_ADD`).
-    -   ✅ Can Book Appointments.
-    -   ✅ Can Generate Invoices.
-    -   ❌ **Cannot** see Clinical Data (Triage, Consultation, Lab).
-
-## 4. Code Structure
--   `src/app/core/config/mock-users.config.ts`: **The Source of Truth**. Defines which role has which permission strings.
--   `src/app/core/constants/permissions.constants.ts`: The list of all available keys (e.g. `MOD_BILLING`).
--   `src/app/core/guards/guards.ts`: The logic that enforces the rules.
+### 🧪 Lab Tech (`lab`)
+*   **Focus**: Diagnostics.
+*   **Workflow**:
+    1.  Processing Lab Requests.
+    2.  Entering Results.
+*   **Restrictions**: Limited view of Patients; no Consultation access.
