@@ -93,7 +93,7 @@ export const MOCK_USERS: MockUser[] = [
     permissions: [
       PERMISSIONS.MOD_DASHBOARD,
       PERMISSIONS.MOD_LAB, // Core work
-      PERMISSIONS.MOD_PATIENTS, // View basics
+      // PERMISSIONS.MOD_PATIENTS, // View basics
       PERMISSIONS.ACT_VIEW,
       PERMISSIONS.ACT_CREATE, // Results
       PERMISSIONS.ACT_CREATE, // Results

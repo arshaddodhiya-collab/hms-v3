@@ -1,6 +1,6 @@
 <div class="layout-wrapper flex h-screen overflow-hidden">
   <!-- Sidebar (Desktop: Static, Mobile: Drawer) -->
-  <ng-container *ngIf="isLoggedIn">
+  <ng-container *ngIf="showLayout">
     <!-- Desktop Sidebar -->
     <div *ngIf="!isMobile" class="layout-sidebar flex-shrink-0">
       <app-sidebar></app-sidebar>
@@ -17,7 +17,7 @@
   >
     <!-- Topbar (Mobile Toggle) -->
     <div
-      *ngIf="isLoggedIn && isMobile"
+      *ngIf="showLayout && isMobile"
       class="p-3 bg-white shadow-2 flex align-items-center justify-content-between z-1"
       style="z-index: 100"
     >
@@ -34,7 +34,7 @@
     <!-- Main Content -->
     <div
       class="layout-content flex-grow-1 overflow-y-auto p-3"
-      [class.p-3]="isLoggedIn"
+      [class.p-3]="showLayout"
     >
       <router-outlet></router-outlet>
     </div>

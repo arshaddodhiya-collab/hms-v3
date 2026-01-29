@@ -14,6 +14,7 @@ const routes: Routes = [
       import('./features/dashboard/dashboard.module').then(
         (m) => m.DashboardModule,
       ),
+    canActivate: [AuthGuard],
   },
   {
     path: 'patients',

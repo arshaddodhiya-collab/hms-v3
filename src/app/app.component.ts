@@ -13,6 +13,7 @@ export class AppComponent implements OnInit {
   isLoggedIn = false;
   isMobile = false;
   sidebarVisible = false;
+  isAuthRoute = false;
 
   constructor(
     private authService: MockAuthService,
@@ -32,7 +33,9 @@ export class AppComponent implements OnInit {
 
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => {
+      .subscribe((event: any) => {
+        this.isAuthRoute =
+          event.url.includes('/auth') || event.url.includes('/error');
         if (this.isMobile) {
           this.sidebarVisible = false; // Close on route change on mobile
         }
@@ -43,6 +46,10 @@ export class AppComponent implements OnInit {
     this.authService.currentUser$.subscribe((user) => {
       this.isLoggedIn = !!user;
     });
+  }
+
+  get showLayout(): boolean {
+    return this.isLoggedIn && !this.isAuthRoute;
   }
 
   toggleSidebar() {
