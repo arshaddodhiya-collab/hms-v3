@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import {
   LabService,
   LabRequest,
@@ -15,63 +16,80 @@ import { Location } from '@angular/common';
 export class LabTestEntryComponent implements OnInit {
   requestId: string | null = null;
   request: LabRequest | undefined;
-  results: LabTestResult[] = [];
-  technicianNotes: string = '';
+  labForm!: FormGroup;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private labService: LabService,
     private location: Location,
+    private fb: FormBuilder,
   ) {}
 
   ngOnInit(): void {
+    this.initForm();
     this.requestId = this.route.snapshot.paramMap.get('requestId');
     if (this.requestId) {
       this.request = this.labService.getRequestById(this.requestId);
       if (!this.request) {
-        // Handle not found
         this.router.navigate(['/lab']);
         return;
       }
-      // Initialize with one empty row if no results yet
+
       if (this.request.results && this.request.results.length > 0) {
-        this.results = JSON.parse(JSON.stringify(this.request.results));
+        this.request.results.forEach((result) => this.addResultRow(result));
       } else {
         this.addResultRow();
       }
+
       if (this.request.technicianNotes) {
-        this.technicianNotes = this.request.technicianNotes;
+        this.labForm.patchValue({
+          technicianNotes: this.request.technicianNotes,
+        });
       }
     }
   }
 
-  addResultRow(): void {
-    this.results.push({
-      parameter: '',
-      value: '',
-      unit: '',
-      referenceRange: '',
-      isAbnormal: false,
+  initForm() {
+    this.labForm = this.fb.group({
+      results: this.fb.array([]),
+      technicianNotes: [''],
     });
   }
 
+  get resultsControls() {
+    return (this.labForm.get('results') as FormArray).controls;
+  }
+
+  addResultRow(data?: LabTestResult): void {
+    const results = this.labForm.get('results') as FormArray;
+    results.push(
+      this.fb.group({
+        parameter: [data?.parameter || '', Validators.required],
+        value: [data?.value || '', Validators.required],
+        unit: [data?.unit || ''],
+        referenceRange: [data?.referenceRange || ''],
+        isAbnormal: [data?.isAbnormal || false],
+      }),
+    );
+  }
+
   removeResultRow(index: number): void {
-    this.results.splice(index, 1);
+    const results = this.labForm.get('results') as FormArray;
+    results.removeAt(index);
   }
 
   saveResults(): void {
-    if (this.requestId && this.request) {
-      // Filter out empty rows
-      const validResults = this.results.filter(
-        (r) => r.parameter.trim() !== '',
-      );
+    if (this.requestId && this.request && this.labForm.valid) {
+      const formValue = this.labForm.value;
       this.labService.addResult(
         this.requestId,
-        validResults,
-        this.technicianNotes,
+        formValue.results,
+        formValue.technicianNotes,
       );
       this.router.navigate(['/lab']);
+    } else {
+      this.labForm.markAllAsTouched();
     }
   }
 

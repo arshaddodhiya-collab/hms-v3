@@ -19,51 +19,44 @@ export class PatientListComponent implements OnInit {
   ];
 
   displayDialog: boolean = false;
-  patient: any = {};
-  submitted: boolean = false;
+  selectedPatient: any = null;
 
   constructor(private messageService: MessageService) {}
 
   ngOnInit(): void {}
 
   openNew() {
-    this.patient = {};
-    this.submitted = false;
+    this.selectedPatient = null;
     this.displayDialog = true;
   }
 
   editPatient(patient: any) {
-    this.patient = { ...patient };
+    this.selectedPatient = { ...patient };
     this.displayDialog = true;
   }
 
   hideDialog() {
     this.displayDialog = false;
-    this.submitted = false;
+    this.selectedPatient = null;
   }
 
-  savePatient() {
-    this.submitted = true;
-
-    if (this.patient.name?.trim()) {
-      if (this.patient.id) {
-        // Update
-        const index = this.patients.findIndex((x) => x.id === this.patient.id);
-        this.patients[index] = this.patient;
-      } else {
-        // Create
-        this.patient.id = this.patients.length + 1; // Simple ID generation
-        this.patients.push(this.patient);
-      }
-
-      this.patients = [...this.patients];
-      this.displayDialog = false;
-      this.patient = {};
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: 'Patient Saved',
-      });
+  savePatient(patientData: any) {
+    if (patientData.id) {
+      // Update
+      const index = this.patients.findIndex((x) => x.id === patientData.id);
+      this.patients[index] = patientData;
+    } else {
+      // Create
+      patientData.id = this.patients.length + 1;
+      this.patients.push(patientData);
     }
+
+    this.patients = [...this.patients];
+    this.hideDialog();
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: 'Patient Saved',
+    });
   }
 }

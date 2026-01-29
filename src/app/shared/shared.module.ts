@@ -31,6 +31,8 @@ import { StatusBadgeComponent } from './components/status-badge.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { HasPermissionDirective } from './directives/has-permission.directive';
 
+import { ValidationMessageComponent } from './components/validation-message/validation-message.component';
+
 @NgModule({
   declarations: [
     PageHeaderComponent,
@@ -39,6 +41,7 @@ import { HasPermissionDirective } from './directives/has-permission.directive';
     StatusBadgeComponent,
     SidebarComponent,
     HasPermissionDirective,
+    ValidationMessageComponent,
   ],
   imports: [
     CommonModule,
@@ -54,7 +57,6 @@ import { HasPermissionDirective } from './directives/has-permission.directive';
     MenuModule,
     SidebarModule,
     AvatarModule,
-    BadgeModule,
     BadgeModule,
     TagModule,
     ToolbarModule,
@@ -78,6 +80,7 @@ import { HasPermissionDirective } from './directives/has-permission.directive';
     StatusBadgeComponent,
     SidebarComponent,
     HasPermissionDirective,
+    ValidationMessageComponent,
     // PrimeNG Modules
     ButtonModule,
     InputTextModule,
@@ -88,7 +91,6 @@ import { HasPermissionDirective } from './directives/has-permission.directive';
     MenuModule,
     SidebarModule,
     AvatarModule,
-    BadgeModule,
     BadgeModule,
     TagModule,
     ToolbarModule,

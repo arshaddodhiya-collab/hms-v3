@@ -12,7 +12,7 @@
       >
     </div>
 
-    <form (ngSubmit)="onLogin()">
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
       <div class="mb-4">
         <label for="username" class="block text-900 font-medium mb-2"
           >Username</label
@@ -23,14 +23,20 @@
             id="username"
             type="text"
             pInputText
-            [(ngModel)]="username"
-            name="username"
+            formControlName="username"
             placeholder="Enter your username"
             class="w-full"
-            required
-            [ngClass]="{ 'ng-invalid ng-dirty': error }"
+            [ngClass]="{
+              'ng-invalid ng-dirty':
+                loginForm.get('username')?.invalid &&
+                loginForm.get('username')?.touched,
+            }"
           />
         </span>
+        <app-validation-message
+          [control]="loginForm.get('username')!"
+          name="Username"
+        ></app-validation-message>
       </div>
 
       <div class="mb-5">
@@ -43,13 +49,15 @@
             id="password"
             type="password"
             pInputText
-            [(ngModel)]="password"
-            name="password"
+            formControlName="password"
             placeholder="Enter your password"
             class="w-full"
-            required
           />
         </span>
+        <app-validation-message
+          [control]="loginForm.get('password')!"
+          name="Password"
+        ></app-validation-message>
       </div>
 
       <div
@@ -68,6 +76,7 @@
         iconPos="right"
         type="submit"
         class="w-full p-button-lg"
+        [disabled]="loginForm.invalid"
       ></button>
     </form>
   </div>

@@ -1,5 +1,13 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { MockAuthService } from '../../../../core/services/mock-auth.service';
 
@@ -9,19 +17,25 @@ import { MockAuthService } from '../../../../core/services/mock-auth.service';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-  username = '';
-  password = '';
+  loginForm: FormGroup;
   error = '';
 
   constructor(
     private authService: MockAuthService,
     private router: Router,
     private messageService: MessageService,
-  ) {}
+    private fb: FormBuilder,
+  ) {
+    this.loginForm = this.fb.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required],
+    });
+  }
 
   onLogin() {
-    if (this.username && this.password) {
-      const success = this.authService.login(this.username, this.password);
+    if (this.loginForm.valid) {
+      const { username, password } = this.loginForm.value;
+      const success = this.authService.login(username, password);
       if (success) {
         this.messageService.add({
           severity: 'success',
@@ -39,6 +53,7 @@ export class LoginComponent {
       }
     } else {
       this.error = 'Please enter username and password';
+      this.loginForm.markAllAsTouched();
       this.messageService.add({
         severity: 'warn',
         summary: 'Warning',

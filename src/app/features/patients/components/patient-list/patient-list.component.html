@@ -76,68 +76,18 @@
 
 <p-dialog
   [(visible)]="displayDialog"
-  [style]="{ width: '450px' }"
+  [style]="{ width: '600px' }"
   header="Patient Details"
   [modal]="true"
   styleClass="p-fluid"
 >
   <ng-template pTemplate="content">
-    <div class="field">
-      <label for="name">Name</label>
-      <input
-        type="text"
-        pInputText
-        id="name"
-        [(ngModel)]="patient.name"
-        required
-        autofocus
-      />
-      <small class="p-error" *ngIf="submitted && !patient.name"
-        >Name is required.</small
-      >
-    </div>
-    <div class="formgrid grid">
-      <div class="field col">
-        <label for="age">Age</label>
-        <input type="number" pInputText id="age" [(ngModel)]="patient.age" />
-      </div>
-      <div class="field col">
-        <label for="gender">Gender</label>
-        <input
-          type="text"
-          pInputText
-          id="gender"
-          [(ngModel)]="patient.gender"
-        />
-      </div>
-    </div>
-    <div class="field">
-      <label for="contact">Contact</label>
-      <input
-        type="text"
-        pInputText
-        id="contact"
-        [(ngModel)]="patient.contact"
-      />
-    </div>
-  </ng-template>
-
-  <ng-template pTemplate="footer">
-    <button
-      pButton
-      pRipple
-      label="Cancel"
-      icon="pi pi-times"
-      class="p-button-text"
-      (click)="hideDialog()"
-    ></button>
-    <button
-      pButton
-      pRipple
-      label="Save"
-      icon="pi pi-check"
-      class="p-button-text"
-      (click)="savePatient()"
-    ></button>
+    <app-patient-register
+      *ngIf="displayDialog"
+      [isModal]="true"
+      [patientData]="selectedPatient"
+      (onSave)="savePatient($event)"
+      (onCancel)="hideDialog()"
+    ></app-patient-register>
   </ng-template>
 </p-dialog>

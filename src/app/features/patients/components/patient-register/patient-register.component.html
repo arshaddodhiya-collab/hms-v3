@@ -1,89 +1,168 @@
-<div class="surface-card p-4 shadow-2 border-round">
-  <div class="flex align-items-center justify-content-between mb-4">
-    <h2 class="text-900 font-bold m-0">Register New Patient</h2>
-    <button
-      pButton
-      pRipple
-      icon="pi pi-arrow-left"
-      label="Back"
-      class="p-button-text"
-      routerLink=".."
-      pTooltip="Return to patient list"
-      tooltipPosition="right"
-    ></button>
-  </div>
-
-  <div class="p-fluid grid formgrid">
-    <div class="col-12 mb-4">
-      <div class="text-500 font-medium mb-2">Personal Information</div>
-      <div class="p-divider p-component mb-3"></div>
-    </div>
-
-    <div class="field col-12 md:col-6">
-      <label htmlFor="firstname" class="font-medium">Firstname</label>
-      <input
-        pInputText
-        id="firstname"
-        type="text"
-        placeholder="Enter first name"
-      />
-    </div>
-    <div class="field col-12 md:col-6">
-      <label htmlFor="lastname" class="font-medium">Lastname</label>
-      <input
-        pInputText
-        id="lastname"
-        type="text"
-        placeholder="Enter last name"
-      />
-    </div>
-
-    <div class="field col-12 md:col-6">
-      <label htmlFor="age" class="font-medium">Age</label>
-      <input pInputText id="age" type="number" placeholder="Age" />
-    </div>
-    <div class="field col-12 md:col-6">
-      <label htmlFor="gender" class="font-medium">Gender</label>
-      <p-dropdown
-        [options]="['Male', 'Female', 'Other']"
-        placeholder="Select Gender"
-      ></p-dropdown>
-    </div>
-
-    <div class="col-12 mb-4 mt-4">
-      <div class="text-500 font-medium mb-2">Contact Details</div>
-      <div class="p-divider p-component mb-3"></div>
-    </div>
-
-    <div class="field col-12 md:col-6">
-      <label htmlFor="phone" class="font-medium">Phone Number</label>
-      <input
-        pInputText
-        id="phone"
-        type="text"
-        placeholder="+1 (555) 000-0000"
-      />
-    </div>
-    <div class="field col-12 md:col-6">
-      <label htmlFor="email" class="font-medium">Email</label>
-      <input
-        pInputText
-        id="email"
-        type="email"
-        placeholder="patient@example.com"
-      />
-    </div>
-
-    <div class="col-12 flex justify-content-end mt-4">
+<!-- Wrapper to center & control width -->
+<div
+  class="flex justify-content-center align-items-start"
+  [class.p-4]="!isModal"
+>
+  <div
+    class="w-full"
+    [class.surface-card]="!isModal"
+    [class.shadow-2]="!isModal"
+    [class.border-round]="!isModal"
+    [class.p-4]="!isModal"
+    [style.max-width]="!isModal ? '720px' : '100%'"
+  >
+    <!-- Header -->
+    <div class="flex align-items-center gap-3 mb-4">
       <button
+        *ngIf="!isModal"
         pButton
         pRipple
-        label="Register Patient"
-        icon="pi pi-check"
-        class="w-auto"
-        pTooltip="Save patient details"
-        tooltipPosition="left"
+        icon="pi pi-arrow-left"
+        class="p-button-text p-button-sm"
+        (click)="cancel()"
+        pTooltip="Back to patient list"
+        tooltipPosition="right"
       ></button>
+
+      <div>
+        <h2 class="text-900 font-bold m-0" *ngIf="!patientData">
+          Register New Patient
+        </h2>
+        <h2 class="text-900 font-bold m-0" *ngIf="patientData">Edit Patient</h2>
+        <small class="text-500"> Enter personal and contact details </small>
+      </div>
     </div>
+
+    <!-- FORM -->
+    <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
+      <div class="p-fluid grid formgrid">
+        <!-- Personal Info -->
+        <div class="col-12 mt-2">
+          <h4 class="text-800 font-semibold mb-3">Personal Information</h4>
+        </div>
+
+        <div class="field col-12 md:col-6">
+          <label for="firstname" class="font-medium mb-2 block">
+            First Name
+          </label>
+          <input
+            pInputText
+            id="firstname"
+            formControlName="firstName"
+            placeholder="Enter first name"
+          />
+          <app-validation-message
+            [control]="patientForm.get('firstName')!"
+            name="First Name"
+          ></app-validation-message>
+        </div>
+
+        <div class="field col-12 md:col-6">
+          <label for="lastname" class="font-medium mb-2 block">
+            Last Name
+          </label>
+          <input
+            pInputText
+            id="lastname"
+            formControlName="lastName"
+            placeholder="Enter last name"
+          />
+          <app-validation-message
+            [control]="patientForm.get('lastName')!"
+            name="Last Name"
+          ></app-validation-message>
+        </div>
+
+        <div class="field col-12 md:col-6">
+          <label for="age" class="font-medium mb-2 block"> Age </label>
+          <input
+            pInputText
+            id="age"
+            type="number"
+            formControlName="age"
+            placeholder="Age"
+          />
+          <app-validation-message
+            [control]="patientForm.get('age')!"
+            name="Age"
+          ></app-validation-message>
+        </div>
+
+        <div class="field col-12 md:col-6">
+          <label for="gender" class="font-medium mb-2 block"> Gender </label>
+          <p-dropdown
+            id="gender"
+            [options]="genderOptions"
+            formControlName="gender"
+            placeholder="Select gender"
+            optionLabel="label"
+            optionValue="value"
+          ></p-dropdown>
+          <app-validation-message
+            [control]="patientForm.get('gender')!"
+            name="Gender"
+          ></app-validation-message>
+        </div>
+
+        <!-- Divider -->
+        <div class="col-12 mt-4">
+          <h4 class="text-800 font-semibold mb-3">Contact Details</h4>
+        </div>
+
+        <div class="field col-12 md:col-6">
+          <label for="phone" class="font-medium mb-2 block">
+            Phone Number
+          </label>
+          <input
+            pInputText
+            id="phone"
+            formControlName="phone"
+            placeholder="+1 (555) 000-0000"
+          />
+          <app-validation-message
+            [control]="patientForm.get('phone')!"
+            name="Phone Number"
+          ></app-validation-message>
+        </div>
+
+        <div class="field col-12 md:col-6">
+          <label for="email" class="font-medium mb-2 block"> Email </label>
+          <input
+            pInputText
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="patient@example.com"
+          />
+          <app-validation-message
+            [control]="patientForm.get('email')!"
+            name="Email"
+          ></app-validation-message>
+        </div>
+
+        <!-- Actions -->
+        <div class="col-12 mt-5">
+          <div class="flex justify-content-end gap-2">
+            <button
+              *ngIf="isModal"
+              pButton
+              type="button"
+              label="Cancel"
+              class="p-button-text"
+              (click)="cancel()"
+            ></button>
+            <button
+              pButton
+              type="submit"
+              [label]="patientData ? 'Update' : 'Register'"
+              icon="pi pi-check"
+              class="px-4"
+              pTooltip="Save details"
+              tooltipPosition="left"
+            ></button>
+          </div>
+        </div>
+      </div>
+    </form>
   </div>
 </div>

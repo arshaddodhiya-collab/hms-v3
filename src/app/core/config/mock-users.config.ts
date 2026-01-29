@@ -50,7 +50,7 @@ export const MOCK_USERS: MockUser[] = [
       PERMISSIONS.MOD_DASHBOARD,
       PERMISSIONS.MOD_PATIENTS,
       PERMISSIONS.MOD_APPOINTMENTS,
-      PERMISSIONS.MOD_TRIAGE, // View triage info
+      // PERMISSIONS.MOD_TRIAGE, // View triage info
       PERMISSIONS.MOD_CONSULTATION, // Core work
       PERMISSIONS.ACT_VIEW,
       PERMISSIONS.ACT_CREATE, // Prescriptions, etc

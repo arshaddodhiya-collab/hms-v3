@@ -4,32 +4,109 @@
     icon="pi pi-calendar-plus"
     [showBack]="true"
   ></app-page-header>
-  <div class="p-fluid grid formgrid">
-    <div class="field col-12 md:col-6">
-      <label htmlFor="patient">Patient Name</label>
-      <input pInputText id="patient" type="text" />
+  <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
+    <div class="p-fluid grid formgrid">
+      <div class="field col-12 md:col-6">
+        <label htmlFor="patient">Patient Name</label>
+        <input
+          pInputText
+          id="patient"
+          type="text"
+          formControlName="patientName"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              appointmentForm.get('patientName')?.invalid &&
+              appointmentForm.get('patientName')?.touched,
+          }"
+        />
+        <app-validation-message
+          [control]="appointmentForm.get('patientName')!"
+          name="Patient Name"
+        ></app-validation-message>
+      </div>
+      <div class="field col-12 md:col-6">
+        <label htmlFor="doctor">Doctor</label>
+        <input
+          pInputText
+          id="doctor"
+          type="text"
+          formControlName="doctorName"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              appointmentForm.get('doctorName')?.invalid &&
+              appointmentForm.get('doctorName')?.touched,
+          }"
+        />
+        <app-validation-message
+          [control]="appointmentForm.get('doctorName')!"
+          name="Doctor"
+        ></app-validation-message>
+      </div>
+      <div class="field col-12 md:col-6">
+        <label htmlFor="date">Date</label>
+        <input
+          pInputText
+          id="date"
+          type="date"
+          formControlName="date"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              appointmentForm.get('date')?.invalid &&
+              appointmentForm.get('date')?.touched,
+          }"
+        />
+        <app-validation-message
+          [control]="appointmentForm.get('date')!"
+          name="Date"
+        ></app-validation-message>
+      </div>
+      <div class="field col-12 md:col-6">
+        <label htmlFor="time">Time</label>
+        <input
+          pInputText
+          id="time"
+          type="time"
+          formControlName="time"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              appointmentForm.get('time')?.invalid &&
+              appointmentForm.get('time')?.touched,
+          }"
+        />
+        <app-validation-message
+          [control]="appointmentForm.get('time')!"
+          name="Time"
+        ></app-validation-message>
+      </div>
+      <div class="field col-12">
+        <label htmlFor="reason">Reason</label>
+        <textarea
+          pInputTextarea
+          id="reason"
+          rows="3"
+          formControlName="reason"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              appointmentForm.get('reason')?.invalid &&
+              appointmentForm.get('reason')?.touched,
+          }"
+        ></textarea>
+        <app-validation-message
+          [control]="appointmentForm.get('reason')!"
+          name="Reason"
+        ></app-validation-message>
+      </div>
     </div>
-    <div class="field col-12 md:col-6">
-      <label htmlFor="doctor">Doctor</label>
-      <input pInputText id="doctor" type="text" />
+    <div class="flex justify-content-end mt-4">
+      <button
+        pButton
+        label="Book Now"
+        icon="pi pi-check"
+        type="submit"
+        class="w-auto"
+        pTooltip="Confirm booking"
+        tooltipPosition="left"
+      ></button>
     </div>
-    <div class="field col-12 md:col-6">
-      <label htmlFor="date">Date</label>
-      <input pInputText id="date" type="date" />
-    </div>
-    <div class="field col-12 md:col-6">
-      <label htmlFor="time">Time</label>
-      <input pInputText id="time" type="time" />
-    </div>
-  </div>
-  <div class="flex justify-content-end mt-4">
-    <button
-      pButton
-      label="Book Now"
-      icon="pi pi-check"
-      class="w-auto"
-      pTooltip="Confirm booking"
-      tooltipPosition="left"
-    ></button>
-  </div>
+  </form>
 </div>
