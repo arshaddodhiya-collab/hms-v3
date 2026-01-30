@@ -1,63 +1,51 @@
 <div class="card">
   <app-page-header title="Triage Queue" icon="pi pi-list"></app-page-header>
 
-  <p-table [value]="triageQueue" [tableStyle]="{ 'min-width': '50rem' }">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>ID</th>
-        <th>Patient</th>
-        <th>Doctor</th>
-        <th>Time</th>
-        <th>Priority</th>
-        <th>Status</th>
-        <th>Actions</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-item>
-      <tr>
-        <td>{{ item.id }}</td>
-        <td>{{ item.patientName }}</td>
-        <td>{{ item.doctorName }}</td>
-        <td>{{ item.time }}</td>
-        <td>
-          <p-tag
-            [value]="item.priority"
-            [severity]="getPrioritySeverity(item.priority)"
-          ></p-tag>
-        </td>
-        <td>
-          <span
-            [class.text-green-500]="item.status === 'Triaged'"
-            [class.text-orange-500]="item.status === 'Checked In'"
-          >
-            {{ item.status }}
-          </span>
-        </td>
-        <td>
-          <!-- Nurse Action: Entry -->
-          <button
-            *appHasPermission="'CMP_VITALS_WRITE'"
-            pButton
-            pRipple
-            label="Triage"
-            icon="pi pi-check-square"
-            class="p-button-outlined p-button-sm mr-2"
-            [routerLink]="['entry', item.id]"
-            [disabled]="item.status === 'Triaged'"
-          ></button>
-
-          <!-- Doctor/All Action: View -->
-          <button
-            *appHasPermission="'CMP_VITALS_READ'"
-            pButton
-            pRipple
-            icon="pi pi-eye"
-            class="p-button-rounded p-button-info p-button-text"
-            [routerLink]="['view', item.id]"
-            [disabled]="item.status !== 'Triaged'"
-          ></button>
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+  <app-table [data]="triageQueue" [columns]="cols" [actionsTemplate]="actions">
+  </app-table>
 </div>
+
+<ng-template #priorityTemplate let-value>
+  <app-status-badge
+    [status]="value"
+    [type]="
+      value === 'Emergency' ? 'danger' : value === 'High' ? 'warning' : 'info'
+    "
+  >
+  </app-status-badge>
+</ng-template>
+
+<ng-template #statusTemplate let-value>
+  <span
+    [class.text-green-500]="value === 'Triaged'"
+    [class.text-orange-500]="value === 'Checked In'"
+    class="font-medium"
+  >
+    {{ value }}
+  </span>
+</ng-template>
+
+<ng-template #actions let-item>
+  <!-- Nurse Action: Entry -->
+  <button
+    *appHasPermission="'CMP_VITALS_WRITE'"
+    pButton
+    pRipple
+    label="Triage"
+    icon="pi pi-check-square"
+    class="p-button-outlined p-button-sm mr-2"
+    [routerLink]="['entry', item.id]"
+    [disabled]="item.status === 'Triaged'"
+  ></button>
+
+  <!-- Doctor/All Action: View -->
+  <button
+    *appHasPermission="'CMP_VITALS_READ'"
+    pButton
+    pRipple
+    icon="pi pi-eye"
+    class="p-button-rounded p-button-info p-button-text"
+    [routerLink]="['view', item.id]"
+    [disabled]="item.status !== 'Triaged'"
+  ></button>
+</ng-template>

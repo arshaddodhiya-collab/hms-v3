@@ -1,6 +1,5 @@
 <div class="card">
-  <div class="flex justify-content-between align-items-center mb-3">
-    <h2>Departments</h2>
+  <app-page-header title="Departments" icon="pi pi-building">
     <button
       pButton
       label="Add Department"
@@ -8,73 +7,42 @@
       (click)="createDepartment()"
       *appHasPermission="permissions.CMP_ADMIN_DEPT_WRITE"
     ></button>
-  </div>
+  </app-page-header>
 
-  <p-table
-    [value]="departments"
-    [rows]="10"
-    [paginator]="true"
+  <app-table
+    [data]="departments"
+    [columns]="cols"
     [globalFilterFields]="['name', 'head']"
-    #dt
+    [actionsTemplate]="actions"
   >
-    <ng-template pTemplate="caption">
-      <div class="flex">
-        <span class="p-input-icon-left ml-auto">
-          <i class="pi pi-search"></i>
-          <input
-            pInputText
-            type="text"
-            (input)="dt.filterGlobal($any($event.target).value, 'contains')"
-            placeholder="Search keyword"
-          />
-        </span>
-      </div>
-    </ng-template>
-    <ng-template pTemplate="header">
-      <tr>
-        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
-        <th pSortableColumn="name">
-          Name <p-sortIcon field="name"></p-sortIcon>
-        </th>
-        <th pSortableColumn="head">
-          Head of Dept <p-sortIcon field="head"></p-sortIcon>
-        </th>
-        <th pSortableColumn="staffCount">
-          Staff Count <p-sortIcon field="staffCount"></p-sortIcon>
-        </th>
-        <th>Actions</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-dept>
-      <tr>
-        <td>{{ dept.id }}</td>
-        <td>{{ dept.name }}</td>
-        <td>{{ dept.head }}</td>
-        <td>{{ dept.staffCount }}</td>
-        <td>
-          <ng-container *appHasPermission="permissions.CMP_ADMIN_DEPT_WRITE">
-            <button
-              pButton
-              icon="pi pi-pencil"
-              class="p-button-rounded p-button-text p-button-warning mr-2"
-              (click)="editDepartment(dept)"
-            ></button>
-            <button
-              pButton
-              icon="pi pi-trash"
-              class="p-button-rounded p-button-text p-button-danger"
-              (click)="deleteDepartment(dept.id)"
-            ></button>
-          </ng-container>
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="5">No departments found.</td>
-      </tr>
-    </ng-template>
-  </p-table>
+  </app-table>
+
+  <ng-template #actions let-dept>
+    <ng-container *appHasPermission="permissions.CMP_ADMIN_DEPT_WRITE">
+      <button
+        pButton
+        icon="pi pi-pencil"
+        class="p-button-rounded p-button-text p-button-warning mr-2"
+        (click)="editDepartment(dept)"
+        pTooltip="Edit"
+      ></button>
+      <button
+        pButton
+        icon="pi pi-trash"
+        class="p-button-rounded p-button-text p-button-danger"
+        (click)="deleteDepartment(dept.id)"
+        pTooltip="Delete"
+      ></button>
+    </ng-container>
+  </ng-template>
+
+  <app-confirm-dialog
+    [(isOpen)]="isConfirmOpen"
+    title="Delete Department"
+    message="Are you sure you want to delete this department?"
+    (confirm)="onConfirmDelete()"
+    (cancel)="onCancelDelete()"
+  ></app-confirm-dialog>
 
   <p-dialog
     [(visible)]="displayDialog"

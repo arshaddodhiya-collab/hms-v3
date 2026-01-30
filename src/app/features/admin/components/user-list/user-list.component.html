@@ -1,6 +1,5 @@
 <div class="card">
-  <div class="flex justify-content-between align-items-center mb-3">
-    <h2>System Users</h2>
+  <app-page-header title="System Users" icon="pi pi-users">
     <ng-container *appHasPermission="permissions.CMP_ADMIN_USER_WRITE">
       <button
         pButton
@@ -9,75 +8,71 @@
         (click)="createUser()"
       ></button>
     </ng-container>
-  </div>
+  </app-page-header>
 
-  <p-table
-    [value]="users"
-    [rows]="10"
-    [paginator]="true"
+  <app-table
+    [data]="users"
+    [columns]="cols"
     [globalFilterFields]="['username', 'role']"
-    #dt
+    [actionsTemplate]="actions"
   >
-    <ng-template pTemplate="caption">
-      <div class="flex">
-        <span class="p-input-icon-left ml-auto">
-          <i class="pi pi-search"></i>
-          <input
-            pInputText
-            type="text"
-            (input)="dt.filterGlobal($any($event.target).value, 'contains')"
-            placeholder="Search keyword"
-          />
-        </span>
-      </div>
-    </ng-template>
-    <ng-template pTemplate="header">
-      <tr>
-        <th pSortableColumn="username">
-          Username <p-sortIcon field="username"></p-sortIcon>
-        </th>
-        <th pSortableColumn="role">
-          Role <p-sortIcon field="role"></p-sortIcon>
-        </th>
-        <th>Actions</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-user>
-      <tr>
-        <td>{{ user.username }}</td>
-        <td><p-tag [value]="user.role" [severity]="'info'"></p-tag></td>
-        <td>
-          <ng-container *appHasPermission="permissions.CMP_ADMIN_USER_WRITE">
-            <button
-              pButton
-              icon="pi pi-pencil"
-              class="p-button-rounded p-button-text p-button-warning"
-              (click)="editUser(user)"
-            ></button>
-          </ng-container>
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="3">No users found.</td>
-      </tr>
-    </ng-template>
-  </p-table>
+    <!-- Custom Template for Role Column -->
+    <!-- Note: We need to pass this template to the columns definition in TS if we want to use the generic table's template support -->
+    <!-- However, TableComponent logic: <ng-container *ngTemplateOutlet="col.template ... -->
+    <!-- We defined 'template: null' in TS. We actually need to query the template here and assign it, or use a specific slot. -->
+    <!-- The current TableComponent implementation expects the TemplateRef to be IN the column object. -->
+    <!-- Since we can't easily reference a TemplateRef in the TS definition (unless we use ViewChild), let's adjust TableComponent or strategy. -->
 
-  <p-dialog
-    [(visible)]="displayDialog"
-    [header]="dialogHeader"
-    [modal]="true"
-    [style]="{ width: '50vw' }"
-    [draggable]="false"
-    [resizable]="false"
-  >
-    <app-user-create
-      [userToEdit]="selectedUser"
-      (save)="onSave($event)"
-      (cancel)="onCancel()"
-    >
-    </app-user-create>
-  </p-dialog>
+    <!-- STRATEGY ADJUSTMENT: For simple text columns, standard execution is fine. For 'role', we want a badge. -->
+    <!-- Let's use a simpler approach for now: modifying the TS to just pass raw text for Role, as the badge adds value but 'Role: Admin' text is also fine? -->
+    <!-- No, User wants "works as it is". 'p-tag' was used. -->
+
+    <!-- Let's update TableComponent to allow content projection for specific columns? No, that's complex. -->
+    <!-- Let's Update UserListComponent.ts to get the TemplateRef using ViewChild. -->
+  </app-table>
+
+  <!-- We need to define templates here and assign them in ngAfterViewInit, OR -->
+  <!-- We can just put the logic in the TS if we really want to use app-table. -->
+  <!-- Usage of generic tables with specific templates is always tricky in Angular without a strict pattern. -->
+
+  <!-- Let's fallback to manual p-table for UserList for now IF app-table is too rigid? -->
+  <!-- actually, let's fix the app-table usage pattern. -->
+  <!-- We can pass a map of templates? -->
+
+  <!-- WAIT. I can't easily modify the inputs of the app-table from the HTML if the column definition object is in TS. -->
+  <!-- Let's revert to using p-table for UserList BUT use app-page-header and app-status-badge inside it? -->
+  <!-- The user wants "SharedModule components used effectively". "TableComponent" was specifically mentioned. -->
+
+  <!-- Ok, I will update UserList TS to use a ViewChild to get the roleTemplate and assign it to columns. -->
 </div>
+
+<ng-template #roleTemplate let-value>
+  <app-status-badge [status]="value" type="info"></app-status-badge>
+</ng-template>
+
+<ng-template #actions let-user>
+  <ng-container *appHasPermission="permissions.CMP_ADMIN_USER_WRITE">
+    <button
+      pButton
+      icon="pi pi-pencil"
+      class="p-button-rounded p-button-text p-button-warning"
+      (click)="editUser(user)"
+    ></button>
+  </ng-container>
+</ng-template>
+
+<p-dialog
+  [(visible)]="displayDialog"
+  [header]="dialogHeader"
+  [modal]="true"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <app-user-create
+    [userToEdit]="selectedUser"
+    (save)="onSave($event)"
+    (cancel)="onCancel()"
+  >
+  </app-user-create>
+</p-dialog>

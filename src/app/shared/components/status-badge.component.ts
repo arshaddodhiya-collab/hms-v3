@@ -8,7 +8,7 @@ import { Component, Input } from '@angular/core';
 })
 export class StatusBadgeComponent {
   @Input() status: string = '';
-  @Input() type: 'success' | 'warning' | 'error' | 'info' = 'info';
+  @Input() type: 'success' | 'warning' | 'error' | 'danger' | 'info' = 'info';
 
   getSeverity(): 'success' | 'warning' | 'danger' | 'info' | undefined {
     switch (this.type) {
@@ -17,6 +17,7 @@ export class StatusBadgeComponent {
       case 'warning':
         return 'warning';
       case 'error':
+      case 'danger':
         return 'danger';
       default:
         return 'info';

@@ -1,11 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  TemplateRef,
+  AfterViewInit,
+} from '@angular/core';
 
 @Component({
   selector: 'app-consultation-list',
   templateUrl: './consultation-list.component.html',
   styleUrls: ['./consultation-list.component.scss'],
 })
-export class ConsultationListComponent implements OnInit {
+export class ConsultationListComponent implements OnInit, AfterViewInit {
+  @ViewChild('patientNameTemplate') patientNameTemplate!: TemplateRef<any>;
+  @ViewChild('ageTemplate') ageTemplate!: TemplateRef<any>;
+  @ViewChild('priorityTemplate') priorityTemplate!: TemplateRef<any>;
+  @ViewChild('statusTemplate') statusTemplate!: TemplateRef<any>;
+
   // Mock Data - representing patients who have completed Triage
   consultationQueue = [
     {
@@ -37,22 +48,29 @@ export class ConsultationListComponent implements OnInit {
     },
   ];
 
+  cols: any[] = [
+    { field: 'patientName', header: 'Patient' },
+    { field: 'age', header: 'Age/Gender' }, // We'll use a template for this composite
+    { field: 'priority', header: 'Priority' },
+    { field: 'waitTime', header: 'Wait Time' },
+    { field: 'status', header: 'Status' },
+  ];
+
   constructor() {}
 
   ngOnInit(): void {}
 
-  getPrioritySeverity(
-    priority: string,
-  ): 'success' | 'info' | 'warning' | 'danger' | undefined {
-    switch (priority) {
-      case 'Normal':
-        return 'info';
-      case 'High':
-        return 'warning';
-      case 'Emergency':
-        return 'danger';
-      default:
-        return 'info';
-    }
+  ngAfterViewInit() {
+    const patientCol = this.cols.find((c) => c.field === 'patientName');
+    if (patientCol) patientCol.template = this.patientNameTemplate;
+
+    const ageCol = this.cols.find((c) => c.field === 'age');
+    if (ageCol) ageCol.template = this.ageTemplate;
+
+    const priorityCol = this.cols.find((c) => c.field === 'priority');
+    if (priorityCol) priorityCol.template = this.priorityTemplate;
+
+    const statusCol = this.cols.find((c) => c.field === 'status');
+    if (statusCol) statusCol.template = this.statusTemplate;
   }
 }

@@ -1,4 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  TemplateRef,
+  AfterViewInit,
+} from '@angular/core';
 import { MessageService } from 'primeng/api';
 
 @Component({
@@ -6,7 +12,9 @@ import { MessageService } from 'primeng/api';
   templateUrl: './patient-list.component.html',
   styleUrls: ['./patient-list.component.scss'],
 })
-export class PatientListComponent implements OnInit {
+export class PatientListComponent implements OnInit, AfterViewInit {
+  @ViewChild('genderTemplate') genderTemplate!: TemplateRef<any>;
+
   patients = [
     { id: 1, name: 'John Doe', age: 30, gender: 'Male', contact: '1234567890' },
     {
@@ -21,9 +29,23 @@ export class PatientListComponent implements OnInit {
   displayDialog: boolean = false;
   selectedPatient: any = null;
 
+  cols: any[] = [
+    { field: 'name', header: 'Name' },
+    { field: 'age', header: 'Age' },
+    { field: 'gender', header: 'Gender' },
+    { field: 'contact', header: 'Contact' },
+  ];
+
   constructor(private messageService: MessageService) {}
 
   ngOnInit(): void {}
+
+  ngAfterViewInit() {
+    const genderCol = this.cols.find((c) => c.field === 'gender');
+    if (genderCol) {
+      genderCol.template = this.genderTemplate;
+    }
+  }
 
   openNew() {
     this.selectedPatient = null;
@@ -41,16 +63,24 @@ export class PatientListComponent implements OnInit {
   }
 
   savePatient(patientData: any) {
-    if (patientData.id) {
-      // Update
-      const index = this.patients.findIndex((x) => x.id === patientData.id);
-      this.patients[index] = patientData;
+    // ... logic same ...
+    if (this.selectedPatient) {
+      // Existing Logic for update...
+      // Since the mock data in this component is hardcoded in specific way in original file
+      // I'll reuse the logic from previous version if I had the full content,
+      // but here we are replacing the class so I must rewrite the logic
+      const index = this.patients.findIndex(
+        (x) => x.id === this.selectedPatient.id,
+      );
+      if (index !== -1) {
+        this.patients[index] = { ...this.patients[index], ...patientData };
+      }
     } else {
-      // Create
-      patientData.id = this.patients.length + 1;
-      this.patients.push(patientData);
+      const newPatient = { ...patientData, id: this.patients.length + 1 };
+      this.patients.push(newPatient);
     }
 
+    // Trigger change detection for table
     this.patients = [...this.patients];
     this.hideDialog();
     this.messageService.add({

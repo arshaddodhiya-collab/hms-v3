@@ -1,4 +1,12 @@
-import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Inject,
+  LOCALE_ID,
+  ViewChild,
+  TemplateRef,
+  AfterViewInit,
+} from '@angular/core';
 import { formatDate } from '@angular/common';
 import { MessageService } from 'primeng/api';
 
@@ -7,7 +15,9 @@ import { MessageService } from 'primeng/api';
   templateUrl: './appointment-list.component.html',
   styleUrls: ['./appointment-list.component.scss'],
 })
-export class AppointmentListComponent implements OnInit {
+export class AppointmentListComponent implements OnInit, AfterViewInit {
+  @ViewChild('statusTemplate') statusTemplate!: TemplateRef<any>;
+
   appointments = [
     {
       id: 101,
@@ -36,12 +46,28 @@ export class AppointmentListComponent implements OnInit {
     { label: 'Cancelled', value: 'Cancelled' },
   ];
 
+  cols: any[] = [
+    { field: 'id', header: 'ID' },
+    { field: 'patientName', header: 'Patient' },
+    { field: 'doctorName', header: 'Doctor' },
+    { field: 'date', header: 'Date' },
+    { field: 'time', header: 'Time' },
+    { field: 'status', header: 'Status' },
+  ];
+
   constructor(
     @Inject(LOCALE_ID) private locale: string,
     private messageService: MessageService,
   ) {}
 
   ngOnInit(): void {}
+
+  ngAfterViewInit() {
+    const statusCol = this.cols.find((c) => c.field === 'status');
+    if (statusCol) {
+      statusCol.template = this.statusTemplate;
+    }
+  }
 
   openNew() {
     this.appointment = {};
@@ -53,16 +79,21 @@ export class AppointmentListComponent implements OnInit {
     this.appointment = { ...appointment };
     if (this.appointment.time) {
       const today = new Date();
+      // Simple parsing (assuming '10:00 AM' format)
+      // For robustness in real app, use Date parsing library or moment
+      // Keeping existing logic
       const [time, period] = this.appointment.time.split(' ');
-      let [hours, minutes] = time.split(':');
-      hours = parseInt(hours);
-      minutes = parseInt(minutes);
+      if (time && period) {
+        let [hours, minutes] = time.split(':');
+        let h = parseInt(hours);
+        const m = parseInt(minutes);
 
-      if (period === 'PM' && hours < 12) hours += 12;
-      if (period === 'AM' && hours === 12) hours = 0;
+        if (period === 'PM' && h < 12) h += 12;
+        if (period === 'AM' && h === 12) h = 0;
 
-      today.setHours(hours, minutes, 0);
-      this.appointment.time = today;
+        today.setHours(h, m, 0);
+        this.appointment.time = today;
+      }
     }
     this.displayDialog = true;
   }
@@ -105,19 +136,6 @@ export class AppointmentListComponent implements OnInit {
         summary: 'Success',
         detail: 'Appointment Saved',
       });
-    }
-  }
-
-  getStatusSeverity(status: string): 'success' | 'warning' | 'danger' | 'info' {
-    switch (status) {
-      case 'Confirmed':
-        return 'success';
-      case 'Pending':
-        return 'warning';
-      case 'Cancelled':
-        return 'danger';
-      default:
-        return 'info';
     }
   }
 }

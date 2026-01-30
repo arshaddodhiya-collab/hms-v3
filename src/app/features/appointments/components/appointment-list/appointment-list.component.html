@@ -1,8 +1,5 @@
 <div class="card p-0">
-  <div
-    class="p-4 flex justify-content-between align-items-center border-bottom-1 surface-border"
-  >
-    <h2 class="m-0 font-bold text-900">Appointments</h2>
+  <app-page-header title="Appointments" icon="pi pi-calendar">
     <button
       *appHasPermission="'CMP_APPOINTMENT_CREATE'"
       pButton
@@ -14,63 +11,49 @@
       pTooltip="Schedule a new appointment"
       tooltipPosition="bottom"
     ></button>
-  </div>
+  </app-page-header>
 
-  <p-table
-    [value]="appointments"
-    [tableStyle]="{ 'min-width': '50rem' }"
-    styleClass="p-datatable-striped"
-  >
-    <ng-template pTemplate="header">
-      <tr>
-        <th class="bg-gray-50 text-900">ID</th>
-        <th class="bg-gray-50 text-900">Patient</th>
-        <th class="bg-gray-50 text-900">Doctor</th>
-        <th class="bg-gray-50 text-900">Date</th>
-        <th class="bg-gray-50 text-900">Time</th>
-        <th class="bg-gray-50 text-900">Status</th>
-        <th class="bg-gray-50 text-900 text-center">Actions</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-appointment>
-      <tr class="hover:surface-hover transition-colors transition-duration-200">
-        <td>{{ appointment.id }}</td>
-        <td class="font-medium text-900">{{ appointment.patientName }}</td>
-        <td>{{ appointment.doctorName }}</td>
-        <td>{{ appointment.date }}</td>
-        <td>{{ appointment.time }}</td>
-        <td>
-          <p-tag
-            [value]="appointment.status"
-            [severity]="getStatusSeverity(appointment.status)"
-            styleClass="uppercase text-xs"
-          ></p-tag>
-        </td>
-        <td class="text-center">
-          <button
-            pButton
-            pRipple
-            icon="pi pi-eye"
-            class="p-button-rounded p-button-text p-button-info mr-2"
-            [routerLink]="[appointment.id]"
-            pTooltip="View Details"
-            tooltipPosition="top"
-          ></button>
-          <button
-            *appHasPermission="'CMP_APPOINTMENT_EDIT'"
-            pButton
-            pRipple
-            icon="pi pi-pencil"
-            class="p-button-rounded p-button-text p-button-warning"
-            (click)="editAppointment(appointment)"
-            pTooltip="Edit Appointment"
-            tooltipPosition="top"
-          ></button>
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+  <app-table [data]="appointments" [columns]="cols" [actionsTemplate]="actions">
+  </app-table>
 </div>
+
+<ng-template #statusTemplate let-value>
+  <app-status-badge
+    [status]="value"
+    [type]="
+      value === 'Confirmed'
+        ? 'success'
+        : value === 'Pending'
+          ? 'warning'
+          : 'error'
+    "
+  >
+  </app-status-badge>
+</ng-template>
+
+<ng-template #actions let-appointment>
+  <div class="flex justify-content-center">
+    <button
+      pButton
+      pRipple
+      icon="pi pi-eye"
+      class="p-button-rounded p-button-text p-button-info mr-2"
+      [routerLink]="[appointment.id]"
+      pTooltip="View Details"
+      tooltipPosition="top"
+    ></button>
+    <button
+      *appHasPermission="'CMP_APPOINTMENT_EDIT'"
+      pButton
+      pRipple
+      icon="pi pi-pencil"
+      class="p-button-rounded p-button-text p-button-warning"
+      (click)="editAppointment(appointment)"
+      pTooltip="Edit Appointment"
+      tooltipPosition="top"
+    ></button>
+  </div>
+</ng-template>
 
 <p-dialog
   [(visible)]="displayDialog"

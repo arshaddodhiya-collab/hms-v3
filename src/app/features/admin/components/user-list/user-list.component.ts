@@ -1,4 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  TemplateRef,
+  AfterViewInit,
+} from '@angular/core';
 import { AdminService } from '../../services/admin.service';
 import { MockUser } from '../../../../core/config/mock-users.config';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
@@ -8,17 +14,36 @@ import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss'],
 })
-export class UserListComponent implements OnInit {
+export class UserListComponent implements OnInit, AfterViewInit {
+  @ViewChild('roleTemplate') roleTemplate!: TemplateRef<any>;
+
   users: MockUser[] = [];
   permissions = PERMISSIONS;
   displayDialog = false;
   selectedUser: MockUser | null = null;
   dialogHeader = 'Create User';
 
+  cols: any[] = [
+    { field: 'username', header: 'Username' },
+    { field: 'role', header: 'Role' },
+  ];
+
   constructor(private adminService: AdminService) {}
 
   ngOnInit(): void {
     this.refreshUsers();
+  }
+
+  ngAfterViewInit() {
+    // Assign the template to the column config
+    // We need to trigger change detection or just ensure it's picked up.
+    // Since cols is an input, mutating it might not trigger OnChanges in child if generic check.
+    // But typically object reference mutation works if OnPush isn't used strictly or if we re-assign.
+
+    const roleCol = this.cols.find((c) => c.field === 'role');
+    if (roleCol) {
+      roleCol.template = this.roleTemplate;
+    }
   }
 
   refreshUsers() {
@@ -40,16 +65,10 @@ export class UserListComponent implements OnInit {
   }
 
   onSave(user: MockUser) {
-    // In a real app we'd determine if create or update based on ID
-    // Here, check if we're editing
     if (this.selectedUser) {
-      // Update logic (MockService usually doesn't simulate full update well without IDs, but we'll try)
-      // For simplicity in this mock, we'll just log or trigger a "refresh"
       console.log('Updating user', user);
     } else {
-      // Create logic
       console.log('Creating user', user);
-      // Not fully implemented in MockService for users yet, but simulating flow
     }
     this.displayDialog = false;
     this.refreshUsers();

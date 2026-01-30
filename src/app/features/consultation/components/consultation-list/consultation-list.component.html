@@ -4,44 +4,49 @@
     icon="pi pi-user-md"
   ></app-page-header>
 
-  <p-table [value]="consultationQueue" [tableStyle]="{ 'min-width': '50rem' }">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Patient</th>
-        <th>Age/Gender</th>
-        <th>Priority</th>
-        <th>Wait Time</th>
-        <th>Status</th>
-        <th>Actions</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-item>
-      <tr>
-        <td class="font-bold">{{ item.patientName }}</td>
-        <td>{{ item.age }} / {{ item.gender }}</td>
-        <td>
-          <p-tag
-            [value]="item.priority"
-            [severity]="getPrioritySeverity(item.priority)"
-          ></p-tag>
-        </td>
-        <td>{{ item.waitTime }}</td>
-        <td>
-          <span class="text-orange-500 font-medium">{{ item.status }}</span>
-        </td>
-        <td>
-          <button
-            *appHasPermission="'CMP_CONSULTATION_WRITE'"
-            pButton
-            pRipple
-            label="Consult"
-            icon="pi pi-check"
-            class="p-button-sm"
-            [routerLink]="[item.id]"
-          ></button>
-          <!-- Read only view could be added here -->
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+  <app-table
+    [data]="consultationQueue"
+    [columns]="cols"
+    [actionsTemplate]="actions"
+  >
+  </app-table>
 </div>
+
+<!-- Reusing 'patientTemplate' name from TS, but let's use it for the composite Age/Gender mostly, or define distinct ones. -->
+<!-- In TS I mapped 'age' field to 'patientTemplate' (renaming in mind). Let's fix TS mapping via Logic or just bind correctly. -->
+<!-- I'll rename the ViewChild in TS in next step if needed, or just use #ageTemplate here and ensure TS finds it. -->
+<!-- Actually, 'patientName' needs bold. 'age' needs composite. -->
+
+<ng-template #patientNameTemplate let-value>
+  <span class="font-bold">{{ value }}</span>
+</ng-template>
+
+<ng-template #ageTemplate let-value let-row="row">
+  {{ value }} / {{ row.gender }}
+</ng-template>
+
+<ng-template #priorityTemplate let-value>
+  <app-status-badge
+    [status]="value"
+    [type]="
+      value === 'Emergency' ? 'danger' : value === 'High' ? 'warning' : 'info'
+    "
+  >
+  </app-status-badge>
+</ng-template>
+
+<ng-template #statusTemplate let-value>
+  <span class="text-orange-500 font-medium">{{ value }}</span>
+</ng-template>
+
+<ng-template #actions let-item>
+  <button
+    *appHasPermission="'CMP_CONSULTATION_WRITE'"
+    pButton
+    pRipple
+    label="Consult"
+    icon="pi pi-check"
+    class="p-button-sm"
+    [routerLink]="[item.id]"
+  ></button>
+</ng-template>

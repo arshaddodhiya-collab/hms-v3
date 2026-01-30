@@ -1,8 +1,5 @@
 <div class="card p-0">
-  <div
-    class="p-4 flex justify-content-between align-items-center border-bottom-1 surface-border"
-  >
-    <h2 class="m-0 font-bold text-900">Patients</h2>
+  <app-page-header title="Patients" icon="pi pi-users">
     <button
       *appHasPermission="'CMP_PATIENT_ADD'"
       pButton
@@ -14,65 +11,46 @@
       pTooltip="Register a new patient"
       tooltipPosition="bottom"
     ></button>
-  </div>
+  </app-page-header>
 
-  <p-table
-    [value]="patients"
-    [tableStyle]="{ 'min-width': '50rem' }"
-    styleClass="p-datatable-striped"
-  >
-    <ng-template pTemplate="header">
-      <tr>
-        <th class="bg-gray-50 text-900">Name</th>
-        <th class="bg-gray-50 text-900">Age</th>
-        <th class="bg-gray-50 text-900">Gender</th>
-        <th class="bg-gray-50 text-900">Contact</th>
-        <th class="bg-gray-50 text-900 text-center">Actions</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-patient>
-      <tr class="hover:surface-hover transition-colors transition-duration-200">
-        <td class="font-medium text-900">{{ patient.name }}</td>
-        <td>{{ patient.age }}</td>
-        <td>
-          <span
-            [class]="
-              'px-2 py-1 border-round text-sm font-medium ' +
-              (patient.gender?.toLowerCase() === 'male'
-                ? 'bg-blue-50 text-blue-600'
-                : 'bg-pink-50 text-pink-600')
-            "
-          >
-            {{ patient.gender }}
-          </span>
-        </td>
-        <td>{{ patient.contact }}</td>
-        <td class="text-center">
-          <button
-            *appHasPermission="'CMP_PATIENT_VIEW'"
-            pButton
-            pRipple
-            icon="pi pi-eye"
-            class="p-button-rounded p-button-text p-button-info mr-2"
-            [routerLink]="[patient.id]"
-            pTooltip="View Details"
-            tooltipPosition="top"
-          ></button>
-          <button
-            *appHasPermission="'CMP_PATIENT_EDIT'"
-            pButton
-            pRipple
-            icon="pi pi-pencil"
-            class="p-button-rounded p-button-text p-button-warning"
-            (click)="editPatient(patient)"
-            pTooltip="Edit Record"
-            tooltipPosition="top"
-          ></button>
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+  <app-table [data]="patients" [columns]="cols" [actionsTemplate]="actions">
+  </app-table>
 </div>
+
+<ng-template #genderTemplate let-value>
+  <app-status-badge
+    [status]="value"
+    [type]="value === 'Male' ? 'info' : 'warning'"
+  >
+    <!-- Using info/warning map for Male/Female just for distinct colors -->
+  </app-status-badge>
+</ng-template>
+
+<ng-template #actions let-patient>
+  <div class="flex justify-content-center">
+    <!-- Using div wrapper for alignment if needed -->
+    <button
+      *appHasPermission="'CMP_PATIENT_VIEW'"
+      pButton
+      pRipple
+      icon="pi pi-eye"
+      class="p-button-rounded p-button-text p-button-info mr-2"
+      [routerLink]="[patient.id]"
+      pTooltip="View Details"
+      tooltipPosition="top"
+    ></button>
+    <button
+      *appHasPermission="'CMP_PATIENT_EDIT'"
+      pButton
+      pRipple
+      icon="pi pi-pencil"
+      class="p-button-rounded p-button-text p-button-warning"
+      (click)="editPatient(patient)"
+      pTooltip="Edit Record"
+      tooltipPosition="top"
+    ></button>
+  </div>
+</ng-template>
 
 <p-dialog
   [(visible)]="displayDialog"

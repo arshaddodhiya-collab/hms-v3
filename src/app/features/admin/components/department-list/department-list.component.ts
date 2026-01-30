@@ -15,6 +15,18 @@ export class DepartmentListComponent implements OnInit {
   selectedDept: Department | null = null;
   dialogHeader = 'Create Department';
 
+  // Table Config
+  cols: any[] = [
+    { field: 'id', header: 'ID' },
+    { field: 'name', header: 'Name' },
+    { field: 'head', header: 'Head of Dept' },
+    { field: 'staffCount', header: 'Staff Count' },
+  ];
+
+  // Confirm Dialog State
+  isConfirmOpen = false;
+  deptToDeleteId: string | null = null;
+
   constructor(private adminService: AdminService) {}
 
   ngOnInit(): void {
@@ -40,9 +52,20 @@ export class DepartmentListComponent implements OnInit {
   }
 
   deleteDepartment(id: string): void {
-    if (confirm('Are you sure you want to delete this department?')) {
-      this.adminService.deleteDepartment(id);
+    this.deptToDeleteId = id;
+    this.isConfirmOpen = true;
+  }
+
+  onConfirmDelete() {
+    if (this.deptToDeleteId) {
+      this.adminService.deleteDepartment(this.deptToDeleteId);
+      this.deptToDeleteId = null;
     }
+  }
+
+  onCancelDelete() {
+    this.deptToDeleteId = null;
+    this.isConfirmOpen = false;
   }
 
   onSave(deptData: any) {

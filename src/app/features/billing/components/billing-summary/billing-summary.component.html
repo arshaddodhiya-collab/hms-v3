@@ -1,6 +1,5 @@
 <div class="card">
-  <div class="flex justify-content-between align-items-center mb-3">
-    <h2>Billing & Invoices</h2>
+  <app-page-header title="Billing & Invoices" icon="pi pi-wallet">
     <button
       pButton
       label="New Invoice"
@@ -8,91 +7,52 @@
       (click)="createInvoice()"
       *appHasPermission="permissions.CMP_INVOICE_GENERATE"
     ></button>
-  </div>
+  </app-page-header>
 
-  <p-table
-    [value]="invoices"
-    [rows]="10"
-    [paginator]="true"
-    [globalFilterFields]="['patientName', 'id', 'status']"
-    #dt
-  >
-    <ng-template pTemplate="caption">
-      <div class="flex">
-        <span class="p-input-icon-left ml-auto">
-          <i class="pi pi-search"></i>
-          <input
-            pInputText
-            type="text"
-            (input)="dt.filterGlobal($any($event.target).value, 'contains')"
-            placeholder="Search keyword"
-          />
-        </span>
-      </div>
-    </ng-template>
-    <ng-template pTemplate="header">
-      <tr>
-        <th pSortableColumn="id">
-          Invoice ID <p-sortIcon field="id"></p-sortIcon>
-        </th>
-        <th pSortableColumn="date">
-          Date <p-sortIcon field="date"></p-sortIcon>
-        </th>
-        <th pSortableColumn="patientName">
-          Patient <p-sortIcon field="patientName"></p-sortIcon>
-        </th>
-        <th pSortableColumn="totalAmount">
-          Amount <p-sortIcon field="totalAmount"></p-sortIcon>
-        </th>
-        <th pSortableColumn="status">
-          Status <p-sortIcon field="status"></p-sortIcon>
-        </th>
-        <th>Actions</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-invoice>
-      <tr>
-        <td>{{ invoice.id }}</td>
-        <td>{{ invoice.date | date: "shortDate" }}</td>
-        <td>{{ invoice.patientName }}</td>
-        <td>{{ invoice.totalAmount | currency }}</td>
-        <td>
-          <p-tag
-            [value]="invoice.status"
-            [severity]="getSeverity(invoice.status)"
-          ></p-tag>
-        </td>
-        <td>
-          <ng-container *appHasPermission="permissions.CMP_PAYMENT_RECEIPT">
-            <button
-              *ngIf="invoice.status === 'PAID'"
-              pButton
-              icon="pi pi-print"
-              class="p-button-rounded p-button-secondary p-button-text"
-              (click)="viewReceipt(invoice.id)"
-              pTooltip="View Receipt"
-              tooltipPosition="top"
-            ></button>
-          </ng-container>
-          <ng-container *appHasPermission="permissions.CMP_INVOICE_GENERATE">
-            <button
-              *ngIf="invoice.status === 'PENDING'"
-              pButton
-              icon="pi pi-check-circle"
-              class="p-button-rounded p-button-success p-button-text"
-              (click)="viewReceipt(invoice.id)"
-              label="Pay"
-              pTooltip="Record Payment"
-              tooltipPosition="top"
-            ></button>
-          </ng-container>
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="6">No invoices found.</td>
-      </tr>
-    </ng-template>
-  </p-table>
+  <app-table [data]="invoices" [columns]="cols" [actionsTemplate]="actions">
+  </app-table>
 </div>
+
+<ng-template #dateTemplate let-value>
+  {{ value | date: "shortDate" }}
+</ng-template>
+
+<ng-template #amountTemplate let-value>
+  {{ value | currency }}
+</ng-template>
+
+<ng-template #statusTemplate let-value>
+  <app-status-badge
+    [status]="value"
+    [type]="
+      value === 'PAID' ? 'success' : value === 'PENDING' ? 'warning' : 'error'
+    "
+  >
+  </app-status-badge>
+</ng-template>
+
+<ng-template #actions let-invoice>
+  <ng-container *appHasPermission="permissions.CMP_PAYMENT_RECEIPT">
+    <button
+      *ngIf="invoice.status === 'PAID'"
+      pButton
+      icon="pi pi-print"
+      class="p-button-rounded p-button-secondary p-button-text"
+      (click)="viewReceipt(invoice.id)"
+      pTooltip="View Receipt"
+      tooltipPosition="top"
+    ></button>
+  </ng-container>
+  <ng-container *appHasPermission="permissions.CMP_INVOICE_GENERATE">
+    <button
+      *ngIf="invoice.status === 'PENDING'"
+      pButton
+      icon="pi pi-check-circle"
+      class="p-button-rounded p-button-success p-button-text"
+      (click)="viewReceipt(invoice.id)"
+      label="Pay"
+      pTooltip="Record Payment"
+      tooltipPosition="top"
+    ></button>
+  </ng-container>
+</ng-template>

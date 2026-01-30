@@ -1,4 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  TemplateRef,
+  AfterViewInit,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { LabService, LabRequest } from '../../services/lab.service';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
@@ -8,9 +14,23 @@ import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
   templateUrl: './lab-request-list.component.html',
   styleUrls: ['./lab-request-list.component.scss'],
 })
-export class LabRequestListComponent implements OnInit {
+export class LabRequestListComponent implements OnInit, AfterViewInit {
+  @ViewChild('dateTemplate') dateTemplate!: TemplateRef<any>;
+  @ViewChild('priorityTemplate') priorityTemplate!: TemplateRef<any>;
+  @ViewChild('statusTemplate') statusTemplate!: TemplateRef<any>;
+
   requests: LabRequest[] = [];
   permissions = PERMISSIONS;
+
+  cols: any[] = [
+    { field: 'id', header: 'ID' },
+    { field: 'requestDate', header: 'Date' },
+    { field: 'patientName', header: 'Patient' },
+    { field: 'testName', header: 'Test' },
+    { field: 'doctorName', header: 'Doctor' },
+    { field: 'priority', header: 'Priority' },
+    { field: 'status', header: 'Status' },
+  ];
 
   constructor(
     private labService: LabService,
@@ -23,34 +43,15 @@ export class LabRequestListComponent implements OnInit {
     });
   }
 
-  getSeverity(
-    priority: string,
-  ): 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' {
-    switch (priority) {
-      case 'EMERGENCY':
-        return 'danger';
-      case 'URGENT':
-        return 'warning';
-      case 'ROUTINE':
-        return 'info';
-      default:
-        return 'info';
-    }
-  }
+  ngAfterViewInit() {
+    const dateCol = this.cols.find((c) => c.field === 'requestDate');
+    if (dateCol) dateCol.template = this.dateTemplate;
 
-  getStatusSeverity(
-    status: string,
-  ): 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' {
-    switch (status) {
-      case 'COMPLETED':
-        return 'success';
-      case 'IN_PROGRESS':
-        return 'warning';
-      case 'PENDING':
-        return 'secondary';
-      default:
-        return 'info';
-    }
+    const priorityCol = this.cols.find((c) => c.field === 'priority');
+    if (priorityCol) priorityCol.template = this.priorityTemplate;
+
+    const statusCol = this.cols.find((c) => c.field === 'status');
+    if (statusCol) statusCol.template = this.statusTemplate;
   }
 
   enterResults(id: string): void {
