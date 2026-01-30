@@ -1,7 +1,7 @@
 <div class="card p-0">
   <app-page-header title="Appointments" icon="pi pi-calendar">
     <button
-      *appHasPermission="'CMP_APPOINTMENT_CREATE'"
+      *appHasPermission="permissions.CMP_APPOINTMENT_CREATE"
       pButton
       pRipple
       label="New Appointment"
@@ -43,7 +43,7 @@
       tooltipPosition="top"
     ></button>
     <button
-      *appHasPermission="'CMP_APPOINTMENT_EDIT'"
+      *appHasPermission="permissions.CMP_APPOINTMENT_EDIT"
       pButton
       pRipple
       icon="pi pi-pencil"

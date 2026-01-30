@@ -5,6 +5,7 @@ import {
   TemplateRef,
   AfterViewInit,
 } from '@angular/core';
+import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 
 @Component({
   selector: 'app-triage-list',
@@ -12,6 +13,7 @@ import {
   styleUrls: ['./triage-list.component.scss'],
 })
 export class TriageListComponent implements OnInit, AfterViewInit {
+  permissions = PERMISSIONS;
   @ViewChild('priorityTemplate') priorityTemplate!: TemplateRef<any>;
   @ViewChild('statusTemplate') statusTemplate!: TemplateRef<any>;
 

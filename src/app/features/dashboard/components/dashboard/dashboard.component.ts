@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MockAuthService } from '../../../../core/services/mock-auth.service';
+import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,6 +10,7 @@ import { MockAuthService } from '../../../../core/services/mock-auth.service';
 export class DashboardComponent implements OnInit {
   userRole: string = '';
   username: string = '';
+  permissions = PERMISSIONS;
 
   constructor(private authService: MockAuthService) {}
 

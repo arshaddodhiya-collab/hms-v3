@@ -34,8 +34,8 @@
   <div class="grid">
     <div class="col-12 xl:col-8">
       <!-- <div class="surface-card shadow-2 border-round p-4 h-full"> -->
-        <!-- <h5 class="text-xl font-bold text-900 mb-4">Today's Activity</h5> -->
-        <app-today-activity></app-today-activity>
+      <!-- <h5 class="text-xl font-bold text-900 mb-4">Today's Activity</h5> -->
+      <app-today-activity></app-today-activity>
       <!-- </div> -->
     </div>
     <div class="col-12 xl:col-4">
@@ -49,7 +49,7 @@
           <button
             pButton
             pRipple
-            *appHasPermission="'CMP_PATIENT_ADD'"
+            *appHasPermission="permissions.CMP_PATIENT_ADD"
             label="New Patient"
             icon="pi pi-user-plus"
             class="p-button-outlined p-button-secondary w-full text-left justify-content-between"
@@ -59,7 +59,7 @@
           <button
             pButton
             pRipple
-            *appHasPermission="'MOD_APPOINTMENTS'"
+            *appHasPermission="permissions.MOD_APPOINTMENTS"
             label="Book Appointment"
             icon="pi pi-calendar-plus"
             class="p-button-outlined p-button-secondary w-full text-left justify-content-between"
@@ -69,7 +69,7 @@
           <button
             pButton
             pRipple
-            *appHasPermission="'MOD_LAB'"
+            *appHasPermission="permissions.MOD_LAB"
             label="View Reports"
             icon="pi pi-file"
             class="p-button-outlined p-button-secondary w-full text-left justify-content-between"

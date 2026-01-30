@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { BaseCrudComponent } from '../../../../shared/components/base-crud.component';
+import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 
 @Component({
   selector: 'app-patient-list',
@@ -18,6 +19,8 @@ export class PatientListComponent
   implements OnInit, AfterViewInit
 {
   @ViewChild('genderTemplate') genderTemplate!: TemplateRef<any>;
+
+  permissions = PERMISSIONS;
 
   cols: any[] = [
     { field: 'name', header: 'Name' },

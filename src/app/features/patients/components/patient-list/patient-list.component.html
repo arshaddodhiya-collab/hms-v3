@@ -1,7 +1,7 @@
 <div class="card p-0">
   <app-page-header title="Patients" icon="pi pi-users">
     <button
-      *appHasPermission="'CMP_PATIENT_ADD'"
+      *appHasPermission="permissions.CMP_PATIENT_ADD"
       pButton
       pRipple
       label="New Patient"
@@ -30,7 +30,7 @@
   <div class="flex justify-content-center">
     <!-- Using div wrapper for alignment if needed -->
     <button
-      *appHasPermission="'CMP_PATIENT_VIEW'"
+      *appHasPermission="permissions.CMP_PATIENT_VIEW"
       pButton
       pRipple
       icon="pi pi-eye"
@@ -40,7 +40,7 @@
       tooltipPosition="top"
     ></button>
     <button
-      *appHasPermission="'CMP_PATIENT_EDIT'"
+      *appHasPermission="permissions.CMP_PATIENT_EDIT"
       pButton
       pRipple
       icon="pi pi-pencil"

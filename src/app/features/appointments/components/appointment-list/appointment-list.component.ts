@@ -10,6 +10,7 @@ import {
 import { formatDate } from '@angular/common';
 import { MessageService } from 'primeng/api';
 import { BaseCrudComponent } from '../../../../shared/components/base-crud.component';
+import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 
 @Component({
   selector: 'app-appointment-list',
@@ -21,6 +22,8 @@ export class AppointmentListComponent
   implements OnInit, AfterViewInit
 {
   @ViewChild('statusTemplate') statusTemplate!: TemplateRef<any>;
+
+  permissions = PERMISSIONS;
 
   submitted: boolean = false;
   statuses: any[] = [

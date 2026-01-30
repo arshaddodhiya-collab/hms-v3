@@ -28,7 +28,7 @@
 <ng-template #actions let-item>
   <!-- Nurse Action: Entry -->
   <button
-    *appHasPermission="'CMP_VITALS_WRITE'"
+    *appHasPermission="permissions.CMP_VITALS_WRITE"
     pButton
     pRipple
     label="Triage"
@@ -40,7 +40,7 @@
 
   <!-- Doctor/All Action: View -->
   <button
-    *appHasPermission="'CMP_VITALS_READ'"
+    *appHasPermission="permissions.CMP_VITALS_READ"
     pButton
     pRipple
     icon="pi pi-eye"

@@ -5,6 +5,7 @@ import {
   TemplateRef,
   AfterViewInit,
 } from '@angular/core';
+import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 
 @Component({
   selector: 'app-consultation-list',
@@ -16,6 +17,8 @@ export class ConsultationListComponent implements OnInit, AfterViewInit {
   @ViewChild('ageTemplate') ageTemplate!: TemplateRef<any>;
   @ViewChild('priorityTemplate') priorityTemplate!: TemplateRef<any>;
   @ViewChild('statusTemplate') statusTemplate!: TemplateRef<any>;
+
+  permissions = PERMISSIONS;
 
   // Mock Data - representing patients who have completed Triage
   consultationQueue = [
