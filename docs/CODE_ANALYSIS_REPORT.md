@@ -78,7 +78,7 @@ Inline ternary logic for styles:
 Use the `app-status-badge` or a pure pipe/directive for styling based on data values.
 
 ## Summary Checklist for Refactoring
-1. [ ] **Extract Services**: Create `AppointmentService`, `PatientService`, etc.
-2. [ ] **Adopt Shared Components**: Replace direct `<p-table>` with `<app-table>`.
-3. [ ] **Centralize Logic**: Move repeated CRUD methods to a base class.
-4. [ ] **Fix Constants**: Use `PERMISSIONS` constant in templates.
+1. [x] **Extract Services**: Create `AppointmentService`, `PatientService`, etc.
+2. [x] **Adopt Shared Components**: Replace direct `<p-table>` with `<app-table>`.
+3. [x] **Centralize Logic**: Move repeated CRUD methods to a base class.
+4. [x] **Fix Constants**: Use `PERMISSIONS` constant in templates.
