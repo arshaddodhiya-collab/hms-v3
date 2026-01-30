@@ -34,6 +34,8 @@ import { HasPermissionDirective } from './directives/has-permission.directive';
 
 import { ValidationMessageComponent } from './components/validation-message/validation-message.component';
 import { BaseCrudComponent } from './components/base-crud.component';
+import { VoiceHudComponent } from './components/voice-hud/voice-hud.component';
+import { VoiceInputDirective } from './directives/voice-input.directive';
 
 @NgModule({
   declarations: [
@@ -44,6 +46,8 @@ import { BaseCrudComponent } from './components/base-crud.component';
     SidebarComponent,
     HasPermissionDirective,
     ValidationMessageComponent,
+    VoiceHudComponent,
+    VoiceInputDirective,
   ],
   imports: [
     CommonModule,
@@ -84,6 +88,8 @@ import { BaseCrudComponent } from './components/base-crud.component';
     SidebarComponent,
     HasPermissionDirective,
     ValidationMessageComponent,
+    VoiceHudComponent,
+    VoiceInputDirective,
     // PrimeNG Modules
     ButtonModule,
     InputTextModule,

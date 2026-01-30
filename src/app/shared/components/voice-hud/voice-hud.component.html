@@ -1,0 +1,29 @@
+<div class="voice-hud-container">
+  <div
+    class="voice-status"
+    *ngIf="isListening$ | async"
+    [class.listening]="isListening$ | async"
+  >
+    <div class="waves"><span></span><span></span><span></span></div>
+    <span class="status-text">Listening...</span>
+  </div>
+
+  <div class="voice-transcript" *ngIf="text$ | async as text">"{{ text }}"</div>
+
+  <div class="voice-error" *ngIf="error$ | async as error">
+    {{ error }}
+  </div>
+
+  <button
+    class="voice-toggle-btn p-button-rounded p-button-lg"
+    [class.p-button-danger]="isListening$ | async"
+    [class.p-button-primary]="!(isListening$ | async)"
+    (click)="toggleVoice()"
+  >
+    <i
+      class="pi"
+      [class.pi-microphone]="!(isListening$ | async)"
+      [class.pi-stop]="isListening$ | async"
+    ></i>
+  </button>
+</div>
