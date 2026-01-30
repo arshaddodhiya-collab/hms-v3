@@ -21,3 +21,18 @@ body {
     border-radius: 12px;
 }
 
+/* Responsive Table Wrapper */
+.p-datatable-responsive-min {
+    .p-datatable-table {
+        min-width: 50rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .p-datatable-responsive-min {
+        .p-datatable-table {
+            min-width: 100%; // Stack or scroll, but min-width 50rem forces scroll
+        }
+    }
+}
+
