@@ -138,7 +138,7 @@ import {
           background-color: #fcfcfd;
           border-bottom: 1px solid #edf2f7;
           font-weight: 600;
-          color: #4a5568;
+          color: black;
           font-size: 0.875rem;
           text-transform: uppercase;
           letter-spacing: 0.025em;
@@ -148,6 +148,7 @@ import {
           padding: 1.25rem 1rem; /* Increased row height for clarity */
           border-bottom: 1px solid #f1f5f9;
           font-size: 0.925rem;
+          color: black;
         }
 
         /* 2. ROW HOVER & SELECTION */
