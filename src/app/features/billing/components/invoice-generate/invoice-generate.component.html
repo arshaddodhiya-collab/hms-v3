@@ -1,0 +1,95 @@
+<div class="card">
+  <h2>Generate New Invoice</h2>
+  <form [formGroup]="invoiceForm">
+    <div class="grid p-fluid mb-4">
+      <div class="col-12 md:col-6">
+        <label for="patientName" class="block font-bold mb-2"
+          >Patient Name</label
+        >
+        <input
+          pInputText
+          id="patientName"
+          formControlName="patientName"
+          placeholder="Enter patient name"
+        />
+      </div>
+      <div class="col-12 md:col-6">
+        <label for="patientId" class="block font-bold mb-2">Patient ID</label>
+        <input
+          pInputText
+          id="patientId"
+          formControlName="patientId"
+          placeholder="e.g. P-101"
+        />
+      </div>
+    </div>
+
+    <div class="field mb-4">
+      <label class="block font-bold mb-2">Line Items</label>
+      <div formArrayName="items">
+        <div
+          *ngFor="let item of items.controls; let i = index"
+          [formGroupName]="i"
+          class="grid align-items-center mb-2"
+        >
+          <div class="col-6">
+            <input
+              pInputText
+              formControlName="description"
+              placeholder="Description (e.g. Consultation)"
+            />
+          </div>
+          <div class="col-4">
+            <p-inputNumber
+              formControlName="amount"
+              mode="currency"
+              currency="USD"
+              locale="en-US"
+              placeholder="Amount"
+            ></p-inputNumber>
+          </div>
+          <div class="col-2">
+            <button
+              pButton
+              icon="pi pi-trash"
+              class="p-button-danger p-button-text"
+              (click)="removeItem(i)"
+              [disabled]="items.length === 1"
+            ></button>
+          </div>
+        </div>
+      </div>
+      <button
+        pButton
+        label="Add Item"
+        icon="pi pi-plus"
+        class="p-button-secondary p-button-text mt-2"
+        (click)="addItem()"
+      ></button>
+    </div>
+
+    <div
+      class="flex justify-content-end align-items-center mb-5 border-top-1 border-300 pt-3"
+    >
+      <span class="text-xl font-bold mr-3">Total:</span>
+      <span class="text-xl text-primary font-bold">{{
+        calculateTotal() | currency
+      }}</span>
+    </div>
+
+    <div class="flex justify-content-end gap-2">
+      <button
+        pButton
+        label="Cancel"
+        class="p-button-secondary"
+        (click)="cancel()"
+      ></button>
+      <button
+        pButton
+        label="Create Invoice"
+        icon="pi pi-check"
+        (click)="saveInvoice()"
+      ></button>
+    </div>
+  </form>
+</div>

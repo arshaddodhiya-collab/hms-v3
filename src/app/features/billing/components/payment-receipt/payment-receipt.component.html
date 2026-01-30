@@ -1,0 +1,95 @@
+<div class="card" *ngIf="invoice">
+  <div
+    class="flex justify-content-between align-items-center mb-4 print-hidden"
+  >
+    <button
+      pButton
+      icon="pi pi-arrow-left"
+      label="Back"
+      class="p-button-text"
+      (click)="goBack()"
+    ></button>
+    <button
+      pButton
+      icon="pi pi-print"
+      label="Print Receipt"
+      class="p-button-outlined"
+      (click)="print()"
+    ></button>
+  </div>
+
+  <div class="receipt-container p-5 border-1 border-300 border-round surface-0">
+    <div class="text-center mb-6 border-bottom-1 border-300 pb-4">
+      <h1 class="m-0 text-primary text-4xl mb-2">PAYMENT RECEIPT</h1>
+      <div class="text-600 font-medium">Hospital Management System</div>
+      <div class="text-500">123 Health City, Medical District</div>
+    </div>
+
+    <div class="grid mb-5">
+      <div class="col-6">
+        <div class="text-500 text-sm mb-1">Billed To</div>
+        <div class="font-bold text-xl mb-1">{{ invoice.patientName }}</div>
+        <div class="text-600">ID: {{ invoice.patientId }}</div>
+      </div>
+      <div class="col-6 text-right">
+        <div class="text-500 text-sm mb-1">Receipt #</div>
+        <div class="font-bold text-xl mb-1">{{ invoice.id }}</div>
+        <div class="text-500 text-sm mb-1">Date</div>
+        <div class="text-900">
+          {{ invoice.paymentDate || invoice.date | date: "mediumDate" }}
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-5">
+      <p-table
+        [value]="invoice.items"
+        styleClass="p-datatable-sm p-datatable-gridlines"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 70%">Description</th>
+            <th style="width: 30%" class="text-right">Amount</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+          <tr>
+            <td>{{ item.description }}</td>
+            <td class="text-right">{{ item.amount | currency }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <div class="grid justify-content-end mb-6">
+      <div class="col-6 md:col-4">
+        <div class="flex justify-content-between mb-2">
+          <span class="text-600">Subtotal:</span>
+          <span class="font-bold">{{ invoice.totalAmount | currency }}</span>
+        </div>
+        <div
+          class="flex justify-content-between mb-2 pb-2 border-bottom-1 border-300"
+        >
+          <span class="text-600">Tax:</span>
+          <span class="font-bold">{{ 0 | currency }}</span>
+        </div>
+        <div class="flex justify-content-between text-xl">
+          <span class="font-bold text-900">Total Paid:</span>
+          <span class="font-bold text-primary">{{
+            invoice.totalAmount | currency
+          }}</span>
+        </div>
+        <div
+          class="text-right mt-2 text-sm text-500"
+          *ngIf="invoice.paymentMethod"
+        >
+          Method: {{ invoice.paymentMethod }}
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center text-500 text-sm mt-6 pt-4 border-top-1 border-200">
+      Thank you for your visit. Get well soon!
+    </div>
+  </div>
+</div>

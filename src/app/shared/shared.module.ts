@@ -23,6 +23,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { TabViewModule } from 'primeng/tabview';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { CheckboxModule } from 'primeng/checkbox';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 import { PageHeaderComponent } from './components/page-header.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog.component';
@@ -67,6 +68,7 @@ import { ValidationMessageComponent } from './components/validation-message/vali
     TabViewModule,
     InputTextareaModule,
     CheckboxModule,
+    InputNumberModule,
   ],
   exports: [
     CommonModule,
@@ -101,6 +103,7 @@ import { ValidationMessageComponent } from './components/validation-message/vali
     TabViewModule,
     InputTextareaModule,
     CheckboxModule,
+    InputNumberModule,
   ],
 })
 export class SharedModule {}

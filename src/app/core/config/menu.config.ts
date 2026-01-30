@@ -23,7 +23,7 @@ export const MENU_CONFIG = [
     label: 'Triage',
     icon: 'heart',
     route: '/triage',
-    permission: 'MOD_TRIAGE',
+    permission: PERMISSIONS.MOD_TRIAGE,
   },
   {
     label: 'Consultation',

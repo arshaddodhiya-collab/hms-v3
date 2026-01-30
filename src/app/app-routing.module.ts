@@ -58,6 +58,13 @@ const routes: Routes = [
     data: { permission: 'MOD_LAB' },
   },
   {
+    path: 'billing',
+    loadChildren: () =>
+      import('./features/billing/billing.module').then((m) => m.BillingModule),
+    canActivate: [AuthGuard, PermissionGuard],
+    data: { permission: 'MOD_BILLING' },
+  },
+  {
     path: 'error',
     loadChildren: () =>
       import('./features/error/error.module').then((m) => m.ErrorModule),
