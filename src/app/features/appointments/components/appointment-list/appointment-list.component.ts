@@ -9,36 +9,19 @@ import {
 } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { MessageService } from 'primeng/api';
+import { BaseCrudComponent } from '../../../../shared/components/base-crud.component';
 
 @Component({
   selector: 'app-appointment-list',
   templateUrl: './appointment-list.component.html',
   styleUrls: ['./appointment-list.component.scss'],
 })
-export class AppointmentListComponent implements OnInit, AfterViewInit {
+export class AppointmentListComponent
+  extends BaseCrudComponent<any>
+  implements OnInit, AfterViewInit
+{
   @ViewChild('statusTemplate') statusTemplate!: TemplateRef<any>;
 
-  appointments = [
-    {
-      id: 101,
-      patientName: 'John Doe',
-      doctorName: 'Dr. Smith',
-      date: '2023-10-25',
-      time: '10:00 AM',
-      status: 'Confirmed',
-    },
-    {
-      id: 102,
-      patientName: 'Jane Smith',
-      doctorName: 'Dr. Jones',
-      date: '2023-10-26',
-      time: '02:00 PM',
-      status: 'Pending',
-    },
-  ];
-
-  displayDialog: boolean = false;
-  appointment: any = {};
   submitted: boolean = false;
   statuses: any[] = [
     { label: 'Confirmed', value: 'Confirmed' },
@@ -58,9 +41,34 @@ export class AppointmentListComponent implements OnInit, AfterViewInit {
   constructor(
     @Inject(LOCALE_ID) private locale: string,
     private messageService: MessageService,
-  ) {}
+  ) {
+    super();
+  }
 
-  ngOnInit(): void {}
+  override ngOnInit(): void {
+    this.refreshData();
+  }
+
+  override refreshData() {
+    this.data = [
+      {
+        id: 101,
+        patientName: 'John Doe',
+        doctorName: 'Dr. Smith',
+        date: '2023-10-25',
+        time: '10:00 AM',
+        status: 'Confirmed',
+      },
+      {
+        id: 102,
+        patientName: 'Jane Smith',
+        doctorName: 'Dr. Jones',
+        date: '2023-10-26',
+        time: '02:00 PM',
+        status: 'Pending',
+      },
+    ];
+  }
 
   ngAfterViewInit() {
     const statusCol = this.cols.find((c) => c.field === 'status');
@@ -69,20 +77,19 @@ export class AppointmentListComponent implements OnInit, AfterViewInit {
     }
   }
 
-  openNew() {
-    this.appointment = {};
+  override openNew(header: string = 'New Appointment') {
+    this.selectedItem = {};
     this.submitted = false;
+    this.dialogHeader = header;
     this.displayDialog = true;
   }
 
-  editAppointment(appointment: any) {
-    this.appointment = { ...appointment };
-    if (this.appointment.time) {
+  override editItem(appointment: any, header: string = 'Edit Appointment') {
+    this.selectedItem = { ...appointment };
+    this.dialogHeader = header;
+    if (this.selectedItem.time) {
       const today = new Date();
-      // Simple parsing (assuming '10:00 AM' format)
-      // For robustness in real app, use Date parsing library or moment
-      // Keeping existing logic
-      const [time, period] = this.appointment.time.split(' ');
+      const [time, period] = this.selectedItem.time.split(' ');
       if (time && period) {
         let [hours, minutes] = time.split(':');
         let h = parseInt(hours);
@@ -92,45 +99,42 @@ export class AppointmentListComponent implements OnInit, AfterViewInit {
         if (period === 'AM' && h === 12) h = 0;
 
         today.setHours(h, m, 0);
-        this.appointment.time = today;
+        this.selectedItem.time = today;
       }
     }
     this.displayDialog = true;
   }
 
-  hideDialog() {
+  override hideDialog() {
     this.displayDialog = false;
     this.submitted = false;
+    this.selectedItem = null;
   }
 
-  saveAppointment() {
+  override onSave(item: any) {
     this.submitted = true;
+    // item is passed from template or we use this.selectedItem
+    // To be safe, rely on this.selectedItem since it is bound to ngModel
+    const appt = this.selectedItem;
 
-    if (this.appointment.patientName?.trim()) {
-      if (this.appointment.time instanceof Date) {
-        this.appointment.time = formatDate(
-          this.appointment.time,
-          'shortTime',
-          this.locale,
-        );
+    if (appt.patientName?.trim()) {
+      if (appt.time instanceof Date) {
+        appt.time = formatDate(appt.time, 'shortTime', this.locale);
       }
 
-      if (this.appointment.id) {
+      if (appt.id) {
         // Update
-        const index = this.appointments.findIndex(
-          (x) => x.id === this.appointment.id,
-        );
-        this.appointments[index] = this.appointment;
+        const index = this.data.findIndex((x) => x.id === appt.id);
+        this.data[index] = appt;
       } else {
         // Create
-        this.appointment.id = Math.floor(Math.random() * 1000);
-        this.appointment.status = this.appointment.status || 'Pending';
-        this.appointments.push(this.appointment);
+        appt.id = Math.floor(Math.random() * 1000);
+        appt.status = appt.status || 'Pending';
+        this.data.push(appt);
       }
 
-      this.appointments = [...this.appointments];
-      this.displayDialog = false;
-      this.appointment = {};
+      this.data = [...this.data];
+      this.hideDialog();
       this.messageService.add({
         severity: 'success',
         summary: 'Success',

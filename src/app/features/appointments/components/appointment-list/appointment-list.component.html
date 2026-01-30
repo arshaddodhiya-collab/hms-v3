@@ -7,13 +7,13 @@
       label="New Appointment"
       icon="pi pi-plus"
       class="p-button-primary"
-      (click)="openNew()"
+      (click)="openNew('New Appointment')"
       pTooltip="Schedule a new appointment"
       tooltipPosition="bottom"
     ></button>
   </app-page-header>
 
-  <app-table [data]="appointments" [columns]="cols" [actionsTemplate]="actions">
+  <app-table [data]="data" [columns]="cols" [actionsTemplate]="actions">
   </app-table>
 </div>
 
@@ -48,7 +48,7 @@
       pRipple
       icon="pi pi-pencil"
       class="p-button-rounded p-button-text p-button-warning"
-      (click)="editAppointment(appointment)"
+      (click)="editItem(appointment, 'Edit Appointment')"
       pTooltip="Edit Appointment"
       tooltipPosition="top"
     ></button>
@@ -58,7 +58,7 @@
 <p-dialog
   [(visible)]="displayDialog"
   [style]="{ width: '450px' }"
-  header="Appointment Details"
+  [header]="dialogHeader"
   [modal]="true"
   styleClass="p-fluid"
 >
@@ -69,11 +69,11 @@
         type="text"
         pInputText
         id="patientName"
-        [(ngModel)]="appointment.patientName"
+        [(ngModel)]="selectedItem.patientName"
         required
         autofocus
       />
-      <small class="p-error" *ngIf="submitted && !appointment.patientName"
+      <small class="p-error" *ngIf="submitted && !selectedItem.patientName"
         >Patient Name is required.</small
       >
     </div>
@@ -83,7 +83,7 @@
         type="text"
         pInputText
         id="doctorName"
-        [(ngModel)]="appointment.doctorName"
+        [(ngModel)]="selectedItem.doctorName"
       />
     </div>
     <div class="formgrid grid">
@@ -91,7 +91,7 @@
         <label for="date">Date</label>
         <p-calendar
           id="date"
-          [(ngModel)]="appointment.date"
+          [(ngModel)]="selectedItem.date"
           [showIcon]="true"
           appendTo="body"
           dateFormat="dd/mm/yy"
@@ -102,7 +102,7 @@
         <label for="time">Time</label>
         <p-calendar
           id="time"
-          [(ngModel)]="appointment.time"
+          [(ngModel)]="selectedItem.time"
           [timeOnly]="true"
           hourFormat="12"
           [showIcon]="true"
@@ -110,11 +110,11 @@
         ></p-calendar>
       </div>
     </div>
-    <div class="field" *ngIf="appointment.id">
+    <div class="field" *ngIf="selectedItem.id">
       <label for="status">Status</label>
       <p-dropdown
         [options]="statuses"
-        [(ngModel)]="appointment.status"
+        [(ngModel)]="selectedItem.status"
         placeholder="Select a Status"
         [style]="{ width: '100%' }"
         appendTo="body"
@@ -138,7 +138,7 @@
       label="Save"
       icon="pi pi-check"
       class="p-button-text"
-      (click)="saveAppointment()"
+      (click)="onSave(null)"
     ></button>
   </ng-template>
 </p-dialog>

@@ -1,19 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { AdminService, Department } from '../../services/admin.service';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
-import { Router } from '@angular/router';
+import { BaseCrudComponent } from '../../../../shared/components/base-crud.component';
 
 @Component({
   selector: 'app-department-list',
   templateUrl: './department-list.component.html',
   styleUrls: ['./department-list.component.scss'],
 })
-export class DepartmentListComponent implements OnInit {
-  departments: Department[] = [];
+export class DepartmentListComponent
+  extends BaseCrudComponent<Department>
+  implements OnInit
+{
   permissions = PERMISSIONS;
-  displayDialog = false;
-  selectedDept: Department | null = null;
-  dialogHeader = 'Create Department';
 
   // Table Config
   cols: any[] = [
@@ -23,55 +22,24 @@ export class DepartmentListComponent implements OnInit {
     { field: 'staffCount', header: 'Staff Count' },
   ];
 
-  // Confirm Dialog State
-  isConfirmOpen = false;
-  deptToDeleteId: string | null = null;
-
-  constructor(private adminService: AdminService) {}
-
-  ngOnInit(): void {
-    this.refreshDepartments();
+  constructor(private adminService: AdminService) {
+    super();
   }
 
-  refreshDepartments() {
+  override ngOnInit(): void {
+    this.refreshData();
+  }
+
+  override refreshData() {
     this.adminService.getDepartments().subscribe((data) => {
-      this.departments = data;
+      this.data = data;
     });
   }
 
-  createDepartment(): void {
-    this.selectedDept = null;
-    this.dialogHeader = 'Create Department';
-    this.displayDialog = true;
-  }
-
-  editDepartment(dept: Department): void {
-    this.selectedDept = dept;
-    this.dialogHeader = 'Edit Department';
-    this.displayDialog = true;
-  }
-
-  deleteDepartment(id: string): void {
-    this.deptToDeleteId = id;
-    this.isConfirmOpen = true;
-  }
-
-  onConfirmDelete() {
-    if (this.deptToDeleteId) {
-      this.adminService.deleteDepartment(this.deptToDeleteId);
-      this.deptToDeleteId = null;
-    }
-  }
-
-  onCancelDelete() {
-    this.deptToDeleteId = null;
-    this.isConfirmOpen = false;
-  }
-
-  onSave(deptData: any) {
-    if (this.selectedDept) {
+  override onSave(deptData: any) {
+    if (this.selectedItem) {
       const updated: Department = {
-        ...this.selectedDept,
+        ...this.selectedItem,
         ...deptData,
       };
       this.adminService.updateDepartment(updated);
@@ -82,10 +50,10 @@ export class DepartmentListComponent implements OnInit {
       };
       this.adminService.addDepartment(newDept);
     }
-    this.displayDialog = false;
+    this.hideDialog();
   }
 
-  onCancel() {
-    this.displayDialog = false;
+  override performDelete(item: Department): void {
+    this.adminService.deleteDepartment(item.id);
   }
 }

@@ -33,6 +33,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { HasPermissionDirective } from './directives/has-permission.directive';
 
 import { ValidationMessageComponent } from './components/validation-message/validation-message.component';
+import { BaseCrudComponent } from './components/base-crud.component';
 
 @NgModule({
   declarations: [

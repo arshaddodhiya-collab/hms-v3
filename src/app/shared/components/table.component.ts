@@ -96,7 +96,14 @@ import {
                   ></ng-container>
                 </ng-container>
                 <ng-template #defaultCell>
-                  <span class="text-color-primary">{{ row[col.field] }}</span>
+                  <div
+                    class="white-space-nowrap overflow-hidden text-overflow-ellipsis"
+                    style="max-width: 200px"
+                    [pTooltip]="row[col.field]"
+                    tooltipPosition="top"
+                  >
+                    <span class="text-color-primary">{{ row[col.field] }}</span>
+                  </div>
                 </ng-template>
               </td>
               <td *ngIf="actionsTemplate" class="text-center body-cell">
@@ -148,7 +155,7 @@ import {
           padding: 1.25rem 1rem; /* Increased row height for clarity */
           border-bottom: 1px solid #f1f5f9;
           font-size: 0.925rem;
-          color: black;
+          // color: black;
         }
 
         /* 2. ROW HOVER & SELECTION */

@@ -7,13 +7,13 @@
       label="New Patient"
       icon="pi pi-plus"
       class="p-button-primary"
-      (click)="openNew()"
+      (click)="openNew('New Patient')"
       pTooltip="Register a new patient"
       tooltipPosition="bottom"
     ></button>
   </app-page-header>
 
-  <app-table [data]="patients" [columns]="cols" [actionsTemplate]="actions">
+  <app-table [data]="data" [columns]="cols" [actionsTemplate]="actions">
   </app-table>
 </div>
 
@@ -45,7 +45,7 @@
       pRipple
       icon="pi pi-pencil"
       class="p-button-rounded p-button-text p-button-warning"
-      (click)="editPatient(patient)"
+      (click)="editItem(patient, 'Edit Record')"
       pTooltip="Edit Record"
       tooltipPosition="top"
     ></button>
@@ -55,7 +55,7 @@
 <p-dialog
   [(visible)]="displayDialog"
   [style]="{ width: '600px' }"
-  header="Patient Details"
+  [header]="dialogHeader"
   [modal]="true"
   styleClass="p-fluid"
 >
@@ -63,8 +63,8 @@
     <app-patient-register
       *ngIf="displayDialog"
       [isModal]="true"
-      [patientData]="selectedPatient"
-      (onSave)="savePatient($event)"
+      [patientData]="selectedItem"
+      (onSave)="onSave($event)"
       (onCancel)="hideDialog()"
     ></app-patient-register>
   </ng-template>

@@ -4,13 +4,13 @@
       pButton
       label="Add Department"
       icon="pi pi-plus"
-      (click)="createDepartment()"
+      (click)="openNew('Create Department')"
       *appHasPermission="permissions.CMP_ADMIN_DEPT_WRITE"
     ></button>
   </app-page-header>
 
   <app-table
-    [data]="departments"
+    [data]="data"
     [columns]="cols"
     [globalFilterFields]="['name', 'head']"
     [actionsTemplate]="actions"
@@ -23,14 +23,14 @@
         pButton
         icon="pi pi-pencil"
         class="p-button-rounded p-button-text p-button-warning mr-2"
-        (click)="editDepartment(dept)"
+        (click)="editItem(dept, 'Edit Department')"
         pTooltip="Edit"
       ></button>
       <button
         pButton
         icon="pi pi-trash"
         class="p-button-rounded p-button-text p-button-danger"
-        (click)="deleteDepartment(dept.id)"
+        (click)="confirmDelete(dept)"
         pTooltip="Delete"
       ></button>
     </ng-container>
@@ -41,7 +41,7 @@
     title="Delete Department"
     message="Are you sure you want to delete this department?"
     (confirm)="onConfirmDelete()"
-    (cancel)="onCancelDelete()"
+    (cancel)="cancelDelete()"
   ></app-confirm-dialog>
 
   <p-dialog
@@ -53,9 +53,9 @@
     [resizable]="false"
   >
     <app-department-create
-      [deptToEdit]="selectedDept"
+      [deptToEdit]="selectedItem"
       (save)="onSave($event)"
-      (cancel)="onCancel()"
+      (cancel)="hideDialog()"
     >
     </app-department-create>
   </p-dialog>

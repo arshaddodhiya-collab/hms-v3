@@ -6,28 +6,18 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { MessageService } from 'primeng/api';
+import { BaseCrudComponent } from '../../../../shared/components/base-crud.component';
 
 @Component({
   selector: 'app-patient-list',
   templateUrl: './patient-list.component.html',
   styleUrls: ['./patient-list.component.scss'],
 })
-export class PatientListComponent implements OnInit, AfterViewInit {
+export class PatientListComponent
+  extends BaseCrudComponent<any>
+  implements OnInit, AfterViewInit
+{
   @ViewChild('genderTemplate') genderTemplate!: TemplateRef<any>;
-
-  patients = [
-    { id: 1, name: 'John Doe', age: 30, gender: 'Male', contact: '1234567890' },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      age: 25,
-      gender: 'Female',
-      contact: '0987654321',
-    },
-  ];
-
-  displayDialog: boolean = false;
-  selectedPatient: any = null;
 
   cols: any[] = [
     { field: 'name', header: 'Name' },
@@ -36,9 +26,32 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     { field: 'contact', header: 'Contact' },
   ];
 
-  constructor(private messageService: MessageService) {}
+  constructor(private messageService: MessageService) {
+    super();
+  }
 
-  ngOnInit(): void {}
+  override ngOnInit(): void {
+    this.refreshData();
+  }
+
+  override refreshData() {
+    this.data = [
+      {
+        id: 1,
+        name: 'John Doe',
+        age: 30,
+        gender: 'Male',
+        contact: '1234567890',
+      },
+      {
+        id: 2,
+        name: 'Jane Smith',
+        age: 25,
+        gender: 'Female',
+        contact: '0987654321',
+      },
+    ];
+  }
 
   ngAfterViewInit() {
     const genderCol = this.cols.find((c) => c.field === 'gender');
@@ -47,41 +60,28 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     }
   }
 
-  openNew() {
-    this.selectedPatient = null;
-    this.displayDialog = true;
-  }
+  override onSave(patientData: any) {
+    // Logic adapted to use this.selectedItem (which corresponds to selectedPatient)
+    // Actually, onSave receives patientData from event.
+    // BaseCrudComponent has abstract onSave(item: any).
+    // The previous logic used this.selectedPatient to decide update vs create.
+    // Base sets selectedItem in editItem.
 
-  editPatient(patient: any) {
-    this.selectedPatient = { ...patient };
-    this.displayDialog = true;
-  }
-
-  hideDialog() {
-    this.displayDialog = false;
-    this.selectedPatient = null;
-  }
-
-  savePatient(patientData: any) {
-    // ... logic same ...
-    if (this.selectedPatient) {
-      // Existing Logic for update...
-      // Since the mock data in this component is hardcoded in specific way in original file
-      // I'll reuse the logic from previous version if I had the full content,
-      // but here we are replacing the class so I must rewrite the logic
-      const index = this.patients.findIndex(
-        (x) => x.id === this.selectedPatient.id,
-      );
+    if (this.selectedItem) {
+      // Update
+      const index = this.data.findIndex((x) => x.id === this.selectedItem.id);
       if (index !== -1) {
-        this.patients[index] = { ...this.patients[index], ...patientData };
+        // Merge updates
+        this.data[index] = { ...this.data[index], ...patientData };
       }
     } else {
-      const newPatient = { ...patientData, id: this.patients.length + 1 };
-      this.patients.push(newPatient);
+      // Create
+      const newPatient = { ...patientData, id: this.data.length + 1 };
+      this.data.push(newPatient);
     }
 
     // Trigger change detection for table
-    this.patients = [...this.patients];
+    this.data = [...this.data];
     this.hideDialog();
     this.messageService.add({
       severity: 'success',
