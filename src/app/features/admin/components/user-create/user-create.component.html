@@ -1,0 +1,42 @@
+<div class="card" class="p-0 border-none shadow-none">
+  <form [formGroup]="userForm">
+    <div class="grid p-fluid mb-4">
+      <div class="col-12 md:col-6">
+        <label for="username" class="block font-bold mb-2">Username</label>
+        <input pInputText id="username" formControlName="username" />
+      </div>
+      <div class="col-12 md:col-6">
+        <label for="password" class="block font-bold mb-2">Password</label>
+        <input
+          pInputText
+          type="password"
+          id="password"
+          formControlName="password"
+        />
+      </div>
+      <div class="col-12 md:col-6">
+        <label for="role" class="block font-bold mb-2">Role</label>
+        <p-dropdown
+          [options]="roles"
+          formControlName="role"
+          placeholder="Select a role"
+        ></p-dropdown>
+      </div>
+    </div>
+
+    <div class="flex justify-content-end gap-2">
+      <button
+        pButton
+        label="Cancel"
+        class="p-button-secondary"
+        (click)="onCancel()"
+      ></button>
+      <button
+        pButton
+        label="Save"
+        icon="pi pi-check"
+        (click)="saveUser()"
+      ></button>
+    </div>
+  </form>
+</div>

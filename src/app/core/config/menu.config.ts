@@ -44,9 +44,21 @@ export const MENU_CONFIG = [
     icon: 'wallet',
   },
   {
-    label: 'Admin',
-    route: '/admin',
-    permission: PERMISSIONS.MOD_ADMIN,
-    icon: 'cog',
+    label: 'Users',
+    route: '/admin/users',
+    permission: PERMISSIONS.CMP_ADMIN_USER_READ,
+    icon: 'id-card',
+  },
+  {
+    label: 'Departments',
+    route: '/admin/departments',
+    permission: PERMISSIONS.CMP_ADMIN_DEPT_READ,
+    icon: 'building',
+  },
+  {
+    label: 'Roles',
+    route: '/admin/roles',
+    permission: PERMISSIONS.CMP_ADMIN_ROLE_WRITE,
+    icon: 'lock',
   },
 ];
