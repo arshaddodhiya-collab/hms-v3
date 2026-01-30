@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { VoiceRecognitionService } from '../../../core/services/voice-recognition.service';
+import {
+  VoiceRecognitionService,
+  VoiceResult,
+} from '../../../core/services/voice-recognition.service';
 import { VoiceCommandService } from '../../../core/services/voice-command.service';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-voice-hud',
@@ -10,6 +14,7 @@ import { Observable } from 'rxjs';
 })
 export class VoiceHudComponent implements OnInit {
   isListening$: Observable<boolean>;
+  result$: Observable<VoiceResult>;
   text$: Observable<string>;
   error$: Observable<string>;
 
@@ -18,7 +23,8 @@ export class VoiceHudComponent implements OnInit {
     private commandService: VoiceCommandService, // Inject to ensure it's initialized
   ) {
     this.isListening$ = this.voiceService.isListening$;
-    this.text$ = this.voiceService.text$;
+    this.result$ = this.voiceService.result$;
+    this.text$ = this.result$.pipe(map((res) => res.text));
     this.error$ = this.voiceService.error$;
   }
 

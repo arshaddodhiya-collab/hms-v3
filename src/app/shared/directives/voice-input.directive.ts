@@ -27,39 +27,87 @@ export class VoiceInputDirective implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.sub = this.voiceService.text$.subscribe((text) => {
-      if (!text) return;
+    this.sub = this.voiceService.result$.subscribe((result) => {
+      if (!result || !result.text) return;
+
+      const text = result.text;
+      const isFinal = result.isFinal;
 
       this.zone.run(() => {
         const lowerText = text.toLowerCase();
 
-        // 1. Fuzzy Match "Focus [Field]"
-        if (this.isFocusCommand(lowerText)) {
+        // 1. Fuzzy Match "Focus [Field]" - ONLY ON FINAL to avoid jumping
+        if (isFinal && this.isFocusCommand(lowerText)) {
           this.el.nativeElement.focus();
           return;
         }
 
         // 2. Logic for when THIS field is focused
         if (document.activeElement === this.el.nativeElement) {
-          // Command: "Clear"
-          if (lowerText === 'clear' || lowerText === 'clear field') {
+          // Clear command (Final only)
+          if (
+            isFinal &&
+            (lowerText === 'clear' || lowerText === 'clear field')
+          ) {
             this.updateValue('');
             return;
           }
 
-          // Avoid typing commands that start with "focus" or specific keywords
-          // This creates a bit of a race condition if "Focus Password" is said while Username is focused.
-          // But since we handle Focus above, hopefully the other directive catches it?
-          // We need to be careful not to type "Focus Password" into the Username field.
+          // Safety check for commands
           if (
             lowerText.startsWith('focus ') ||
             lowerText.startsWith('go to ') ||
-            lowerText.startsWith('navigate ')
+            lowerText.startsWith('navigate ') ||
+            lowerText.startsWith('select ') ||
+            lowerText.startsWith('type ')
           ) {
             return;
           }
 
-          // Type the text
+          // Block interim results that LOOK like the start of a command
+          // This prevents "Focus" from appearing while you are saying "Focus Password"
+          if (!isFinal) {
+            const blockedPrefixes = [
+              'f',
+              'fo',
+              'foc',
+              'focu',
+              'focus',
+              's',
+              'se',
+              'sel',
+              'sele',
+              'selec',
+              'select',
+              'g',
+              'go',
+              'go ',
+              'go t',
+              'go to',
+              'n',
+              'na',
+              'nav',
+              'navi',
+              'navig',
+              'naviga',
+              'navigat',
+              'navigate',
+              'c',
+              'cl',
+              'cle',
+              'clea',
+              'clear',
+              't',
+              'ty',
+              'typ',
+              'type',
+            ];
+            if (blockedPrefixes.includes(lowerText)) {
+              return;
+            }
+          }
+
+          // Live Typing! (Interim or Final)
           this.updateValue(text);
         }
       });

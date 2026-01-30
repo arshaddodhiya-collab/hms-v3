@@ -132,30 +132,39 @@ export class VoiceCommandService {
     });
   }
 
+  private lastExecutionTime = 0;
+  private lastExecutedCommand = '';
+
   init(): void {
     this.subscription.add(
-      this.voiceService.text$.subscribe((text) => {
-        if (text) {
-          this.processCommand(text);
+      this.voiceService.result$.subscribe((result) => {
+        if (result && result.text) {
+          this.processCommand(result.text, result.isFinal);
         }
       }),
     );
   }
 
-  private processCommand(command: string): void {
-    console.log('Voice Command Received:', command);
+  private processCommand(command: string, isFinal: boolean): void {
+    // console.log(`Processing: "${command}" (Final: ${isFinal})`);
 
     if (!this.fuse) return;
 
-    // Check for "Focus [Field]" commands first (handled by directive? or here?)
-    // Actually, directives handle their own focus.
-    // But Fuse might match "Focus Username" to "Users" (nav-users) if threshold is too loose.
-    // So we should check if it looks like a Focus command first.
+    // Ignore Focus/Type commands here (handled by directive)
     if (
       command.toLowerCase().startsWith('focus ') ||
-      command.toLowerCase().startsWith('type ')
+      command.toLowerCase().startsWith('type ') ||
+      command.toLowerCase().startsWith('select ')
     ) {
-      return; // Let directive handle it
+      return;
+    }
+
+    // Debounce: Don't execute same command twice within 2 seconds
+    if (Date.now() - this.lastExecutionTime < 2000) {
+      // checks if it's the SAME command
+      // actually, we might want to allow "Scroll Down" multiple times?
+      // For now, strict debounce to avoid "Dashboard... Dashboard" double nav.
+      return;
     }
 
     const result = this.fuse.search(command);
@@ -163,15 +172,20 @@ export class VoiceCommandService {
     if (result.length > 0) {
       const bestMatch = result[0];
       const score = bestMatch.score || 1;
-      console.log(`Fuzzy Match: "${bestMatch.item.id}" (Score: ${score})`);
 
-      if (score < 0.4) {
+      // Thresholds
+      // Final result: Loose threshold (0.4)
+      // Interim result: Strict threshold (0.15) to ensure we don't jump prematurely
+      const limit = isFinal ? 0.4 : 0.15;
+
+      if (score < limit) {
+        console.log(
+          `Executing "${bestMatch.item.id}" (Score: ${score.toFixed(3)}, Final: ${isFinal})`,
+        );
         bestMatch.item.action();
-      } else {
-        console.log('Match score too low, ignoring.');
+        this.lastExecutionTime = Date.now();
+        this.lastExecutedCommand = bestMatch.item.id;
       }
-    } else {
-      console.log('No fuzzy match found.');
     }
   }
 
