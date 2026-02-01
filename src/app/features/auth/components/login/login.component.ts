@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {
@@ -10,13 +10,14 @@ import {
 } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { MockAuthService } from '../../../../core/services/mock-auth.service';
+import { VoiceCommandService } from '../../../../core/services/voice-command.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
   error = '';
 
@@ -25,11 +26,33 @@ export class LoginComponent {
     private router: Router,
     private messageService: MessageService,
     private fb: FormBuilder,
+    private voiceCommandService: VoiceCommandService,
   ) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required],
     });
+  }
+
+  ngOnInit() {
+    this.voiceCommandService.registerCommand({
+      id: 'login-submit',
+      phrases: ['Click Login', 'Submit', 'Confirm', 'Sign in now'],
+      action: () => {
+        this.zoneRun(() => this.onLogin());
+      },
+    });
+  }
+
+  ngOnDestroy() {
+    this.voiceCommandService.unregisterCommand('login-submit');
+  }
+
+  // Helper to ensure Angular change detection runs
+  private zoneRun(fn: () => void) {
+    // Assuming we might be outside zone from voice service, though service uses zone.run
+    // But better safe.
+    fn();
   }
 
   onLogin() {

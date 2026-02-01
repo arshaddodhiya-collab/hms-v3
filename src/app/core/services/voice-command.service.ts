@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { Location } from '@angular/common';
 import Fuse from 'fuse.js';
 
-interface VoiceCommand {
+export interface VoiceCommand {
   id: string;
   phrases: string[];
   action: () => void;
@@ -93,6 +93,17 @@ export class VoiceCommandService {
         phrases: ['Consultation', 'Consult', 'Go to consultation'],
         action: () => this.router.navigate(['/consultation']),
       },
+      {
+        id: 'nav-roles',
+        phrases: ['Roles', 'Role List', 'Go to roles', 'rolls'],
+        action: () => this.router.navigate(['/admin/roles']),
+      },
+      {
+        id: 'nav-permissions',
+        phrases: ['Permissions', 'Permission List', 'Go to permissions'],
+        action: () => this.router.navigate(['/admin/permissions']),
+      },
+
 
       // Global Actions
       {
@@ -108,12 +119,26 @@ export class VoiceCommandService {
       {
         id: 'action-scroll-down',
         phrases: ['Scroll down', 'Page down', 'Down'],
-        action: () => window.scrollBy({ top: 500, behavior: 'smooth' }),
+        action: () => {
+          const content = document.querySelector('.layout-content');
+          if (content) {
+            content.scrollBy({ top: 500, behavior: 'smooth' });
+          } else {
+            window.scrollBy({ top: 500, behavior: 'smooth' });
+          }
+        },
       },
       {
         id: 'action-scroll-up',
         phrases: ['Scroll up', 'Page up', 'Up'],
-        action: () => window.scrollBy({ top: -500, behavior: 'smooth' }),
+        action: () => {
+          const content = document.querySelector('.layout-content');
+          if (content) {
+            content.scrollBy({ top: -500, behavior: 'smooth' });
+          } else {
+            window.scrollBy({ top: -500, behavior: 'smooth' });
+          }
+        },
       },
       {
         id: 'action-login',
@@ -130,6 +155,16 @@ export class VoiceCommandService {
       includeScore: true,
       ignoreLocation: true,
     });
+  }
+
+  registerCommand(command: VoiceCommand) {
+    this.commands.push(command);
+    this.initFuse();
+  }
+
+  unregisterCommand(id: string) {
+    this.commands = this.commands.filter((cmd) => cmd.id !== id);
+    this.initFuse();
   }
 
   private lastExecutionTime = 0;
@@ -159,34 +194,34 @@ export class VoiceCommandService {
       return;
     }
 
-    // Debounce: Don't execute same command twice within 2 seconds
-    if (Date.now() - this.lastExecutionTime < 2000) {
-      // checks if it's the SAME command
-      // actually, we might want to allow "Scroll Down" multiple times?
-      // For now, strict debounce to avoid "Dashboard... Dashboard" double nav.
+    const result = this.fuse.search(command);
+    if (result.length === 0) return;
+
+    const bestMatch = result[0];
+    const score = bestMatch.score || 1;
+    const limit = isFinal ? 0.4 : 0.15;
+
+    if (score >= limit) return; // No good match
+
+    // Check debounce
+    const now = Date.now();
+    let debounceTime = 2000; // Default 2 seconds
+
+    // Reduce debounce for scroll commands to allow rapid scrolling
+    if (bestMatch.item.id.startsWith('action-scroll')) {
+      debounceTime = 500;
+    }
+
+    if (bestMatch.item.id === this.lastExecutedCommand && (now - this.lastExecutionTime < debounceTime)) {
       return;
     }
 
-    const result = this.fuse.search(command);
-
-    if (result.length > 0) {
-      const bestMatch = result[0];
-      const score = bestMatch.score || 1;
-
-      // Thresholds
-      // Final result: Loose threshold (0.4)
-      // Interim result: Strict threshold (0.15) to ensure we don't jump prematurely
-      const limit = isFinal ? 0.4 : 0.15;
-
-      if (score < limit) {
-        console.log(
-          `Executing "${bestMatch.item.id}" (Score: ${score.toFixed(3)}, Final: ${isFinal})`,
-        );
-        bestMatch.item.action();
-        this.lastExecutionTime = Date.now();
-        this.lastExecutedCommand = bestMatch.item.id;
-      }
-    }
+    console.log(
+      `Executing "${bestMatch.item.id}" (Score: ${score.toFixed(3)}, Final: ${isFinal})`,
+    );
+    bestMatch.item.action();
+    this.lastExecutionTime = now;
+    this.lastExecutedCommand = bestMatch.item.id;
   }
 
   destroy(): void {
