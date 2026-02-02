@@ -16,6 +16,7 @@ import { Location } from '@angular/common';
 export class LabTestEntryComponent implements OnInit {
   requestId: string | null = null;
   request: LabRequest | undefined;
+  test: any = {};
   labForm!: FormGroup;
 
   constructor(

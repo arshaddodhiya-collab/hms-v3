@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   ViewChild,
   TemplateRef,
   AfterViewInit,
@@ -12,7 +11,7 @@ import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
   templateUrl: './triage-list.component.html',
   styleUrls: ['./triage-list.component.scss'],
 })
-export class TriageListComponent implements OnInit, AfterViewInit {
+export class TriageListComponent implements AfterViewInit {
   permissions = PERMISSIONS;
   @ViewChild('priorityTemplate') priorityTemplate!: TemplateRef<any>;
   @ViewChild('statusTemplate') statusTemplate!: TemplateRef<any>;
@@ -55,8 +54,6 @@ export class TriageListComponent implements OnInit, AfterViewInit {
   ];
 
   constructor() {}
-
-  ngOnInit(): void {}
 
   ngAfterViewInit() {
     const priorityCol = this.cols.find((c) => c.field === 'priority');

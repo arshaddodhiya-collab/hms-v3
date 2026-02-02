@@ -5,22 +5,26 @@
       pButton
       pRipple
       icon="pi pi-arrow-left"
-      label="Back"
       class="p-button-text"
       [routerLink]="['/triage']"
       pTooltip="Go back"
       tooltipPosition="right"
-    ></button>
+    >
+      Back
+    </button>
   </div>
 
   <div class="p-fluid grid formgrid">
     <div class="col-12 md:col-6 field">
-      <label class="font-medium text-900">Temperature (°C)</label>
+      <label class="font-medium text-900" for="temperature"
+        >Temperature (°C)</label
+      >
       <div class="p-inputgroup">
         <span class="p-inputgroup-addon bg-orange-50 text-orange-500"
           ><i class="pi pi-sun"></i
         ></span>
         <input
+          id="temperature"
           pInputText
           type="number"
           [(ngModel)]="vitals.temperature"
@@ -29,12 +33,13 @@
       </div>
     </div>
     <div class="col-12 md:col-6 field">
-      <label class="font-medium text-900">SpO₂ (%)</label>
+      <label class="font-medium text-900" for="spo2">SpO₂ (%)</label>
       <div class="p-inputgroup">
         <span class="p-inputgroup-addon bg-cyan-50 text-cyan-500"
           ><i class="pi pi-caret-up"></i
         ></span>
         <input
+          id="spo2"
           pInputText
           type="number"
           [(ngModel)]="vitals.spo2"
@@ -44,12 +49,15 @@
     </div>
 
     <div class="col-12 md:col-6 field">
-      <label class="font-medium text-900">Systolic BP (mmHg)</label>
+      <label class="font-medium text-900" for="systolic"
+        >Systolic BP (mmHg)</label
+      >
       <div class="p-inputgroup">
         <span class="p-inputgroup-addon bg-blue-50 text-blue-500"
           ><i class="pi pi-heart"></i
         ></span>
         <input
+          id="systolic"
           pInputText
           type="number"
           [(ngModel)]="vitals.systolic"
@@ -58,12 +66,15 @@
       </div>
     </div>
     <div class="col-12 md:col-6 field">
-      <label class="font-medium text-900">Diastolic BP (mmHg)</label>
+      <label class="font-medium text-900" for="diastolic"
+        >Diastolic BP (mmHg)</label
+      >
       <div class="p-inputgroup">
         <span class="p-inputgroup-addon bg-blue-50 text-blue-500"
           ><i class="pi pi-heart"></i
         ></span>
         <input
+          id="diastolic"
           pInputText
           type="number"
           [(ngModel)]="vitals.diastolic"
@@ -73,12 +84,13 @@
     </div>
 
     <div class="col-12 md:col-6 field">
-      <label class="font-medium text-900">Pulse (bpm)</label>
+      <label class="font-medium text-900" for="pulse">Pulse (bpm)</label>
       <div class="p-inputgroup">
         <span class="p-inputgroup-addon bg-purple-50 text-purple-500"
           ><i class="pi pi-clock"></i
         ></span>
         <input
+          id="pulse"
           pInputText
           type="number"
           [(ngModel)]="vitals.pulse"
@@ -91,8 +103,9 @@
     <div class="col-12"><div class="p-divider"></div></div>
 
     <div class="col-12 md:col-4 field">
-      <label class="font-medium text-900">Weight (kg)</label>
+      <label class="font-medium text-900" for="weight">Weight (kg)</label>
       <input
+        id="weight"
         pInputText
         type="number"
         [(ngModel)]="vitals.weight"
@@ -101,8 +114,9 @@
       />
     </div>
     <div class="col-12 md:col-4 field">
-      <label class="font-medium text-900">Height (cm)</label>
+      <label class="font-medium text-900" for="height">Height (cm)</label>
       <input
+        id="height"
         pInputText
         type="number"
         [(ngModel)]="vitals.height"
@@ -111,8 +125,9 @@
       />
     </div>
     <div class="col-12 md:col-4 field">
-      <label class="font-medium text-900">BMI</label>
+      <label class="font-medium text-900" for="bmi">BMI</label>
       <input
+        id="bmi"
         pInputText
         type="number"
         [(ngModel)]="vitals.bmi"
@@ -127,19 +142,21 @@
   >
     <button
       pButton
-      label="Cancel"
       class="p-button-secondary p-button-text"
       (click)="cancel()"
       pTooltip="Discard changes"
       tooltipPosition="left"
-    ></button>
+    >
+      Cancel
+    </button>
     <button
       pButton
-      label="Save Vitals"
       class="p-button-primary"
       (click)="saveVitals()"
       pTooltip="Save vitals entry"
       tooltipPosition="left"
-    ></button>
+    >
+      Save Vitals
+    </button>
   </div>
 </div>

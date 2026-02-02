@@ -5,7 +5,7 @@ import { Component, Input, OnInit } from '@angular/core';
   templateUrl: './prescription.component.html',
   styleUrls: ['./prescription.component.scss'],
 })
-export class PrescriptionComponent implements OnInit {
+export class PrescriptionComponent {
   medicines: any[] = [];
 
   newMed = {
@@ -24,8 +24,6 @@ export class PrescriptionComponent implements OnInit {
   ];
 
   constructor() {}
-
-  ngOnInit(): void {}
 
   addMedicine() {
     if (this.newMed.name && this.newMed.dosage) {

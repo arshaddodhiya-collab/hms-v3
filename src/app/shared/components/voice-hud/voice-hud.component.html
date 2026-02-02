@@ -17,12 +17,12 @@
   <button
     class="voice-toggle-btn p-button-rounded p-button-lg"
     [class.p-button-danger]="isListening$ | async"
-    [class.p-button-primary]="!(isListening$ | async)"
+    [class.p-button-primary]="(isListening$ | async) === false"
     (click)="toggleVoice()"
   >
     <i
       class="pi"
-      [class.pi-microphone]="!(isListening$ | async)"
+      [class.pi-microphone]="(isListening$ | async) === false"
       [class.pi-stop]="isListening$ | async"
     ></i>
   </button>

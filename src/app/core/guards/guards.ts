@@ -1,13 +1,6 @@
 import { Injectable } from '@angular/core';
-import {
-  CanActivate,
-  Router,
-  ActivatedRouteSnapshot,
-  RouterStateSnapshot,
-  UrlTree,
-} from '@angular/router';
+import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
 import { MockAuthService } from '../services/mock-auth.service';
-import { Observable } from 'rxjs';
 import { MessageService } from 'primeng/api';
 
 @Injectable({

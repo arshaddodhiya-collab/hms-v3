@@ -1,8 +1,7 @@
 import { Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 declare let webkitSpeechRecognition: any;
-declare let SpeechRecognition: any;
 
 export interface VoiceResult {
   text: string;
@@ -13,6 +12,7 @@ export interface VoiceResult {
   providedIn: 'root',
 })
 export class VoiceRecognitionService {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private recognition: any;
   private isListeningSubject = new BehaviorSubject<boolean>(false);
   private resultSubject = new BehaviorSubject<VoiceResult>({
@@ -30,8 +30,10 @@ export class VoiceRecognitionService {
   }
 
   private initRecognition(): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { webkitSpeechRecognition }: any = window;
     const SpeechRecognition =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).SpeechRecognition || webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
@@ -60,12 +62,18 @@ export class VoiceRecognitionService {
       });
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.recognition.onresult = (event: any) => {
       this.zone.run(() => {
         let interimTranscript = '';
         let finalTranscript = '';
 
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        for (
+          let i = (event as any).resultIndex;
+          i < event.results.length;
+          ++i
+        ) {
           if (event.results[i].isFinal) {
             finalTranscript += event.results[i][0].transcript;
           } else {
@@ -89,6 +97,7 @@ export class VoiceRecognitionService {
       });
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.recognition.onerror = (event: any) => {
       this.zone.run(() => {
         console.error('Voice recognition error:', event.error);

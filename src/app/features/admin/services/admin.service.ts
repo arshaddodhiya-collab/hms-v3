@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { MOCK_USERS, MockUser } from '../../../core/config/mock-users.config';
 

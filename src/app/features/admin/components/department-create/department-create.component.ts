@@ -15,7 +15,7 @@ import { Department } from '../../services/admin.service';
   templateUrl: './department-create.component.html',
   styleUrls: ['./department-create.component.scss'],
 })
-export class DepartmentCreateComponent implements OnInit, OnChanges {
+export class DepartmentCreateComponent implements OnChanges {
   @Input() deptToEdit: Department | null = null;
   @Output() save = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<void>();
@@ -29,8 +29,6 @@ export class DepartmentCreateComponent implements OnInit, OnChanges {
       staffCount: [0, [Validators.min(0)]],
     });
   }
-
-  ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['deptToEdit']) {

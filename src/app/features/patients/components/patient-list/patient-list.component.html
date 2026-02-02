@@ -4,13 +4,14 @@
       *appHasPermission="permissions.CMP_PATIENT_ADD"
       pButton
       pRipple
-      label="New Patient"
       icon="pi pi-plus"
       class="p-button-primary"
       (click)="openNew('New Patient')"
       pTooltip="Register a new patient"
       tooltipPosition="bottom"
-    ></button>
+    >
+      New Patient
+    </button>
   </app-page-header>
 
   <app-table [data]="data" [columns]="cols" [actionsTemplate]="actions">
@@ -29,6 +30,7 @@
 <ng-template #actions let-patient>
   <div class="flex justify-content-center">
     <!-- Using div wrapper for alignment if needed -->
+    <!-- eslint-disable @angular-eslint/template/elements-content -->
     <button
       *appHasPermission="permissions.CMP_PATIENT_VIEW"
       pButton
@@ -49,6 +51,7 @@
       pTooltip="Edit Record"
       tooltipPosition="top"
     ></button>
+    <!-- eslint-enable @angular-eslint/template/elements-content -->
   </div>
 </ng-template>
 

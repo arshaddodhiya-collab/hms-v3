@@ -54,7 +54,8 @@ export abstract class BaseCrudComponent<T> implements OnInit {
   }
 
   // Child should override this for actual delete logic if using confirmDelete
-  protected performDelete(item: T): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected performDelete(_: T): void {}
 
   onConfirmDelete(): void {
     if (this.itemToDelete) {

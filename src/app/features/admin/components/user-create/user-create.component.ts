@@ -14,7 +14,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   templateUrl: './user-create.component.html',
   styleUrls: ['./user-create.component.scss'],
 })
-export class UserCreateComponent implements OnInit, OnChanges {
+export class UserCreateComponent implements OnChanges {
   @Input() userToEdit: any = null;
   @Output() save = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<void>();
@@ -35,8 +35,6 @@ export class UserCreateComponent implements OnInit, OnChanges {
       role: ['', Validators.required],
     });
   }
-
-  ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['userToEdit']) {

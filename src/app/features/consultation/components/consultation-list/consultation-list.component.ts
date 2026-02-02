@@ -12,7 +12,7 @@ import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
   templateUrl: './consultation-list.component.html',
   styleUrls: ['./consultation-list.component.scss'],
 })
-export class ConsultationListComponent implements OnInit, AfterViewInit {
+export class ConsultationListComponent implements AfterViewInit {
   @ViewChild('patientNameTemplate') patientNameTemplate!: TemplateRef<any>;
   @ViewChild('ageTemplate') ageTemplate!: TemplateRef<any>;
   @ViewChild('priorityTemplate') priorityTemplate!: TemplateRef<any>;
@@ -60,8 +60,6 @@ export class ConsultationListComponent implements OnInit, AfterViewInit {
   ];
 
   constructor() {}
-
-  ngOnInit(): void {}
 
   ngAfterViewInit() {
     const patientCol = this.cols.find((c) => c.field === 'patientName');

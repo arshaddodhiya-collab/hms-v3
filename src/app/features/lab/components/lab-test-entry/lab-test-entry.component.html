@@ -9,6 +9,16 @@
       <label class="block font-bold mb-1">Patient</label>
       <div>{{ request.patientName }} ({{ request.patientId }})</div>
     </div>
+    <div class="col-12 md:col-6 field">
+      <label class="font-medium text-900" for="testCode">Test Code</label>
+      <input
+        id="testCode"
+        pInputText
+        type="text"
+        [(ngModel)]="test.code"
+        placeholder="e.g. CBC"
+      />
+    </div>
     <div class="col-12 md:col-4">
       <label class="block font-bold mb-1">Doctor</label>
       <div>{{ request.doctorName }}</div>

@@ -3,10 +3,10 @@ import { RouterModule, Routes } from '@angular/router';
 import { PermissionGuard } from '../../core/guards/guards';
 import { PERMISSIONS } from '../../core/constants/permissions.constants';
 import { UserListComponent } from './components/user-list/user-list.component';
-import { UserCreateComponent } from './components/user-create/user-create.component';
-import { DepartmentListComponent } from './components/department-list/department-list.component';
+
 import { DepartmentCreateComponent } from './components/department-create/department-create.component';
 import { RolePermissionComponent } from './components/role-permission/role-permission.component';
+import { DepartmentListComponent } from './components/department-list/department-list.component';
 
 const routes: Routes = [
   {
