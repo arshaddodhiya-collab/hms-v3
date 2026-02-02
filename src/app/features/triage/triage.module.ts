@@ -6,10 +6,7 @@ import { TriageRoutingModule } from './triage-routing.module';
 import { VitalsSharedModule } from './vitals-shared.module';
 
 @NgModule({
-  declarations: [
-    VitalsEntryComponent,
-    TriageListComponent,
-  ],
+  declarations: [VitalsEntryComponent, TriageListComponent],
   imports: [SharedModule, TriageRoutingModule, VitalsSharedModule],
   exports: [],
 })

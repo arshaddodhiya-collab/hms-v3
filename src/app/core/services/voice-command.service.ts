@@ -104,7 +104,6 @@ export class VoiceCommandService {
         action: () => this.router.navigate(['/admin/permissions']),
       },
 
-
       // Global Actions
       {
         id: 'action-logout',
@@ -212,7 +211,10 @@ export class VoiceCommandService {
       debounceTime = 500;
     }
 
-    if (bestMatch.item.id === this.lastExecutedCommand && (now - this.lastExecutionTime < debounceTime)) {
+    if (
+      bestMatch.item.id === this.lastExecutedCommand &&
+      now - this.lastExecutionTime < debounceTime
+    ) {
       return;
     }
 

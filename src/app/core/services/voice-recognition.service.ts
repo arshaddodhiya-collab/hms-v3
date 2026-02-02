@@ -1,8 +1,8 @@
 import { Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-declare var webkitSpeechRecognition: any;
-declare var SpeechRecognition: any;
+declare let webkitSpeechRecognition: any;
+declare let SpeechRecognition: any;
 
 export interface VoiceResult {
   text: string;

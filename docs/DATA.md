@@ -6,6 +6,7 @@ Build a SMALL but REALISTIC Hospital Management System (HMS) FRONTEND
 based strictly on FEATURE-BASED MODULE ARCHITECTURE.
 
 IMPORTANT CONSTRAINTS (DO NOT VIOLATE):
+
 - Angular version: Angular 17
 - Use OLD STYLE NgModules (AppModule, FeatureModule, RoutingModule)
 - DO NOT use standalone components
@@ -14,6 +15,7 @@ IMPORTANT CONSTRAINTS (DO NOT VIOLATE):
 - Focus on module & component consistency, not UI polish
 
 ROLES IN THE SYSTEM:
+
 - Hospital
 - Admin
 - Doctor
@@ -25,9 +27,9 @@ CRITICAL DESIGN RULE:
 Roles DO NOT own modules.
 Roles only control ACCESS (menus, routes, buttons) using permissions.
 
-------------------------------------------------
-FEATURE MODULES TO CREATE (FINAL LIST)
-------------------------------------------------
+---
+
+## FEATURE MODULES TO CREATE (FINAL LIST)
 
 1. AuthModule
    Components:
@@ -91,9 +93,10 @@ FEATURE MODULES TO CREATE (FINAL LIST)
     - TableComponent
     - StatusBadgeComponent
 
-------------------------------------------------
-ROUTING REQUIREMENTS
-------------------------------------------------
+---
+
+## ROUTING REQUIREMENTS
+
 - Each feature module MUST have:
   - <feature>.module.ts
   - <feature>-routing.module.ts
@@ -101,11 +104,12 @@ ROUTING REQUIREMENTS
 - AppRoutingModule should lazy-load feature modules
 - Use route `data` for permission codes (mocked)
 
-------------------------------------------------
-PERMISSION-BASED ACCESS (FRONTEND MOCK)
-------------------------------------------------
+---
+
+## PERMISSION-BASED ACCESS (FRONTEND MOCK)
+
 - Create a permissions.constants.ts file
-- Use string-based permission codes (MOD_*, CMP_*)
+- Use string-based permission codes (MOD*\*, CMP*\*)
 - Example:
   MOD_PATIENTS
   CMP_PATIENT_ADD
@@ -114,15 +118,17 @@ PERMISSION-BASED ACCESS (FRONTEND MOCK)
 - Sidebar menu must be filtered based on permissions
 - Use a mock AuthService returning permissions
 
-------------------------------------------------
-GUARDS
-------------------------------------------------
+---
+
+## GUARDS
+
 - AuthGuard (mocked)
 - PermissionGuard (checks route data permission)
 
-------------------------------------------------
-DELIVERABLES EXPECTED
-------------------------------------------------
+---
+
+## DELIVERABLES EXPECTED
+
 1. Clean Angular folder structure
 2. All feature modules + routing modules
 3. Dummy components with minimal templates
@@ -132,9 +138,10 @@ DELIVERABLES EXPECTED
 7. NO duplicated dashboards
 8. NO role-based modules
 
-------------------------------------------------
-IMPORTANT NOTES
-------------------------------------------------
+---
+
+## IMPORTANT NOTES
+
 - Do NOT implement backend APIs
 - Do NOT implement UI themes
 - Do NOT over-engineer

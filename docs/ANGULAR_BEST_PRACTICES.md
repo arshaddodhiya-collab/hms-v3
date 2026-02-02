@@ -3,7 +3,9 @@
 This document collects pragmatic best-practices, patterns and concrete actions tailored for an Angular project (TypeScript + HTML + SCSS). Use it as a checklist and a guide when improving code quality, reliability, performance, and developer experience.
 
 ---
+
 ## Table of contents
+
 - Goals
 - Project structure & modules
 - TypeScript & Angular compiler settings
@@ -25,6 +27,7 @@ This document collects pragmatic best-practices, patterns and concrete actions t
 ---
 
 ## Goals
+
 - Fast, maintainable, testable code.
 - Predictable data flows and minimal memory leaks.
 - Small production bundles and fast startup.
@@ -34,11 +37,12 @@ This document collects pragmatic best-practices, patterns and concrete actions t
 ---
 
 ## Project structure & modules
+
 - Use a feature-based structure for medium/large apps:
   - src/app/
-    - core/          (singleton services, guards, interceptors)
-    - shared/        (presentational components, pipes, directives)
-    - features/      (feature folders each with routing)
+    - core/ (singleton services, guards, interceptors)
+    - shared/ (presentational components, pipes, directives)
+    - features/ (feature folders each with routing)
     - assets/, environments/
 - Keep CoreModule for singletons (import once in AppModule).
 - Keep SharedModule with only declarables (components, pipes, directives) and no providers; import SharedModule in feature modules.
@@ -48,6 +52,7 @@ This document collects pragmatic best-practices, patterns and concrete actions t
 ---
 
 ## TypeScript & Angular compiler settings
+
 - Enable strict TypeScript and Angular template checks:
   - tsconfig.json: `"strict": true`
   - angularCompilerOptions in tsconfig.app.json:
@@ -60,6 +65,7 @@ This document collects pragmatic best-practices, patterns and concrete actions t
 ---
 
 ## Components, templates & change detection
+
 - Prefer smart/container vs presentational components separation:
   - Container components handle data and pass to dumb components via inputs.
 - Use OnPush change detection for presentational components to reduce checks:
@@ -73,6 +79,7 @@ This document collects pragmatic best-practices, patterns and concrete actions t
 ---
 
 ## Services, dependency injection & state
+
 - Use constructor injection; make service dependencies `private readonly`.
 - Keep service responsibilities single-purpose: data access, mapping, caching.
 - Use a Core/Api service layer to centralize HTTP calls and mapping to domain models.
@@ -85,6 +92,7 @@ This document collects pragmatic best-practices, patterns and concrete actions t
 ---
 
 ## RxJS & async patterns
+
 - Prefer Observables over Promises for streams.
 - Use `async` pipe to handle subscriptions in templates.
 - Avoid manual subscribe/unsubscribe; if subscribing in code, use patterns:
@@ -101,6 +109,7 @@ This document collects pragmatic best-practices, patterns and concrete actions t
 ---
 
 ## Forms & validation
+
 - Prefer Reactive Forms for complex forms; Template forms are ok for simple UIs.
 - Keep validation logic in validators (custom validators as separate functions).
 - Surface validation messages consistently via a reusable component or directive.
@@ -109,6 +118,7 @@ This document collects pragmatic best-practices, patterns and concrete actions t
 ---
 
 ## HTTP, interceptors & error handling
+
 - Centralize HTTP concerns in services and leverage interceptors for cross-cutting:
   - AuthInterceptor (add tokens), ErrorInterceptor (global error mapping), Retry/Caching interceptors.
 - Keep API calls typed and map raw DTOs to app domain models in service layer.
@@ -119,6 +129,7 @@ This document collects pragmatic best-practices, patterns and concrete actions t
 ---
 
 ## Routing & lazy loading
+
 - Use lazy-loaded feature modules for large routes to reduce initial bundle size:
   - { path: 'dashboard', loadChildren: () => import('./features/dashboard/dashboard.module').then(m => m.DashboardModule) }
 - Use route guards (CanActivate/CanLoad) to protect routes; prefer CanLoad for preventing module download if unauthorized.
@@ -128,6 +139,7 @@ This document collects pragmatic best-practices, patterns and concrete actions t
 ---
 
 ## Styling (SCSS) & UI conventions
+
 - Use component-scoped styles (Angular default emulated view encapsulation) and global theme variables in `styles.scss`.
 - Maintain a design token file (colors, spacing, typography) as SCSS variables or CSS custom properties.
 - Prefer BEM-like naming for global CSS, avoid deep nesting (> 3).
@@ -138,6 +150,7 @@ This document collects pragmatic best-practices, patterns and concrete actions t
 ---
 
 ## Testing (unit & e2e)
+
 - Unit tests:
   - Use Jest or Karma + Jasmine. Jest offers faster iteration.
   - Test components with TestBed or shallow testing (Spectator).
@@ -152,6 +165,7 @@ This document collects pragmatic best-practices, patterns and concrete actions t
 ---
 
 ## Tooling, linting & CI
+
 - Linting/formatting:
   - ESLint with Angular plugin (no TSLint).
   - Prettier for formatting, integrate with ESLint (`eslint-config-prettier`).
@@ -168,6 +182,7 @@ This document collects pragmatic best-practices, patterns and concrete actions t
 ---
 
 ## Performance & bundle size
+
 - Build with AOT and production flags: `ng build --configuration production` (AOT, optimization, file hashing).
 - Use lazy-loading for feature modules.
 - Use component-level OnPush change detection.
@@ -179,6 +194,7 @@ This document collects pragmatic best-practices, patterns and concrete actions t
 ---
 
 ## Security & privacy
+
 - Never store sensitive tokens in localStorage unless you accept XSS risk—prefer HttpOnly cookies for auth tokens.
 - Sanitize user-provided HTML (avoid bypassSecurityTrust unless necessary and audited).
 - Use Content Security Policy (CSP) headers from the backend.
@@ -189,6 +205,7 @@ This document collects pragmatic best-practices, patterns and concrete actions t
 ---
 
 ## Accessibility & i18n
+
 - Follow WCAG basics: semantic HTML, keyboard navigation, focus management, color contrast.
 - Use ARIA only when semantic HTML is insufficient.
 - Use Angular i18n or `ngx-translate` for multi-language apps; externalize strings from templates.
@@ -197,6 +214,7 @@ This document collects pragmatic best-practices, patterns and concrete actions t
 ---
 
 ## Deployment & environment management
+
 - Use `environments/*.ts` for compile-time environment values and externalize secrets at runtime when possible.
 - Use Docker multi-stage builds for reproducible artifacts.
 - Serve static assets via CDN, set cache headers, and use cache-busting via filename hashing.
@@ -206,6 +224,7 @@ This document collects pragmatic best-practices, patterns and concrete actions t
 ---
 
 ## Suggested short-term tasks / checklist (actionable)
+
 - [ ] Enable TypeScript strict mode and strict templates.
 - [ ] Add ESLint + Prettier + Husky + lint-staged to enforce style on commit.
 - [ ] Convert legacy template bindings to `async` pipe and remove manual subscriptions.
@@ -222,7 +241,9 @@ This document collects pragmatic best-practices, patterns and concrete actions t
 ---
 
 ## Example patterns / snippets
+
 Use `async` pipe (preferred):
+
 ```html
 <!-- template -->
 <ul>
@@ -233,6 +254,7 @@ Use `async` pipe (preferred):
 ```
 
 `trackBy` example:
+
 ```ts
 trackById(_: number, item: { id: string }) {
   return item.id;
@@ -240,6 +262,7 @@ trackById(_: number, item: { id: string }) {
 ```
 
 Safe subscription pattern:
+
 ```ts
 export class MyComponent implements OnDestroy {
   private readonly destroy$ = new Subject<void>();
@@ -253,12 +276,15 @@ export class MyComponent implements OnDestroy {
 ```
 
 HTTP interceptor skeleton:
+
 ```ts
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     const token = this.authService.token;
-    const authReq = token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req;
+    const authReq = token
+      ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
+      : req;
     return next.handle(authReq);
   }
 }
@@ -267,6 +293,7 @@ export class AuthInterceptor implements HttpInterceptor {
 ---
 
 ## Final notes
+
 - Prioritize the practices that give you the highest ROI first: strict typing, `async`/unsubscribe patterns, OnPush, lazy-loading, and CI checks.
 - Balance new tools (NgRx, Jest) against team familiarity and project complexity.
 - If you want, I can:
@@ -275,6 +302,7 @@ export class AuthInterceptor implements HttpInterceptor {
   - Create a Jest + Cypress migration plan and CI job examples.
 
 References (official docs):
+
 - Angular style guide: https://angular.io/guide/styleguide
 - Angular CLI production builds: https://angular.io/cli/build
 - RxJS best practices: https://rxjs.dev/guide/overview

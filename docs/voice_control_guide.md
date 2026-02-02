@@ -21,52 +21,61 @@ Welcome to the future of Hospital Management! This guide explains how to control
 ---
 
 ## 2. Navigation Commands
+
 You can navigate to any module by saying "Go to..." or just the module name.
 
-| Module | Voice Commands (Variations supported) |
-| :--- | :--- |
-| **Dashboard** | "Dashboard", "Home", "Go to dashboard" |
-| **Patients** | "Patients", "Patient List", "Pay shunts" |
+| Module           | Voice Commands (Variations supported)               |
+| :--------------- | :-------------------------------------------------- |
+| **Dashboard**    | "Dashboard", "Home", "Go to dashboard"              |
+| **Patients**     | "Patients", "Patient List", "Pay shunts"            |
 | **Appointments** | "Appointments", "Appointment List", "A point ments" |
-| **Billing** | "Billing", "Bill ing", "Go to billing" |
-| **Triage** | "Triage", "Tree azh", "Go to triage" |
-| **Admin** | "Admin", "Administrator", "Add min" |
-| **Users** | "Users", "User list", "Use ars" |
-| **Departments** | "Departments", "Department list" |
-| **Lab** | "Lab", "Laboratory" |
-| **Consultation** | "Consultation", "Consult" |
+| **Billing**      | "Billing", "Bill ing", "Go to billing"              |
+| **Triage**       | "Triage", "Tree azh", "Go to triage"                |
+| **Admin**        | "Admin", "Administrator", "Add min"                 |
+| **Users**        | "Users", "User list", "Use ars"                     |
+| **Departments**  | "Departments", "Department list"                    |
+| **Lab**          | "Lab", "Laboratory"                                 |
+| **Consultation** | "Consultation", "Consult"                           |
 
 ---
 
 ## 3. Global Actions
+
 These commands work anywhere in the application.
 
-| Action | Commands | Description |
-| :--- | :--- | :--- |
-| **Login** | "Login", "Sign in", "Log in", "Low gin" | Go to Login Page. |
-| **Logout** | "Logout", "Sign out", "Log out" | Log out current user. |
-| **Back** | "Go back", "Back", "Navigate back" | Return to previous page. |
-| **Scroll Down** | "Scroll down", "Down", "Page down" | Scroll down the page. |
-| **Scroll Up** | "Scroll up", "Up", "Page up" | Scroll up the page. |
+| Action          | Commands                                | Description              |
+| :-------------- | :-------------------------------------- | :----------------------- |
+| **Login**       | "Login", "Sign in", "Log in", "Low gin" | Go to Login Page.        |
+| **Logout**      | "Logout", "Sign out", "Log out"         | Log out current user.    |
+| **Back**        | "Go back", "Back", "Navigate back"      | Return to previous page. |
+| **Scroll Down** | "Scroll down", "Down", "Page down"      | Scroll down the page.    |
+| **Scroll Up**   | "Scroll up", "Up", "Page up"            | Scroll up the page.      |
 
 ---
 
 ## 4. Form Filling (Hands-Free Typing)
+
 You can fill forms without touching the keyboard.
 
 ### Step 1: Focus the Field
+
 Say **"Focus [Field Name]"** or **"Select [Field Name]"**.
-* Examples: "Focus Username", "Select Password", "Focus First Name".
+
+- Examples: "Focus Username", "Select Password", "Focus First Name".
 
 ### Step 2: Speak the Value
+
 Once a field is focused, just speak naturally to type.
-* Example: "John Doe", "Admin", "One Two Three".
+
+- Example: "John Doe", "Admin", "One Two Three".
 
 ### Step 3: Corrections
-* **"Clear"**: Clears the current field.
-* **"Clear field"**: Same as above.
+
+- **"Clear"**: Clears the current field.
+- **"Clear field"**: Same as above.
 
 ### Example Workflow: Login
+
 1.  **"Login"** -> Navigates to Login page.
 2.  **"Focus User Name"** -> Focuses Username field.
 3.  **"Admin"** -> Types "Admin".
@@ -79,12 +88,15 @@ Once a field is focused, just speak naturally to type.
 ## 5. Troubleshooting
 
 **"It's not listening!"**
+
 - Check if the icon is RED. If blue, click it.
 - Check browser permissions (lock icon in URL bar).
 
 **"It hears 'Lojin' but doesn't do anything."**
+
 - Check the console (F12) for "Fuzzy Match" logs.
 - If it says "Match score too low", try speaking more clearly.
 
 **"It types 'Focus' into the field."**
+
 - Say "Focus [Field]" clearly as one phrase. If you pause after "Focus", it might treat the next word as typing input.

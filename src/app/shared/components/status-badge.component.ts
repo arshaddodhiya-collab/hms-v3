@@ -1,10 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-status-badge',
   template: `
     <p-tag [value]="status" [severity]="getSeverity()" [rounded]="true"></p-tag>
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatusBadgeComponent {
   @Input() status: string = '';

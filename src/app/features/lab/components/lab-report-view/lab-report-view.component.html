@@ -37,7 +37,7 @@
         <div class="text-sm text-500 mt-2">Date</div>
         <div class="font-bold">
           {{
-            request.completedDate || request.requestDate | date: "mediumDate"
+            request.completedDate || request.requestDate | date: 'mediumDate'
           }}
         </div>
       </div>
@@ -71,7 +71,7 @@
       <div class="col-8">
         <div class="text-sm text-500 mb-1">Technician Notes</div>
         <div class="font-italic text-600">
-          {{ request.technicianNotes || "None" }}
+          {{ request.technicianNotes || 'None' }}
         </div>
       </div>
       <div class="col-4 text-right">

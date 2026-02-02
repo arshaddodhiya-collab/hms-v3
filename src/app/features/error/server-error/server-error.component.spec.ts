@@ -8,10 +8,9 @@ describe('ServerErrorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ServerErrorComponent]
-    })
-    .compileComponents();
-    
+      declarations: [ServerErrorComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(ServerErrorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -1,38 +1,48 @@
-@import "primeng/resources/themes/lara-light-blue/theme.css";
-@import "primeng/resources/primeng.css";
-@import "primeflex/primeflex.scss";
-@import "primeicons/primeicons.css";
+@import 'primeng/resources/themes/lara-light-blue/theme.css';
+@import 'primeng/resources/primeng.css';
+@import 'primeflex/primeflex.scss';
+@import 'primeicons/primeicons.css';
 
 body {
-    background-color: var(--surface-ground);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    margin: 0;
-    padding: 0;
+  background-color: var(--surface-ground);
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif,
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
 }
 
 .p-component {
-    font-family: 'Inter', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 /* Global Card Tweaks */
 .p-card {
-    border-radius: 12px;
+  border-radius: 12px;
 }
 
 /* Responsive Table Wrapper */
 .p-datatable-responsive-min {
-    .p-datatable-table {
-        min-width: 50rem;
-    }
+  .p-datatable-table {
+    min-width: 50rem;
+  }
 }
 
 @media screen and (max-width: 768px) {
-    .p-datatable-responsive-min {
-        .p-datatable-table {
-            min-width: 100%; // Stack or scroll, but min-width 50rem forces scroll
-        }
+  .p-datatable-responsive-min {
+    .p-datatable-table {
+      min-width: 100%; // Stack or scroll, but min-width 50rem forces scroll
     }
+  }
 }
-

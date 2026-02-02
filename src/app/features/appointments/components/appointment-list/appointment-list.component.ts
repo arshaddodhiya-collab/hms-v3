@@ -94,7 +94,7 @@ export class AppointmentListComponent
       const today = new Date();
       const [time, period] = this.selectedItem.time.split(' ');
       if (time && period) {
-        let [hours, minutes] = time.split(':');
+        const [hours, minutes] = time.split(':');
         let h = parseInt(hours);
         const m = parseInt(minutes);
 
