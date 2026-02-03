@@ -63,62 +63,64 @@
   styleClass="p-fluid"
 >
   <ng-template pTemplate="content">
-    <div class="field">
-      <label for="patientName">Patient Name</label>
-      <input
-        type="text"
-        pInputText
-        id="patientName"
-        [(ngModel)]="selectedItem.patientName"
-        required
-      />
-      <small class="p-error" *ngIf="submitted && !selectedItem.patientName"
-        >Patient Name is required.</small
-      >
-    </div>
-    <div class="field">
-      <label for="doctorName">Doctor Name</label>
-      <input
-        type="text"
-        pInputText
-        id="doctorName"
-        [(ngModel)]="selectedItem.doctorName"
-      />
-    </div>
-    <div class="formgrid grid">
-      <div class="field col">
-        <label for="date">Date</label>
-        <p-calendar
-          id="date"
-          [(ngModel)]="selectedItem.date"
-          [showIcon]="true"
-          appendTo="body"
-          dateFormat="dd/mm/yy"
-          placeholder="Select Date"
-        ></p-calendar>
-      </div>
-      <div class="field col">
-        <label for="time">Time</label>
-        <p-calendar
-          id="time"
-          [(ngModel)]="selectedItem.time"
-          [timeOnly]="true"
-          hourFormat="12"
-          [showIcon]="true"
-          appendTo="body"
-        ></p-calendar>
-      </div>
-    </div>
-    <div class="field" *ngIf="selectedItem.id">
-      <label for="status">Status</label>
-      <p-dropdown
-        [options]="statuses"
-        [(ngModel)]="selectedItem.status"
-        placeholder="Select a Status"
-        [style]="{ width: '100%' }"
-        appendTo="body"
-      >
-      </p-dropdown>
+    <div *ngIf="selectedItem">
+        <div class="field">
+        <label for="patientName">Patient Name</label>
+        <input
+            type="text"
+            pInputText
+            id="patientName"
+            [(ngModel)]="selectedItem.patientName"
+            required
+        />
+        <small class="p-error" *ngIf="submitted && !selectedItem.patientName"
+            >Patient Name is required.</small
+        >
+        </div>
+        <div class="field">
+        <label for="doctorName">Doctor Name</label>
+        <input
+            type="text"
+            pInputText
+            id="doctorName"
+            [(ngModel)]="selectedItem.doctorName"
+        />
+        </div>
+        <div class="formgrid grid">
+        <div class="field col">
+            <label for="date">Date</label>
+            <p-calendar
+            id="date"
+            [(ngModel)]="appointmentDate"
+            [showIcon]="true"
+            appendTo="body"
+            dateFormat="dd/mm/yy"
+            placeholder="Select Date"
+            ></p-calendar>
+        </div>
+        <div class="field col">
+            <label for="time">Time</label>
+            <p-calendar
+            id="time"
+            [(ngModel)]="appointmentTime"
+            [timeOnly]="true"
+            hourFormat="12"
+            [showIcon]="true"
+            appendTo="body"
+            ></p-calendar>
+        </div>
+        </div>
+        <div class="field" *ngIf="selectedItem.id">
+        <label for="status">Status</label>
+        <p-dropdown
+            [options]="statuses"
+            [(ngModel)]="selectedItem.status"
+            placeholder="Select a Status"
+            [style]="{ width: '100%' }"
+            appendTo="body"
+        >
+        </p-dropdown>
+        </div>
     </div>
   </ng-template>
 

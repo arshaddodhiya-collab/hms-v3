@@ -21,8 +21,7 @@ import { Visit } from '../../../../core/models/patient.model';
 })
 export class AppointmentListComponent
   extends BaseCrudComponent<Visit>
-  implements OnInit, AfterViewInit
-{
+  implements OnInit, AfterViewInit {
   @ViewChild('statusTemplate') statusTemplate!: TemplateRef<any>;
 
   permissions = PERMISSIONS;
@@ -41,6 +40,10 @@ export class AppointmentListComponent
     { field: 'appointmentTime', header: 'Time' }, // Updated field name
     { field: 'status', header: 'Status' },
   ];
+
+  // Temporary properties for form binding
+  appointmentDate: Date | null = null;
+  appointmentTime: Date | null = null;
 
   constructor(
     @Inject(LOCALE_ID) private locale: string,
@@ -81,6 +84,8 @@ export class AppointmentListComponent
 
   override openNew(header: string = 'New Appointment') {
     this.selectedItem = {} as Visit;
+    this.appointmentDate = null;
+    this.appointmentTime = null;
     this.submitted = false;
     this.dialogHeader = header;
     this.displayDialog = true;
@@ -88,8 +93,17 @@ export class AppointmentListComponent
 
   override editItem(appointment: any, header: string = 'Edit Appointment') {
     this.selectedItem = { ...appointment };
+    // Initialize separate date/time from the single appointmentTime
+    if (appointment.appointmentTime) {
+      const dateTime = new Date(appointment.appointmentTime);
+      this.appointmentDate = dateTime;
+      this.appointmentTime = dateTime;
+    } else {
+      this.appointmentDate = null;
+      this.appointmentTime = null;
+    }
+
     this.dialogHeader = header;
-    // Date conversion logic if needed, simplifed for now
     this.displayDialog = true;
   }
 
@@ -97,6 +111,8 @@ export class AppointmentListComponent
     this.displayDialog = false;
     this.submitted = false;
     this.selectedItem = null;
+    this.appointmentDate = null;
+    this.appointmentTime = null;
   }
 
   override onSave(item: any) {
@@ -104,6 +120,16 @@ export class AppointmentListComponent
     const appt = this.selectedItem;
 
     if (appt && appt.patientName) {
+      // Combine date and time
+      if (this.appointmentDate) {
+        const finalDate = new Date(this.appointmentDate);
+        if (this.appointmentTime) {
+          finalDate.setHours(this.appointmentTime.getHours());
+          finalDate.setMinutes(this.appointmentTime.getMinutes());
+        }
+        appt.appointmentTime = finalDate;
+      }
+
       // Create only for now as service supports create
       if (!appt.id) {
         this.appointmentService.createAppointment(appt).subscribe(() => {
