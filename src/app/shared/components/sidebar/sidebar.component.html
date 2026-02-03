@@ -1,24 +1,43 @@
 <div
-  class="h-full flex flex-column bg-white shadow-3 border-right-2 surface-border"
-  style="width: 290px"
+  class="h-full flex flex-column shadow-3 border-right-2"
+  style="
+    width: 290px;
+    background: var(--hms-surface);
+    border-color: var(--hms-primary-light) !important;
+  "
 >
   <div class="p-4 flex align-items-center gap-3">
     <div
-      class="bg-blue-600 text-white border-round flex align-items-center justify-content-center shadow-2 overflow-hidden"
-      style="width: 40px; height: 40px"
+      class="border-round flex align-items-center justify-content-center shadow-2 overflow-hidden"
+      style="
+        width: 40px;
+        height: 40px;
+        background: var(--hms-primary);
+        color: white;
+      "
     >
       <img src="assets/logo.png" alt="HMS Logo" class="w-full h-full" />
     </div>
     <div class="flex flex-column">
-      <span class="font-bold text-xl line-height-1 text-900">HMS</span>
-      <span class="text-xs font-semibold text-500 uppercase tracking-wider"
+      <span
+        class="font-bold text-xl line-height-1"
+        style="color: var(--hms-text)"
+        >HMS</span
+      >
+      <span
+        class="text-xs font-semibold uppercase tracking-wider"
+        style="color: var(--hms-text-muted)"
         >Hospital Tech</span
       >
     </div>
   </div>
 
   <div class="flex-grow-1 overflow-y-auto px-3 py-2">
-    <small class="text-500 font-bold block mb-2 ml-3">MAIN MENU</small>
+    <small
+      class="font-bold block mb-2 ml-3"
+      style="color: var(--hms-text-muted)"
+      >MAIN MENU</small
+    >
 
     <ul class="list-none p-0 m-0 flex flex-column gap-1">
       <li *ngFor="let item of menuItems">
@@ -26,20 +45,32 @@
           [routerLink]="item.route"
           routerLinkActive="active-link"
           class="nav-item flex align-items-center cursor-pointer p-3 border-round transition-duration-200 no-underline"
-          [ngClass]="{
-            'bg-blue-50 text-blue-700 font-semibold': isActive(item.route),
-            'text-600 hover:surface-100': !isActive(item.route),
-          }"
+          [ngStyle]="
+            isActive(item.route)
+              ? {
+                  background: 'var(--hms-primary-light)',
+                  color: 'var(--hms-primary)',
+                }
+              : {
+                  color: 'var(--hms-text-muted)',
+                }
+          "
         >
           <i
             class="pi pi-{{ item.icon }} mr-3 text-lg"
-            [ngClass]="{ 'text-blue-600': isActive(item.route) }"
+            [style.color]="
+              isActive(item.route)
+                ? 'var(--hms-primary)'
+                : 'var(--hms-text-muted)'
+            "
           ></i>
-          <span>{{ item.label }}</span>
+          <span class="font-semibold">{{ item.label }}</span>
 
           <span
             *ngIf="item.badge"
-            class="ml-auto bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 border-round"
+            class="ml-auto text-xs font-bold px-2 py-1 border-round"
+            [style.background]="'var(--hms-primary-light)'"
+            [style.color]="'var(--hms-primary)'"
           >
             {{ item.badge }}
           </span>
@@ -50,25 +81,32 @@
 
   <div class="p-3">
     <div
-      class="flex align-items-center gap-3 p-3 border-round-xl bg-gray-50 border-1 border-50"
+      class="flex align-items-center gap-3 p-3 border-round-xl border-1"
+      style="background: var(--hms-bg); border-color: var(--hms-primary-light)"
     >
       <p-avatar
         image="assets/demo/images/avatar.png"
         icon="pi pi-user"
-        styleClass="bg-blue-500 text-white shadow-1"
+        styleClass="shadow-1"
+        [style]="{ background: 'var(--hms-primary)', color: 'white' }"
         shape="circle"
         size="large"
       ></p-avatar>
 
       <div class="flex flex-column">
-        <span class="font-bold text-sm text-900">User Profile</span>
-        <span class="text-xs text-600">Logged In</span>
+        <span class="font-bold text-sm" style="color: var(--hms-text)"
+          >User Profile</span
+        >
+        <span class="text-xs" style="color: var(--hms-text-muted)"
+          >Logged In</span
+        >
       </div>
 
       <button
         pButton
         icon="pi pi-power-off"
-        class="p-button-rounded p-button-text p-button-danger p-button-sm"
+        class="p-button-rounded p-button-text p-button-sm ml-auto"
+        style="color: var(--hms-error)"
         pTooltip="Sign Out"
         tooltipPosition="top"
         (click)="onLogout()"

@@ -23,7 +23,7 @@ export class StatsCardsComponent implements OnInit {
         label: 'Total Patients',
         value: '1,250',
         icon: 'pi pi-users',
-        color: 'blue',
+        color: 'green',
         permission: PERMISSIONS.MOD_PATIENTS,
       },
       {

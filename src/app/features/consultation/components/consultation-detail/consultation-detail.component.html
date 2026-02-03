@@ -13,7 +13,8 @@
       icon="pi pi-user"
       size="large"
       shape="circle"
-      styleClass="bg-blue-500 text-white"
+      [style]="{ background: 'var(--hms-primary)', color: 'white' }"
+      styleClass="text-white"
     ></p-avatar>
     <div>
       <div class="text-xl font-bold">{{ patient.name }}</div>

@@ -173,8 +173,8 @@ import {
 
           &:focus {
             background: #ffffff;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            border-color: var(--hms-primary);
+            box-shadow: 0 0 0 4px var(--hms-primary-light);
           }
         }
 
@@ -185,8 +185,8 @@ import {
           background: #ffffff;
 
           .p-paginator-pages .p-paginator-page.p-highlight {
-            background: #eff6ff;
-            color: #2563eb;
+            background: var(--hms-primary-light);
+            color: var(--hms-primary);
           }
         }
 

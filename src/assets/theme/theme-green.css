@@ -1,0 +1,78 @@
+:root {
+  /* ==========================================================================
+     1. HMS PALETTE DEFINITION (Single Source of Truth)
+     ========================================================================== */
+  --hms-primary:        #2E7D32;
+  --hms-primary-light:  #E8F5E9;
+  --hms-primary-dark:   #1B5E20;
+
+  --hms-accent:         #66BB6A;
+
+  --hms-bg:             #F7FAF8;
+  --hms-surface:        #FFFFFF;
+  --hms-surface-overlay:#FFFFFF;
+
+  --hms-text:           #1B2E23;
+  --hms-text-muted:     #607D8B;
+  --hms-text-secondary: #607D8B;
+
+  --hms-success:        #2E7D32;
+  --hms-warning:        #ED6C02;
+  --hms-error:          #D32F2F;
+  --hms-info:           #0288D1;
+
+  --hms-border:         #E0E0E0;
+  --hms-border-subtle:  #F0F0F0;
+
+  /* ==========================================================================
+     2. PRIMENG VARIABLE MAPPING (Override Base Theme)
+     ========================================================================== */
+  
+  /* Primary Color */
+  --primary-color:          var(--hms-primary);
+  --primary-color-text:     #ffffff;
+
+  /* Highlights (Selection, Active States) */
+  --highlight-bg:           var(--hms-primary-light);
+  --highlight-text-color:   var(--hms-primary-dark);
+
+  /* Backgrounds & Surfaces */
+  --surface-ground:         var(--hms-bg);
+  --surface-card:           var(--hms-surface);
+  --surface-overlay:        var(--hms-surface-overlay);
+  --surface-border:         var(--hms-border);
+  --surface-hover:          var(--hms-primary-light); /* Subtle green hover */
+
+  /* Text Colors */
+  --text-color:             var(--hms-text);
+  --text-color-secondary:   var(--hms-text-secondary);
+
+  /* Messages / Severity */
+  --green-500:              var(--hms-success);
+  --orange-500:             var(--hms-warning);
+  --red-500:                var(--hms-error);
+  --blue-500:               var(--hms-info);
+
+  /* Form Inputs (Focus States) */
+  --focus-ring:             0 0 0 2px var(--hms-primary-light);
+  --input-focus-border-color: var(--hms-primary);
+  --input-focus-shadow:     0 0 0 2px var(--hms-primary-light);
+
+  /* Button Overrides (Generic) */
+  --button-border-radius:   6px;
+}
+
+/* Specific Component Overrides (if variables aren't enough) */
+
+/* Active Menu Items */
+.active-link {
+    background-color: var(--hms-primary-light) !important;
+    color: var(--hms-primary) !important;
+}
+
+/* Primary Button active state fix */
+.p-button.p-button-primary:enabled:active, 
+.p-button.p-button-primary:enabled:hover {
+    background: var(--hms-primary-dark) !important;
+    border-color: var(--hms-primary-dark) !important;
+}

@@ -8,7 +8,11 @@
         <span class="font-bold text-700 capitalize">{{ username }}</span>
         <span class="text-400 mx-2">|</span>
         <span
-          class="inline-block px-2 py-1 bg-blue-50 text-blue-600 border-round text-sm font-medium"
+          class="inline-block px-2 py-1 border-round text-sm font-medium"
+          style="
+            background-color: var(--hms-primary-light);
+            color: var(--hms-primary);
+          "
           >{{ userRole | titlecase }}</span
         >
       </p>
