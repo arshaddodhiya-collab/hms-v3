@@ -1,0 +1,138 @@
+# 🏗️ Architectural Analysis & Database Validation Report
+
+### **Context**
+- **Frontend**: Angular (Modular Monolith, PrimeNG, Mock Services).
+- **Backend Target**: Spring Boot + MySQL (Production Grade).
+- **Reference**: [database_implementation_plan.md](file:///home/artem/test/hmsv3/docs/database_implementation_plan.md) vs. Actual Frontend Code.
+
+---
+
+## 1. 🔍 Full Frontend Analysis
+
+### **Architecture Overview**
+The frontend utilizes a **Modular Monolith** architecture, which is appropriate for this scale.
+- **Core Module** (`src/app/core`): Correctly isolates Singletons, Interceptors, Guards, and Auth Logic.
+- **Shared Module** (`src/app/shared`): effectively encapsulates reusable UI checks (`HasPermissionDirective`) and generic components.
+- **Feature Modules** (`src/app/features`): Lazily loaded business domains (Patients, Lab, Billing, etc.) ensure good initial load performance.
+
+### **Observations & Critical Risks**
+1.  **State Management**:
+    *   *Current*: Relies on `BehaviorSubject` in services (e.g., `LabService`).
+    *   *Risk*: As the app scales to "Thousands of users", managing complex multi-step flows (like proper Consultation wizards or Triage-to-Doctor handoffs) via simple Subjects will lead to race conditions and inconsistent UI states.
+    *   *Recommendation*: For a "Production-Grade" enterprise app, introduce **NgRx** or **Elf** specifically for:
+        - **Session State** (User, Permissions, Active Department).
+        - **Active Encounter Context** (The patient currently being treated).
+2.  **API Abstraction Gap**:
+    *   *Current*: Direct HTTP calls or Mock services.
+    *   *Risk*: No centralized error handling policy or standardized response parsing.
+    *   *Recommendation*: Implement a `BaseApiService` generic class that standardizes `ApiResponse<T>` unwrapping and automatic token injection.
+
+---
+
+## 2. 🔐 Permission & Authorization Analysis
+
+### **Current Frontend Status**
+- **Mechanism**: String-based permission keys (e.g., `MOD_PATIENTS`, `ACT_CREATE`) defined in `permissions.constants.ts`.
+- **Enforcement**:
+    - **Route Level**: `PermissionGuard` checks `route.data['permission']`.
+    - **Component Level**: `*appHasPermission="'ACT_CREATE'"` directive hides UI elements.
+- **Granularity**: Good mix of **Module-Level** (Menu visibility) and **Action-Level** (Button visibility). **Field-Level** security is currently missing.
+
+### **Production Backend Authorization Model**
+
+The database plan has strict RBAC tables (`user`, `role`, `permission`). This is **CORRECT**, but the data mapping is the critical missing link.
+
+#### **Backend Schema Recommendations**
+You must strictly align the backend data with frontend constants.
+
+| Application Layer | Concept | Database Mapping |
+| :--- | :--- | :--- |
+| **Frontend** | `PERMISSIONS.MOD_LAB` | Table `permission`, Column `name` = 'MOD_LAB' |
+| **Frontend** | `User.role` | Table `role`, Column `name` = 'ROLE_LAB_TECH' |
+| **Security Context** | `SecurityContextHolder` | Table `user_role` AND `role_permission` |
+
+#### **Recommended Database Changes for Auth**
+The current `permission` table is too simple (`name`, `module`).
+**Add Scoping Support**:
+```sql
+ALTER TABLE `permission` ADD COLUMN `scope` ENUM('GLOBAL', 'DEPARTMENT', 'OWN_DATA') DEFAULT 'GLOBAL';
+```
+*Why?* A doctor can `VIEW_PATIENTS` (Global), but maybe only `EDIT_ENCOUNTER` if they are the author (Own Data).
+
+#### **Permission Caching Strategy**
+- **Do NOT query DB on every request.**
+- **Strategy**:
+    1.  **Login**: Fetch all usage permissions recursively `User -> Roles -> Permissions`.
+    2.  **Token**: Embed critical scopes in JWT.
+    3.  **Redis**: Store the full permission set in Redis: `key=auth:perm:{userId}, value=[Set of Strings]`.
+    4.  **Interceptor**: Validate simple permissions via JWT, complex ones via Redis.
+
+---
+
+## 3. 📉 Database Gap Analysis
+
+Comparing `database_implementation_plan.md` vs. Frontend Code.
+
+| Feature Area | Frontend Implementation | Database Plan | **GAP / MISMATCH** |
+| :--- | :--- | :--- | :--- |
+| **Lab Request** | `priority` ('ROUTINE', 'URGENT') | *Missing* | **CRITICAL**: Backend needs `priority ENUM` column. |
+| **Patient Reg** | Inputs `Age` (Number) | Column `dob` (Date) | **CRITICAL**: Frontend must switch to Date Picker. Storing static Age is an anti-pattern. |
+| **Patient Reg** | No Address/Blood Group inputs | Columns `address`, `blood_group` | **MISSING UI**: Data loss will occur. Add fields to form. |
+| **Billing** | Implied Line Items | `items` (JSON) | **RISK**: JSON is untyped. Backend must enforce strict Schema validation on this JSON. |
+| **Triage** | `systolic`, `diastolic`, `bmi` | Matches | **OK**: Perfect alignment. |
+| **Prescription** | `frequency` ('1-0-1') | `frequency` (VARCHAR) | **OK**: String format matches. |
+
+### **Audit & Tenant Readiness**
+- **Missing**: `hospital_id` / `tenant_id` on **ALL** core tables (`user`, `patient`, `appointment`, `invoice`).
+- **Impact**: Without this, you cannot support "multiple hospitals" as requested.
+- **Action**: Add `tenant_id VARCHAR(36) NOT NULL` to all major entities and index it.
+
+---
+
+## 4. 🔌 Backend Readiness & API Design
+
+Based on the frontend UI flows, specifically implement these contracts:
+
+### **1. Patient Registration**
+**POST** `/api/v1/patients`
+*   **Request**: `PatientRegistrationDTO`
+    *   **Validation**: `dob` must be past date. `contact` must be unique.
+*   **Response**: `201 Created` + Location Header.
+
+### **2. Lab Request Workflow**
+**POST** `/api/v1/encounters/{encounterId}/lab-requests`
+*   **Why nested?**: Ensures lab request is strictly tied to a clinical encounter.
+*   **Body**: `{ "testCode": "CBC", "priority": "URGENT", "notes": "..." }`
+
+### **3. Clinical Dashboard (Doctor)**
+**GET** `/api/v1/appointments/today`
+*   **Filter**: `?date=2023-10-27&status=PENDING`
+*   **Optimization**: This is the highest traffic endpoint. Index `appointment(doctor_id, start_time)` is mandatory.
+
+---
+
+## 5. 🚀 Future Scalability & Recommendations
+
+### **Database Versioning**
+- **Mandatory**: Use **Flyway**.
+- **Execution**:
+    - `V1__init_schema.sql`: Your current plan.
+    - `V2__add_priority_and_tenant.sql`: The gaps identified here.
+
+### **Security**
+- **Token**: **JWT** with short expiry (15 min) + **Refresh Token** (7 days, stored in HttpOnly Cookie).
+- **Isolation**: Use `WHERE tenant_id = ?` automatically via Hibernate Filters (crucial for multi-hospital safety).
+
+### **Analytics**
+- The current **Over-Normalization** of Lab Results (Row per parameter) is **Excellent** for analytics. Keep it. Do not switch to JSON for lab results if you want to query "How many patients had High Glucose?".
+
+---
+
+## 📝 Final Checklist: "Things You Were Missing"
+
+1.  [ ] **Schema**: Add `priority` column to `lab_request`.
+2.  [ ] **Schema**: Add `tenant_id` column to all major tables for multi-hospital support.
+3.  [ ] **Frontend**: Refactor Patient Form to use `Date of Birth` picker instead of `Age`.
+4.  [ ] **Frontend**: Add `Address` and `Blood Group` fields to Patient Registration.
+5.  [ ] **Data**: Populate `permission` table with specific keys: `MOD_LAB`, `CMP_VITALS_WRITE`, etc.
+6.  [ ] **Backend**: Implement `department_id` filtering for administrative views.
