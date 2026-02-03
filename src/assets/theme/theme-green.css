@@ -8,8 +8,9 @@
 
   --hms-accent:         #66BB6A;
 
-  --hms-bg:             #F7FAF8;
-  --hms-surface:        #FFFFFF;
+  --hms-bg: #F7FAF8;          /* ✅ Background */
+  --hms-surface: #FFFFFF;    /* Cards / Sidebar */
+
   --hms-surface-overlay:#FFFFFF;
 
   --hms-text:           #1B2E23;
