@@ -1,0 +1,142 @@
+# System Workflows & User Guides
+
+This document outlines the core workflows of the Hospital Management System (HMS) for different user roles. It explains how functionality is distributed and how users interact with the system to complete patient care cycles.
+
+## 1. User Roles Overview
+
+| Role | Key Responsibilities |
+|------|----------------------|
+| **Reception / Front Desk** | Patient Registration, Appointment Scheduling, Billing & Invoicing. |
+| **Nurse** | Triage (Vitals), In-Patient Care (IPD), Ward Management. |
+| **Doctor** | Consultation, Diagnosis, Prescriptions, Lab Requests, Admission Decisions. |
+| **Lab Technician** | Processing Test Requests, Entering Lab Results. |
+| **Admin** | User Management, Department Configuration, System Settings. |
+
+---
+
+## 2. OPD (Out-Patient Department) Workflow
+
+The OPD flow handles patients who visit the hospital for consultation but do not stay overnight.
+
+### **Flow Description:**
+1.  **Registration**: New patients are registered by **Reception**. Existing patients have their records retrieved.
+2.  **Appointment**: **Reception** books an appointment with a specific Doctor/Department.
+3.  **Triage**: Before seeing the doctor, the **Nurse** records vital signs (BP, Temperature, Weight, etc.) in the Triage module.
+4.  **Consultation**: The **Doctor** views the patient in their queue, reviews vitals, performs assessment, and records diagnosis/prescription.
+5.  **Outcome**: The doctor may prescibe medicine (Pharmacy), request tests (Lab), or recommend Admission (IPD).
+
+### **Diagram**
+
+```mermaid
+graph TD
+    User((Patient)) -->|Visits Hospital| Reception
+    
+    subgraph Reception Module
+    Reception -->|Register/Search| Pat[Patient Record]
+    Pat -->|Book Slot| Appt[Appointment]
+    end
+    
+    Appt -->|Queue| Nurse
+    
+    subgraph Triage Module
+    Nurse -->|Record Vitals| Vitals[BP, Temp, Weight]
+    end
+    
+    Vitals -->|Ready| Doctor
+    
+    subgraph Consultation Module
+    Doctor -->|Review Patient| Diagnosis
+    Diagnosis -->|Prescribe| Rx[Prescription]
+    Diagnosis -->|Order Tests| LabReq[Lab Request]
+    Diagnosis -->|Admit| AdmitDec[Admission Decision]
+    end
+    
+    Rx -->Billing
+    LabReq -->Lab
+    AdmitDec -->IPD
+```
+
+---
+
+## 3. IPD (In-Patient Department) Workflow
+
+The IPD flow manages patients who require admission for observation or treatment.
+
+### **Flow Description:**
+1.  **Admission**: A patient is admitted based on a Doctor's recommendation. **Reception** or **Admission Desk** assigns a Ward and Bed.
+2.  **Care & Monitoring**: **Nurses** monitor the patient, administer medication, and record daily vitals in the Ward.
+3.  **Rounds**: **Doctors** visit admitted patients (Rounds), update notes, and review progress.
+4.  **Discharge**: Once recovered, the Doctor authorizes discharge. **Billing** processes the final invoice including bed charges, procedures, and medicines.
+
+### **Diagram**
+
+```mermaid
+graph TD
+    Doctor((Doctor)) -->|Recommends| Admission[Admission Request]
+    
+    subgraph IPD Module
+    Admission -->|Assign Bed| BedMgmt[Bed Management]
+    BedMgmt -->|Occupied| Ward[Ward / Room]
+    
+    Ward -->|Daily Vitals| Nurse
+    Ward -->|Daily Rounds| Doctor
+    
+    Doctor -->|Decision| Discharge{Discharge?}
+    Discharge -- No --> Ward
+    Discharge -- Yes --> Billing
+    end
+    
+    Billing -->|Clear Dues| Exit((Patient Exit))
+```
+
+---
+
+## 4. Lab & Diagnostics Workflow
+
+Handles the processing of medical tests ordered by doctors.
+
+### **Flow Description:**
+1.  **Request**: **Doctor** creates a Lab Request during consultation or rounds.
+2.  **Sample Collection**: **Nurse/Phlebotomist** collects samples (Blood, Urine, etc.).
+3.  **Processing**: **Lab Technician** receives the sample and processes the request.
+4.  **Results**: Technician enters the results into the system.
+5.  **Review**: The result is automatically linked to the Patient's record for the **Doctor** to review.
+
+### **Diagram**
+
+```mermaid
+sequenceDiagram
+    participant Doc as Doctor
+    participant Sys as HMS System
+    participant Lab as Lab Tech
+    
+    Doc->>Sys: Create Lab Request (Test A, B)
+    Sys-->>Lab: Notify Pending Request
+    Lab->>Sys: View Request Details
+    Lab->>Lab: Process Sample
+    Lab->>Sys: Enter Test Results
+    Sys->>Doc: Notify Results Ready
+    Doc->>Sys: Review Report
+```
+
+---
+
+## 5. Administrative Workflow
+
+Used by system administrators to maintain the application.
+
+### **Flow Description:**
+1.  **User Management**: Admin creates user accounts for new staff and assigns roles (e.g., Doctor, Nurse).
+2.  **Role Management**: configuring what each role can see or do (Permissions).
+3.  **Master Data**: Managing Departments, Wards, and other hospital constants.
+
+### **Diagram**
+
+```mermaid
+graph LR
+    Admin((Admin)) -->|Manage| Users[Users]
+    Admin -->|Manage| Dept[Departments]
+    Admin -->|Manage| Roles[Roles & Permissions]
+    
+    Roles -.->|Controls| Access[User Access Level]
+```

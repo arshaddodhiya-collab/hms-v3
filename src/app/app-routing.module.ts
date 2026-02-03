@@ -58,6 +58,13 @@ const routes: Routes = [
     data: { permission: 'MOD_LAB' },
   },
   {
+    path: 'ipd',
+    loadChildren: () =>
+      import('./features/ipd/ipd.module').then((m) => m.IpdModule),
+    canActivate: [AuthGuard, PermissionGuard],
+    data: { permission: 'MOD_PATIENTS' }, // Reusing permissions or creating new MOD_IPD
+  },
+  {
     path: 'billing',
     loadChildren: () =>
       import('./features/billing/billing.module').then((m) => m.BillingModule),

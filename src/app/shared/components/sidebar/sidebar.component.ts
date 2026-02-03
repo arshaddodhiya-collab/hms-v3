@@ -13,6 +13,8 @@ export class SidebarComponent implements OnInit {
   menuItems: any[] = [];
   currentRoute: string = '';
 
+  expandedMenus: { [key: string]: boolean } = {};
+
   constructor(
     private authService: MockAuthService,
     private router: Router,
@@ -21,20 +23,52 @@ export class SidebarComponent implements OnInit {
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         this.currentRoute = event.url;
+        this.updateExpandedState();
       });
   }
 
   ngOnInit() {
     this.loadMenu();
+    this.updateExpandedState();
   }
 
   loadMenu() {
-    this.menuItems = MENU_CONFIG.filter((item) =>
-      this.authService.hasPermission(item.permission),
-    );
+    this.menuItems = this.filterMenu(MENU_CONFIG);
+  }
+
+  private filterMenu(items: any[]): any[] {
+    return items
+      .filter((item) => this.authService.hasPermission(item.permission))
+      .map((item) => {
+        if (item.items) {
+          return { ...item, items: this.filterMenu(item.items) };
+        }
+        return item;
+      })
+      .filter((item) => !item.items || item.items.length > 0); // Hide groups with no visible children
+  }
+
+  toggleMenu(label: string) {
+    this.expandedMenus[label] = !this.expandedMenus[label];
+  }
+
+  isExpanded(label: string): boolean {
+    return !!this.expandedMenus[label];
+  }
+
+  updateExpandedState() {
+    // Auto expand parent if child is active
+    this.menuItems.forEach((item) => {
+      if (item.items) {
+        if (item.items.some((child: any) => this.isActive(child.route))) {
+          this.expandedMenus[item.label] = true;
+        }
+      }
+    });
   }
 
   isActive(route: string): boolean {
+    if (!route) return false;
     return this.currentRoute.includes(route);
   }
 

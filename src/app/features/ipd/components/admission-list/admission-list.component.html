@@ -1,0 +1,16 @@
+<app-page-header
+  title="Admissions"
+  subtitle="Manage inpatient admissions"
+  icon="file"
+></app-page-header>
+
+<div class="card">
+  <app-table
+    [data]="data"
+    [columns]="cols"
+    [rows]="10"
+    [paginator]="true"
+    [showSearch]="true"
+    styleClass="p-datatable-sm"
+  ></app-table>
+</div>

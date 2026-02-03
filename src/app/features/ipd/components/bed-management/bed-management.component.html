@@ -1,0 +1,41 @@
+<app-page-header
+  title="Bed Management"
+  subtitle="Track bed occupancy and wards"
+  icon="th-large"
+></app-page-header>
+
+<div class="flex flex-column gap-4 p-4">
+  <div *ngFor="let ward of wards" class="card">
+    <h3 class="mt-0 mb-3 text-xl font-bold text-gray-800">{{ ward.name }}</h3>
+    <div class="flex flex-wrap gap-3">
+      <div
+        *ngFor="let bed of ward.beds"
+        class="border-1 border-round p-3 flex flex-column align-items-center justify-content-center cursor-pointer hover:shadow-2 transition-duration-200"
+        [ngClass]="{
+          'bg-red-50 border-red-200': bed.isOccupied,
+          'bg-green-50 border-green-200': !bed.isOccupied,
+        }"
+        style="width: 120px; height: 100px"
+      >
+        <i
+          class="pi text-3xl mb-2"
+          [ngClass]="{
+            'pi-user text-red-500': bed.isOccupied,
+            'pi-check-circle text-green-500': !bed.isOccupied,
+          }"
+        ></i>
+
+        <span class="font-bold text-gray-800">{{ bed.number }}</span>
+        <span
+          class="text-xs font-semibold"
+          [ngClass]="{
+            'text-red-500': bed.isOccupied,
+            'text-green-500': !bed.isOccupied,
+          }"
+        >
+          {{ bed.isOccupied ? 'Occupied' : 'Available' }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
