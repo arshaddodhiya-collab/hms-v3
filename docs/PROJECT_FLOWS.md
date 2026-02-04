@@ -165,7 +165,7 @@ flowchart TD
     BILL -->|Invoice| P
     P -->|Pay| BILL
     BILL -->|Receipt/Gate Pass| P
-    P -->|Exit| ((End))
+    P -->|Exit| END_NODE((End))
 
     %% Styles
     style P fill:#f9f,stroke:#333
