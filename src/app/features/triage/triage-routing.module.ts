@@ -5,9 +5,11 @@ import { VitalsEntryComponent } from './components/vitals-entry/vitals-entry.com
 import { VitalsViewComponent } from './components/vitals-view/vitals-view.component';
 import { TriageListComponent } from './components/triage-list/triage-list.component';
 
+import { TriageQueueComponent } from './components/triage-queue/triage-queue.component';
+
 const routes: Routes = [
   {
-    path: 'entry/:appointmentId',
+    path: 'vitals/:appointmentId', // For recording vitals
     component: VitalsEntryComponent,
     canActivate: [PermissionGuard],
     data: { permission: 'CMP_VITALS_WRITE' },
@@ -20,6 +22,12 @@ const routes: Routes = [
   },
   {
     path: '',
+    component: TriageQueueComponent, // Default is queue
+    canActivate: [PermissionGuard],
+    data: { permission: 'MOD_TRIAGE' },
+  },
+  {
+    path: 'list',
     component: TriageListComponent,
     canActivate: [PermissionGuard],
     data: { permission: 'MOD_TRIAGE' },

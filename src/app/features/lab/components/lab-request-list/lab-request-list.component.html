@@ -1,6 +1,15 @@
 <div class="card">
   <app-page-header title="Lab Requests" icon="pi pi-search"> </app-page-header>
 
+  <div class="flex justify-content-end mb-3">
+    <button
+      pButton
+      label="New Request"
+      icon="pi pi-plus"
+      routerLink="request"
+    ></button>
+  </div>
+
   <app-table
     [data]="requests"
     [columns]="cols"

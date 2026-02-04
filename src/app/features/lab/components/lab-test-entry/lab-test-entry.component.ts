@@ -5,7 +5,7 @@ import {
   LabService,
   LabRequest,
   LabTestResult,
-} from '../../services/lab.service';
+} from '../../../../core/services/lab.service';
 import { Location } from '@angular/common';
 
 @Component({
@@ -38,7 +38,9 @@ export class LabTestEntryComponent implements OnInit {
       }
 
       if (this.request.results && this.request.results.length > 0) {
-        this.request.results.forEach((result) => this.addResultRow(result));
+        this.request.results.forEach((result: LabTestResult) =>
+          this.addResultRow(result),
+        );
       } else {
         this.addResultRow();
       }

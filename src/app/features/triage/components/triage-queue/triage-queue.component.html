@@ -1,0 +1,29 @@
+<app-page-header
+  title="Triage Queue"
+  subtitle="Patients waiting for vital signs recording"
+  icon="heart"
+></app-page-header>
+
+<div class="card">
+  <app-table
+    [data]="queue"
+    [columns]="cols"
+    [rows]="10"
+    [paginator]="true"
+    [loading]="loading"
+    [actionsTemplate]="actions"
+    styleClass="p-datatable-sm"
+  >
+    <div caption>Pending Triage</div>
+  </app-table>
+
+  <ng-template #actions let-visit>
+    <button
+      pButton
+      icon="pi pi-bolt"
+      class="p-button-rounded p-button-sm"
+      label="Record Vitals"
+      (click)="onRecordVitals(visit)"
+    ></button>
+  </ng-template>
+</div>

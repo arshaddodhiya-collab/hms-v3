@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { BillingService, Invoice } from '../../services/billing.service';
+import {
+  BillingService,
+  Invoice,
+} from '../../../../core/services/billing.service';
 
 @Component({
   selector: 'app-invoice-generate',

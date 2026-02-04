@@ -5,7 +5,10 @@ import {
   TemplateRef,
   AfterViewInit,
 } from '@angular/core';
-import { BillingService, Invoice } from '../../services/billing.service';
+import {
+  BillingService,
+  Invoice,
+} from '../../../../core/services/billing.service';
 import { Router } from '@angular/router';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 

@@ -5,12 +5,21 @@
 ></app-page-header>
 
 <div class="card">
+  <div class="flex justify-content-end mb-3">
+    <button
+      pButton
+      label="New Admission"
+      icon="pi pi-plus"
+      routerLink="../admit"
+    ></button>
+  </div>
   <app-table
     [data]="data"
     [columns]="cols"
     [rows]="10"
     [paginator]="true"
     [showSearch]="true"
+    [loading]="loading"
     styleClass="p-datatable-sm"
   ></app-table>
 </div>

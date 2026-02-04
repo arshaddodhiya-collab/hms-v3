@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Bed } from '../../../../core/models/patient.model';
+import { IpdService } from '../../../../core/services/ipd.service';
 
 @Component({
   selector: 'app-bed-management',
@@ -9,45 +10,21 @@ import { Bed } from '../../../../core/models/patient.model';
 export class BedManagementComponent implements OnInit {
   beds: Bed[] = [];
   wards: { name: string; beds: Bed[] }[] = [];
+  loading = false;
 
-  constructor() {}
+  constructor(private ipdService: IpdService) {}
 
   ngOnInit(): void {
-    // Mock Data
-    this.beds = [
-      {
-        id: 1,
-        ward: 'General Ward',
-        number: 'G-101',
-        isOccupied: true,
-        type: 'General',
-      },
-      {
-        id: 2,
-        ward: 'General Ward',
-        number: 'G-102',
-        isOccupied: false,
-        type: 'General',
-      },
-      {
-        id: 3,
-        ward: 'General Ward',
-        number: 'G-103',
-        isOccupied: false,
-        type: 'General',
-      },
-      { id: 4, ward: 'ICU', number: 'ICU-1', isOccupied: true, type: 'ICU' },
-      { id: 5, ward: 'ICU', number: 'ICU-2', isOccupied: true, type: 'ICU' },
-      {
-        id: 6,
-        ward: 'Private Ward',
-        number: 'P-101',
-        isOccupied: false,
-        type: 'Private',
-      },
-    ];
+    this.refreshData();
+  }
 
-    this.groupBedsByWard();
+  refreshData() {
+    this.loading = true;
+    this.ipdService.getBeds().subscribe((data) => {
+      this.beds = data;
+      this.groupBedsByWard();
+      this.loading = false;
+    });
   }
 
   groupBedsByWard() {

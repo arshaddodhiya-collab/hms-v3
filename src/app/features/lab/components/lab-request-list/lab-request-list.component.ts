@@ -6,7 +6,7 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { LabService, LabRequest } from '../../services/lab.service';
+import { LabService, LabRequest } from '../../../../core/services/lab.service';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 
 @Component({
@@ -38,7 +38,7 @@ export class LabRequestListComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.labService.getRequests().subscribe((data) => {
+    this.labService.getAllRequests().subscribe((data) => {
       this.requests = data;
     });
   }

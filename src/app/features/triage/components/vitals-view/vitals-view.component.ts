@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import {
+  TriageService,
+  Vitals,
+} from '../../../../core/services/triage.service';
 
 @Component({
   selector: 'app-vitals-view',
@@ -8,25 +12,25 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class VitalsViewComponent implements OnInit {
   appointmentId: string | null = null;
-  // Mock Data
-  vitals: any = {
-    temperature: 37.2,
-    systolic: 145, // High
-    diastolic: 95, // High
-    pulse: 102, // High
-    spo2: 98,
-    weight: 82,
-    height: 178,
-    bmi: 25.9,
-  };
+  vitals: Vitals | null | undefined = null;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute,
+    private triageService: TriageService,
+  ) {}
 
   ngOnInit(): void {
-    this.appointmentId = this.route.snapshot.paramMap.get('appointmentId');
+    const id = this.route.snapshot.paramMap.get('appointmentId');
+    if (id) {
+      this.appointmentId = id;
+      this.triageService.getVitals(+id).subscribe((data) => {
+        this.vitals = data;
+      });
+    }
   }
 
   isEmergency(type: string, value: number): boolean {
+    if (!value) return false;
     if (type === 'systolic' && value > 140) return true;
     if (type === 'diastolic' && value > 90) return true;
     if (type === 'temp' && value > 38) return true;

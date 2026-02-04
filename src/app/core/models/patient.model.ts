@@ -36,11 +36,12 @@ export enum AdmissionStatus {
 }
 
 export interface Bed {
-  id: number;
+  id: number | string;
   ward: string;
   number: string;
   isOccupied: boolean;
   type: string; // e.g., 'ICU', 'General'
+  patientName?: string;
 }
 
 export interface Admission {

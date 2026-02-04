@@ -6,15 +6,20 @@ import { PermissionGuard } from '../../core/guards/guards';
 import { LabRequestListComponent } from './components/lab-request-list/lab-request-list.component';
 import { LabTestEntryComponent } from './components/lab-test-entry/lab-test-entry.component';
 import { LabReportViewComponent } from './components/lab-report-view/lab-report-view.component';
+import { TestRequestComponent } from './components/test-request/test-request.component';
 
 const routes: Routes = [
   {
     path: '',
     component: LabRequestListComponent,
     canActivate: [PermissionGuard],
-    data: { permission: PERMISSIONS.MOD_LAB }, // Or just basic module access
-    // Note: If MOD_LAB isn't defined yet, I might use a generic one or add it.
-    // Based on plan: MOD_LAB, CMP_LAB_ENTRY, CMP_LAB_READ
+    data: { permission: PERMISSIONS.MOD_LAB },
+  },
+  {
+    path: 'request',
+    component: TestRequestComponent,
+    canActivate: [PermissionGuard],
+    data: { permission: PERMISSIONS.MOD_LAB }, // Or specific permission
   },
   {
     path: 'entry/:requestId',

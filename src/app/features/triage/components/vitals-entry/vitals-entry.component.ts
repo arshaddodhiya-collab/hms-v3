@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { TriageService } from '../../../../core/services/triage.service';
 
 @Component({
   selector: 'app-vitals-entry',
@@ -20,14 +21,20 @@ export class VitalsEntryComponent implements OnInit {
     bmi: null,
   };
 
+  loading = false;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private messageService: MessageService,
+    private triageService: TriageService,
   ) {}
 
   ngOnInit(): void {
     this.appointmentId = this.route.snapshot.paramMap.get('appointmentId');
+    if (!this.appointmentId) {
+      this.cancel();
+    }
   }
 
   calculateBMI() {
@@ -41,23 +48,36 @@ export class VitalsEntryComponent implements OnInit {
   }
 
   saveVitals() {
-    console.log(
-      'Saving vitals for appointment',
-      this.appointmentId,
-      this.vitals,
-    );
-    // Mimic API call
-    setTimeout(() => {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: 'Vitals Saved',
-      });
-      this.router.navigate(['/appointments']);
-    }, 500);
+    if (!this.appointmentId) return;
+
+    this.loading = true;
+    const report = {
+      appointmentId: +this.appointmentId,
+      ...this.vitals,
+    };
+    report.recordedAt = new Date();
+
+    this.triageService.saveVitals(report).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Vitals Recorded',
+        });
+        this.router.navigate(['/triage']); // Go back to queue
+      },
+      error: () => {
+        this.loading = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to save',
+        });
+      },
+    });
   }
 
   cancel() {
-    this.router.navigate(['/appointments']);
+    this.router.navigate(['/triage']); // Back to queue
   }
 }

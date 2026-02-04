@@ -3,6 +3,7 @@ import {
   Admission,
   AdmissionStatus,
 } from '../../../../core/models/patient.model';
+import { IpdService } from '../../../../core/services/ipd.service';
 
 @Component({
   selector: 'app-admission-list',
@@ -20,33 +21,19 @@ export class AdmissionListComponent implements OnInit {
   ];
 
   data: Admission[] = [];
+  loading = false;
 
-  constructor() {}
+  constructor(private ipdService: IpdService) {}
 
   ngOnInit(): void {
-    this.data = [
-      {
-        id: 1001,
-        patientId: 1,
-        patientName: 'John Doe',
-        admissionDate: new Date(),
-        ward: 'General Ward',
-        bedNumber: 'G-101',
-        doctorName: 'Dr. Smith',
-        status: AdmissionStatus.ADMITTED,
-        diagnosis: 'Viral Fever',
-      },
-      {
-        id: 1002,
-        patientId: 2,
-        patientName: 'Jane Smith',
-        admissionDate: new Date(),
-        ward: 'ICU',
-        bedNumber: 'ICU-1',
-        doctorName: 'Dr. House',
-        status: AdmissionStatus.ADMITTED,
-        diagnosis: 'Arrhythmia',
-      },
-    ];
+    this.refreshData();
+  }
+
+  refreshData() {
+    this.loading = true;
+    this.ipdService.getAdmissions().subscribe((data) => {
+      this.data = data;
+      this.loading = false;
+    });
   }
 }

@@ -1,0 +1,99 @@
+<app-page-header
+  title="Request Lab Test"
+  subtitle="Order a new lab test for a patient"
+  icon="flask"
+></app-page-header>
+
+<div class="card p-fluid">
+  <div class="field grid">
+    <label class="col-12 md:col-2">Patient</label>
+    <div class="col-12 md:col-10">
+      <p-dropdown
+        [options]="patients"
+        [(ngModel)]="selectedPatient"
+        optionLabel="name"
+        [filter]="true"
+        filterBy="name"
+        placeholder="Select a Patient"
+        [showClear]="true"
+        [ngClass]="{ 'ng-invalid ng-dirty': submitted && !selectedPatient }"
+      ></p-dropdown>
+      <small *ngIf="submitted && !selectedPatient" class="p-error"
+        >Patient is required.</small
+      >
+    </div>
+  </div>
+
+  <div class="field grid">
+    <label class="col-12 md:col-2">Test Name</label>
+    <div class="col-12 md:col-10">
+      <p-dropdown
+        [options]="tests"
+        [(ngModel)]="selectedTest"
+        optionLabel="name"
+        [filter]="true"
+        filterBy="name"
+        placeholder="Select a Test"
+        [showClear]="true"
+        [ngClass]="{ 'ng-invalid ng-dirty': submitted && !selectedTest }"
+      ></p-dropdown>
+      <small *ngIf="submitted && !selectedTest" class="p-error"
+        >Test is required.</small
+      >
+    </div>
+  </div>
+
+  <div class="field grid">
+    <label class="col-12 md:col-2">Priority</label>
+    <div class="col-12 md:col-10">
+      <p-dropdown
+        [options]="priorities"
+        [(ngModel)]="priority"
+        placeholder="Select Priority"
+      ></p-dropdown>
+    </div>
+  </div>
+
+  <div class="field grid">
+    <label class="col-12 md:col-2">Doctor</label>
+    <div class="col-12 md:col-10">
+      <input
+        pInputText
+        [(ngModel)]="doctorName"
+        placeholder="Referring Doctor"
+        [ngClass]="{ 'ng-invalid ng-dirty': submitted && !doctorName }"
+      />
+      <small *ngIf="submitted && !doctorName" class="p-error"
+        >Doctor name is required.</small
+      >
+    </div>
+  </div>
+
+  <div class="field grid">
+    <label class="col-12 md:col-2">Notes</label>
+    <div class="col-12 md:col-10">
+      <textarea
+        pInputTextarea
+        [(ngModel)]="notes"
+        rows="3"
+        placeholder="Clinical Notes"
+      ></textarea>
+    </div>
+  </div>
+
+  <div class="flex justify-content-end gap-2 mt-4">
+    <button
+      pButton
+      label="Cancel"
+      class="p-button-secondary"
+      (click)="cancel()"
+    ></button>
+    <button
+      pButton
+      label="Request Test"
+      icon="pi pi-check"
+      (click)="save()"
+      [loading]="loading"
+    ></button>
+  </div>
+</div>
