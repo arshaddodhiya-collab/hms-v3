@@ -61,20 +61,26 @@ This is **correct HMIS modeling**.
 Frontend checks:
 
 ```ts
-hasPermission('LAB:CREATE')
+// Check if user can enter vitals
+hasPermission('CMP_VITALS_WRITE')
 ```
 
 Backend checks:
 
 ```java
-@PreAuthorize("hasAuthority('LAB_CREATE')")
+@PreAuthorize("hasAuthority('CMP_VITALS_WRITE')")
 ```
 
 Backend logic:
 
 ```
-USER → ROLE → PERMISSION
+USER → JOIN(user_roles) → ROLE → JOIN(role_permissions) → PERMISSION(code)
 ```
+
+**Permission Codes (Examples):**
+*   `MOD_LAB` (Access Lab Module)
+*   `CMP_VITALS_WRITE` (Action: Record Vitals)
+*   `CMP_CONSULTATION_READ` (Action: View History)
 
 No permission → request denied **before DB write**
 

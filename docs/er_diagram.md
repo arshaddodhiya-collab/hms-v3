@@ -35,8 +35,9 @@ erDiagram
 
     PERMISSION {
         BIGINT id PK
-        VARCHAR name
+        VARCHAR code UQ
         VARCHAR module
+        VARCHAR description
     }
 
     PATIENT {
