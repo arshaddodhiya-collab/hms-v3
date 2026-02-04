@@ -1,0 +1,93 @@
+<app-page-header
+  title="Discharge Summary"
+  subtitle="Process patient discharge and generate final bill"
+  icon="file-export"
+></app-page-header>
+
+<div class="card p-fluid" *ngIf="admission">
+  <h5 class="mb-4">Admission Details</h5>
+  <div class="grid">
+    <div class="col-12 md:col-6">
+      <p><strong>Patient:</strong> {{ admission.patientName }}</p>
+      <p>
+        <strong>Admission Date:</strong> {{ admission.admissionDate | date }}
+      </p>
+    </div>
+    <div class="col-12 md:col-6">
+      <p>
+        <strong>Ward/Bed:</strong> {{ admission.ward }} /
+        {{ admission.bedNumber }}
+      </p>
+      <p><strong>Doctor:</strong> {{ admission.doctorName }}</p>
+    </div>
+  </div>
+  <p-divider></p-divider>
+
+  <h5 class="mb-4">Discharge Note</h5>
+
+  <div class="field grid">
+    <label class="col-12 md:col-2">Discharge Date</label>
+    <div class="col-12 md:col-10">
+      <p-calendar [(ngModel)]="dischargeDate" [showIcon]="true"></p-calendar>
+    </div>
+  </div>
+
+  <div class="field grid">
+    <label class="col-12 md:col-2">Final Diagnosis</label>
+    <div class="col-12 md:col-10">
+      <input
+        pInputText
+        [(ngModel)]="diagnosis"
+        placeholder="Final Diagnosis"
+        [ngClass]="{ 'ng-invalid ng-dirty': submitted && !diagnosis }"
+      />
+      <small class="p-error" *ngIf="submitted && !diagnosis"
+        >Diagnosis is required.</small
+      >
+    </div>
+  </div>
+
+  <div class="field grid">
+    <label class="col-12 md:col-2">Treatment Summary</label>
+    <div class="col-12 md:col-10">
+      <textarea
+        pInputTextarea
+        [(ngModel)]="treatmentSummary"
+        rows="4"
+        placeholder="Summary of treatment given"
+      ></textarea>
+    </div>
+  </div>
+
+  <div class="field grid">
+    <label class="col-12 md:col-2">Discharge Advice</label>
+    <div class="col-12 md:col-10">
+      <textarea
+        pInputTextarea
+        [(ngModel)]="advice"
+        rows="4"
+        placeholder="Medications and advice for home"
+        [ngClass]="{ 'ng-invalid ng-dirty': submitted && !advice }"
+      ></textarea>
+      <small class="p-error" *ngIf="submitted && !advice"
+        >Advice is required.</small
+      >
+    </div>
+  </div>
+
+  <div class="flex justify-content-end gap-2 mt-4">
+    <button
+      pButton
+      label="Cancel"
+      class="p-button-secondary"
+      (click)="cancel()"
+    ></button>
+    <button
+      pButton
+      label="Confirm Discharge"
+      icon="pi pi-check"
+      (click)="save()"
+      [loading]="loading"
+    ></button>
+  </div>
+</div>

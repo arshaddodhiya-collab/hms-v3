@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LabService, LabRequest } from '../../services/lab.service';
+import { LabService, LabRequest } from '../../../../core/services/lab.service';
 import { Location } from '@angular/common';
 
 @Component({

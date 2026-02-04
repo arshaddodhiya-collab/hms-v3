@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BillingService, Invoice } from '../../services/billing.service';
+import {
+  BillingService,
+  Invoice,
+} from '../../../../core/services/billing.service';
 import { Location } from '@angular/common';
 
 @Component({
