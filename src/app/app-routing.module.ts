@@ -84,6 +84,15 @@ const routes: Routes = [
       import('./features/error/error.module').then((m) => m.ErrorModule),
   },
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
+  {
+    path: 'voice',
+    loadChildren: () =>
+      import('./features/voice-navigation/voice-navigation.module').then(
+        (m) => m.VoiceNavigationModule,
+      ),
+    canActivate: [AuthGuard, PermissionGuard],
+    data: { permission: 'MOD_VOICE' },
+  },
   { path: '**', redirectTo: '/error/not-found' },
 ];
 

@@ -8,6 +8,7 @@ export const PERMISSIONS = {
   MOD_LAB: 'MOD_LAB',
   MOD_BILLING: 'MOD_BILLING',
   MOD_ADMIN: 'MOD_ADMIN',
+  MOD_VOICE: 'MOD_VOICE',
 
   // Actions
   ACT_VIEW: 'ACT_VIEW',

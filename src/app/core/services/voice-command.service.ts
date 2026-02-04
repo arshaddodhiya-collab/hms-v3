@@ -104,6 +104,39 @@ export class VoiceCommandService {
         action: () => this.router.navigate(['/admin/permissions']),
       },
 
+      // IPD Module
+      {
+        id: 'nav-ipd-admissions',
+        phrases: [
+          'Admissions',
+          'Admission List',
+          'IPD Admissions',
+          'Go to admissions',
+        ],
+        action: () => this.router.navigate(['/ipd/admissions']),
+      },
+      {
+        id: 'nav-ipd-beds',
+        phrases: [
+          'Bed Management',
+          'Beds',
+          'Bed Status',
+          'Go to beds',
+          'Manage beds',
+        ],
+        action: () => this.router.navigate(['/ipd/beds']),
+      },
+      {
+        id: 'nav-ipd-admit',
+        phrases: [
+          'Admit Patient',
+          'New Admission',
+          'Admit',
+          'Create Admission',
+        ],
+        action: () => this.router.navigate(['/ipd/admit']),
+      },
+
       // Global Actions
       {
         id: 'action-logout',
@@ -164,6 +197,10 @@ export class VoiceCommandService {
   unregisterCommand(id: string) {
     this.commands = this.commands.filter((cmd) => cmd.id !== id);
     this.initFuse();
+  }
+
+  getCommands(): VoiceCommand[] {
+    return this.commands;
   }
 
   private lastExecutionTime = 0;

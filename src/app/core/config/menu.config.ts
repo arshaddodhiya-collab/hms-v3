@@ -105,4 +105,10 @@ export const MENU_CONFIG: MenuItem[] = [
       },
     ],
   },
+  {
+    label: 'Voice Navigation',
+    route: '/voice',
+    permission: PERMISSIONS.MOD_VOICE, // Or allow all for now? Using permission for consistency
+    icon: 'microphone',
+  },
 ];

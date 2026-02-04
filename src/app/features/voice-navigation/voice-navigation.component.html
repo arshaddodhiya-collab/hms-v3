@@ -1,0 +1,20 @@
+<div class="voice-container">
+  <header class="voice-header">
+    <h1>Voice Navigation</h1>
+    <p>Use these voice commands to navigate and control the application.</p>
+  </header>
+
+  <div class="commands-grid">
+    <div class="command-card" *ngFor="let cmd of commands">
+      <div class="card-header">
+        <i class="fas fa-microphone"></i>
+        <h3>{{ cmd.id | titlecase }}</h3>
+      </div>
+      <div class="phrases-list">
+        <ul>
+          <li *ngFor="let phrase of cmd.phrases">"{{ phrase }}"</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
