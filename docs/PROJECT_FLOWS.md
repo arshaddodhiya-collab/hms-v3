@@ -20,39 +20,49 @@ The core lifecycle of the system revolves around the Patient.
 - **Actor:** Front Desk / Nurse
 - **Action:**
   1.  Front Desk books an appointment via **`Appointment Management`**.
-  2.  Selects Department (e.g., Cardiology) and Doctor.
-  3.  Allocates a time slot.
-  4.  (Optional) Nurse records initial Vitals (BP, Weight, Temperature).
+  2.  **Triage:** Patient goes to Nurse Station.
+  3.  Nurse checks **`Triage Queue`** (`/triage`).
+  4.  Nurse records Vitals (BP, Temp, Weight) via **`Vitals Form`**.
+  5.  Appointment Status updates to **`Checked In`**.
 
-### **Phase 3: Consultation**
+### **Phase 3: Consultation (OPD)**
 
 - **Actor:** Doctor
 - **Action:**
   1.  Doctor views **`My Appointments`**.
-  2.  Selects the patient.
-  3.  Reviews history and vitals.
-  4.  **Diagnosis:** Doctor adds notes/diagnosis.
-  5.  **Prescription:** Doctor prescribes medicine (Pharmacy) or Tests (Lab).
+  2.  Selects the patient (Status: Checked In).
+  3.  Views history and Vitals recorded by Nurse.
+  4.  **Decision:**
+      - **Prescribe Meds:** Sends to Pharmacy.
+      - **Order Tests:** Creates **`Lab Request`**.
+      - **Admit Patient:** Initiates **`IPD Admission`**.
 
-### **Phase 4: Diagnostics (If Prescribed)**
+### **Phase 4: Consumption of Services**
 
+#### **A. Diagnostics (Lab)**
 - **Actor:** Lab Technician
 - **Action:**
-  1.  Lab Tech sees **`Pending Test Requests`**.
-  2.  Collects sample/performs test.
-  3.  Enters results into the system.
-  4.  Status updates to "Completed".
-  5.  Doctor gets notified (or checks records).
+  1.  Tech views **`Lab Queue`** (`/lab`).
+  2.  Patient status is "Requested".
+  3.  Tech collects sample -> enters results (`/lab/results`).
+  4.  Status updates to **`Completed`**.
 
-### **Phase 5: Billing & Discharge**
-
-- **Actor:** Front Desk (Billing Section)
+#### **B. Inpatient Care (IPD)**
+- **Actor:** Nurse / Admin
 - **Action:**
-  1.  System aggregates charges (Consultation Fee + Lab Tests + Medicines).
-  2.  Front Desk generates an **Invoice** via **`Billing`** module.
-  3.  Patient pays (Cash/Insurance).
-  4.  Receipt printed.
-  5.  Patient is discharged.
+  1.  **Admission:** Assign Ward and Bed (`/ipd/admit`).
+  2.  **Bed Management:** Bed is marked "Occupied".
+  3.  **Care:** Daily rounds, status monitoring.
+
+### **Phase 5: Discharge & Billing**
+
+- **Actor:** Admin / Billing Desk
+- **Action:**
+  1.  **Discharge:** Doctor/Admin clicks **`Discharge`** in Admission List.
+  2.  Fills **Discharge Summary** (Diagnosis, Advice).
+  3.  **Billing Trigger:** System auto-generates Invoice.
+  4.  **Payment:** Front Desk views **`Billing Summary`**, collects payment, marks as **`Paid`**.
+  5.  Patient leaves; Bed marked "Available".
 
 ---
 
@@ -77,20 +87,28 @@ _The Director of Operations_
 2.  **Patient Handling:** Register -> Book Appointment -> Check-in.
 3.  **Billing:** Generate bills for completed services.
 
-### **Doctor Flow** (Planned)
+### **Doctor Flow**
 
 _The Care Provider_
 
 1.  **Schedule:** View daily schedule.
-2.  **Consultation:** Digital prescription pad and history viewer.
-3.  **Referrals:** Send patient to Lab or another Specialist.
+2.  **Consultation:** View Patient History -> Diagnosis -> Prescribe/Admit/Refer.
+3.  **IPD:** Round visits -> Discharge decision.
 
-### **Lab Technician Flow** (Planned)
+### **Nurse Flow**
+
+_The Caregiver_
+
+1.  **OPD:** Monitor `Triage Queue` -> Record Vitals.
+2.  **IPD:** Bed Management -> Patient Vitals -> Med Administration.
+
+### **Lab Technician Flow**
 
 _The Diagnostics_
 
-1.  **Queue:** View list of patients waiting for tests.
-2.  **Result Entry:** Input numeric/text findings.
+1.  **Queue:** View real-time `Lab Queue` of pending requests.
+2.  **Processing:** Select request -> Enter numeric/text results -> Save.
+3.  **Completion:** Request moves to history; Result available to Doctor.
 
 ---
 
@@ -101,42 +119,58 @@ flowchart TD
     %% Actors / Nodes
     P((Patient))
     FD[Front Desk]
+    NURSE[Nurse/Triage]
     DOC[Doctor]
     LAB[Lab Tech]
-    PHARM[Pharmacy]
+    IPD_NURSE[IPD Nurse]
     BILL[Billing]
 
-    %% Databases
-    DB_P[(Patient Records)]
-    DB_A[(Appointments)]
-
-    %% Flow Steps
+    %% Databases / Queues
+    Q_TRIAGE[(Triage Queue)]
+    Q_LAB[(Lab Queue)]
+    Q_IPD[(Wards/Beds)]
+    DB_REC[(Records)]
 
     %% 1. Entry
-    P -->|1. Arrives| FD
+    P -->|Arrives| FD
+    FD -->|Register/book| DB_REC
+    DB_REC -->|Pending| Q_TRIAGE
 
-    %% 2. Registration & Booking
-    FD -->|2. Register| DB_P
-    FD -->|3. Book| DB_A
-    DB_A -.->|Notify| DOC
+    %% 2. Triage
+    Q_TRIAGE -->|Pick| NURSE
+    NURSE -->|Vitals| DB_REC
+    DB_REC -->|Checked In| DOC
 
     %% 3. Consultation
-    DOC -->|4. Consult| P
+    DOC -->|Consult| P
+    P --> |Symptoms| DOC
+    
+    %% 4. Decisions
+    DOC -->|Prescription| BILL
+    DOC -->|Lab Test| Q_LAB
+    DOC -->|Admit| Q_IPD
 
-    %% 4. Tests & Meds
-    DOC -->|5. Order Tests| LAB
-    LAB -->|6. Results| DOC
-
-    DOC -->|7. Prescribe| PHARM
-
-    %% 5. Billing
-    DOC -->|8. Done| BILL
+    %% 5a. Lab Flow
+    Q_LAB -->|Pick| LAB
+    LAB -->|Results| DOC
     LAB -.->|Charges| BILL
-    PHARM -.->|Charges| BILL
 
-    %% 6. Exit
-    BILL -->|9. Invoice| P
-    P -->|10. Pay| BILL
+    %% 5b. IPD Flow
+    Q_IPD -->|Assign Bed| IPD_NURSE
+    IPD_NURSE -->|Care/Rounds| P
+    DOC -->|Discharge Decision| DB_REC
+    DB_REC -.->|Charges| BILL
+
+    %% 6. Billing & Exit
+    BILL -->|Invoice| P
+    P -->|Pay| BILL
+    BILL -->|Receipt/Gate Pass| P
+    P -->|Exit| ((End))
+
+    %% Styles
+    style P fill:#f9f,stroke:#333
+    style FD fill:#cea,stroke:#333
+    style DOC fill:#aec,stroke:#333
 ```
 
 ## 4. Current Implementation Status vs. Flow
@@ -147,6 +181,6 @@ flowchart TD
 | **Registration**   | ✅ Active  | Front Desk can register patients.  |
 | **Appointments**   | ✅ Active  | Booking UI implemented.            |
 | **Billing**        | ✅ Active  | Integrated into Front Desk.        |
-| **Doctor Module**  | 🚧 Planned | Module exists, features pending.   |
-| **Lab Module**     | 🚧 Planned | Module exists, features pending.   |
-| **Nurse Module**   | 🚧 Planned | Module exists, features pending.   |
+| **Doctor Module**  | ✅ Active  | Consultation, History, Prescriptions. |
+| **Lab Module**     | ✅ Active  | Requests, Results, Queue.          |
+| **Nurse Module**   | ✅ Active  | Triage, Vitals, IPD Bed Management.|
