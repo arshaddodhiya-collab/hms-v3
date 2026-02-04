@@ -45,7 +45,7 @@
     </p-tabPanel>
 
     <p-tabPanel header="Prescription" leftIcon="pi pi-file-edit">
-      <app-prescription></app-prescription>
+      <app-prescription (save)="onPrescriptionSave($event)"></app-prescription>
     </p-tabPanel>
 
     <p-tabPanel header="Lab Reports" leftIcon="pi pi-file">

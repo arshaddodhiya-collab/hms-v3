@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { delay, tap } from 'rxjs/operators';
+import { delay, tap, map } from 'rxjs/operators';
 
 export interface LabTest {
   id: number;
@@ -20,6 +20,7 @@ export interface LabTestResult {
 export interface LabRequest {
   id: string | number;
   patientId: string | number;
+  encounterId?: string; // Link to clinical encounter
   patientName: string;
   doctorName: string;
   testName: string;
@@ -54,6 +55,7 @@ export class LabService {
     {
       id: '101',
       patientId: 1,
+      encounterId: 'ENC-123',
       patientName: 'John Doe',
       doctorName: 'Dr. Smith',
       testName: 'Complete Blood Count',
@@ -64,6 +66,7 @@ export class LabService {
     {
       id: '102',
       patientId: 2,
+      encounterId: 'ENC-456',
       patientName: 'Jane Smith',
       doctorName: 'Dr. House',
       testName: 'Lipid Profile',
@@ -104,6 +107,13 @@ export class LabService {
 
   getAllRequests(): Observable<LabRequest[]> {
     return this.requests$.pipe(delay(500));
+  }
+
+  // Custom method to get requests for a specific encounter
+  getRequestsByEncounter(encounterId: string): Observable<LabRequest[]> {
+    return this.requests$.pipe(
+      map((reqs) => reqs.filter((r) => r.encounterId === encounterId)),
+    );
   }
 
   getRequestById(id: string | number): LabRequest | undefined {

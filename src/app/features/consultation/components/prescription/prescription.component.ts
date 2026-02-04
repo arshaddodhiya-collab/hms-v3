@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-prescription',
@@ -6,7 +6,8 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./prescription.component.scss'],
 })
 export class PrescriptionComponent {
-  medicines: any[] = [];
+  @Input() medicines: any[] = [];
+  @Output() save = new EventEmitter<any[]>();
 
   newMed = {
     name: '',
@@ -34,5 +35,9 @@ export class PrescriptionComponent {
 
   removeMedicine(index: number) {
     this.medicines.splice(index, 1);
+  }
+
+  savePrescription() {
+    this.save.emit(this.medicines);
   }
 }
