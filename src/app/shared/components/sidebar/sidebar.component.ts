@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, Event } from '@angular/router';
 import { MockAuthService } from '../../../core/services/mock-auth.service';
 import { MENU_CONFIG } from '../../../core/config/menu.config';
 import { filter } from 'rxjs/operators';
+import { MenuItem } from '../../../core/models/menu.model';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,7 +11,7 @@ import { filter } from 'rxjs/operators';
 })
 export class SidebarComponent implements OnInit {
   @Input() visible: boolean = false; // For mobile toggle
-  menuItems: any[] = [];
+  menuItems: MenuItem[] = [];
   currentRoute: string = '';
 
   expandedMenus: { [key: string]: boolean } = {};
@@ -20,8 +21,13 @@ export class SidebarComponent implements OnInit {
     private router: Router,
   ) {
     this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe((event: any) => {
+      .pipe(
+        filter(
+          (event: Event): event is NavigationEnd =>
+            event instanceof NavigationEnd,
+        ),
+      )
+      .subscribe((event: NavigationEnd) => {
         this.currentRoute = event.url;
         this.updateExpandedState();
       });
@@ -36,9 +42,9 @@ export class SidebarComponent implements OnInit {
     this.menuItems = this.filterMenu(MENU_CONFIG);
   }
 
-  private filterMenu(items: any[]): any[] {
+  private filterMenu(items: MenuItem[]): MenuItem[] {
     return items
-      .filter((item) => this.authService.hasPermission(item.permission))
+      .filter((item) => this.authService.hasPermission(item.permission || ''))
       .map((item) => {
         if (item.items) {
           return { ...item, items: this.filterMenu(item.items) };
@@ -60,14 +66,16 @@ export class SidebarComponent implements OnInit {
     // Auto expand parent if child is active
     this.menuItems.forEach((item) => {
       if (item.items) {
-        if (item.items.some((child: any) => this.isActive(child.route))) {
+        if (
+          item.items.some((child: MenuItem) => this.isActive(child.route || ''))
+        ) {
           this.expandedMenus[item.label] = true;
         }
       }
     });
   }
 
-  isActive(route: string): boolean {
+  isActive(route: string | undefined): boolean {
     if (!route) return false;
     return this.currentRoute.includes(route);
   }

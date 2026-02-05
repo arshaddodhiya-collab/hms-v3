@@ -12,6 +12,7 @@ import { Location } from '@angular/common';
           *ngIf="showBack"
           pButton
           type="button"
+          aria-label="Back"
           icon="pi pi-arrow-left"
           class="p-button-rounded p-button-text p-button-secondary surface-100"
           (click)="onBack()"

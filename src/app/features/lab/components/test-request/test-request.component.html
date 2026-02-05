@@ -61,6 +61,7 @@
         pInputText
         [(ngModel)]="doctorName"
         placeholder="Referring Doctor"
+        aria-label="Referring Doctor"
         [ngClass]="{ 'ng-invalid ng-dirty': submitted && !doctorName }"
       />
       <small *ngIf="submitted && !doctorName" class="p-error"
@@ -86,12 +87,14 @@
       pButton
       label="Cancel"
       class="p-button-secondary"
+      aria-label="Cancel"
       (click)="cancel()"
     ></button>
     <button
       pButton
       label="Request Test"
       icon="pi pi-check"
+      aria-label="Request Test"
       (click)="save()"
       [loading]="loading"
     ></button>

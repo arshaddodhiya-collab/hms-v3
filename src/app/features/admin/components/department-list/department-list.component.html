@@ -4,6 +4,7 @@
       pButton
       label="Add Department"
       icon="pi pi-plus"
+      aria-label="Add Department"
       (click)="openNew('Create Department')"
       *appHasPermission="permissions.CMP_ADMIN_DEPT_WRITE"
     ></button>
@@ -22,6 +23,7 @@
       <button
         pButton
         icon="pi pi-pencil"
+        aria-label="Edit Department"
         class="p-button-rounded p-button-text p-button-warning mr-2"
         (click)="editItem(dept, 'Edit Department')"
         pTooltip="Edit"
@@ -29,6 +31,7 @@
       <button
         pButton
         icon="pi pi-trash"
+        aria-label="Delete Department"
         class="p-button-rounded p-button-text p-button-danger"
         (click)="confirmDelete(dept)"
         pTooltip="Delete"

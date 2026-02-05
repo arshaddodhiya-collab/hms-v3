@@ -8,6 +8,7 @@ import {
 import { Router } from '@angular/router';
 import { LabService, LabRequest } from '../../../../core/services/lab.service';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
+import { TableColumn } from '../../../../shared/models/table.model';
 
 @Component({
   selector: 'app-lab-request-list',
@@ -15,14 +16,23 @@ import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
   styleUrls: ['./lab-request-list.component.scss'],
 })
 export class LabRequestListComponent implements OnInit, AfterViewInit {
-  @ViewChild('dateTemplate') dateTemplate!: TemplateRef<any>;
-  @ViewChild('priorityTemplate') priorityTemplate!: TemplateRef<any>;
-  @ViewChild('statusTemplate') statusTemplate!: TemplateRef<any>;
+  @ViewChild('dateTemplate') dateTemplate!: TemplateRef<{
+    $implicit: unknown;
+    row: LabRequest;
+  }>;
+  @ViewChild('priorityTemplate') priorityTemplate!: TemplateRef<{
+    $implicit: unknown;
+    row: LabRequest;
+  }>;
+  @ViewChild('statusTemplate') statusTemplate!: TemplateRef<{
+    $implicit: unknown;
+    row: LabRequest;
+  }>;
 
   requests: LabRequest[] = [];
   permissions = PERMISSIONS;
 
-  cols: any[] = [
+  cols: TableColumn<LabRequest>[] = [
     { field: 'id', header: 'ID' },
     { field: 'requestDate', header: 'Date' },
     { field: 'patientName', header: 'Patient' },

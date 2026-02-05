@@ -3,11 +3,11 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  OnInit,
   Output,
   SimpleChanges,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MockUser } from '../../../../core/config/mock-users.config';
 
 @Component({
   selector: 'app-user-create',
@@ -15,8 +15,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./user-create.component.scss'],
 })
 export class UserCreateComponent implements OnChanges {
-  @Input() userToEdit: any = null;
-  @Output() save = new EventEmitter<any>();
+  @Input() userToEdit: MockUser | null = null;
+  @Output() save = new EventEmitter<MockUser>();
   @Output() cancel = new EventEmitter<void>();
 
   userForm: FormGroup;

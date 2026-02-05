@@ -36,6 +36,7 @@
       pButton
       pRipple
       icon="pi pi-eye"
+      aria-label="View Details"
       class="p-button-rounded p-button-text p-button-info mr-2"
       [routerLink]="[patient.id]"
       pTooltip="View Details"
@@ -46,6 +47,7 @@
       pButton
       pRipple
       icon="pi pi-pencil"
+      aria-label="Edit Record"
       class="p-button-rounded p-button-text p-button-warning"
       (click)="editItem(patient, 'Edit Record')"
       pTooltip="Edit Record"

@@ -5,6 +5,7 @@
         pButton
         label="Add User"
         icon="pi pi-plus"
+        aria-label="Add User"
         (click)="openNew('Create User')"
       ></button>
     </ng-container>
@@ -27,6 +28,7 @@
       <button
         pButton
         icon="pi pi-pencil"
+        aria-label="Edit User"
         class="p-button-rounded p-button-text p-button-warning"
         (click)="editItem(user, 'Edit User')"
       ></button>

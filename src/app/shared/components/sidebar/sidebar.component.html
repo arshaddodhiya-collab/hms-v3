@@ -80,6 +80,10 @@
         <li *ngIf="item.items">
           <div
             (click)="toggleMenu(item.label)"
+            (keydown.enter)="toggleMenu(item.label)"
+            tabindex="0"
+            role="button"
+            [attr.aria-expanded]="isExpanded(item.label)"
             class="flex align-items-center cursor-pointer p-3 border-round transition-duration-200 select-none hover:surface-100"
             [style.color]="'var(--hms-text-muted)'"
           >
@@ -161,6 +165,7 @@
         style="color: var(--hms-error)"
         pTooltip="Sign Out"
         tooltipPosition="top"
+        aria-label="Sign Out"
         (click)="onLogout()"
       ></button>
     </div>

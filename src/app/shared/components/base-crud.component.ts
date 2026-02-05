@@ -40,7 +40,7 @@ export abstract class BaseCrudComponent<T> implements OnInit {
   }
 
   // Abstract methods to be implemented by child components
-  abstract onSave(item: any): void;
+  abstract onSave(item: T): void;
 
   // Optional: Common delete flow
   confirmDelete(item: T): void {

@@ -9,6 +9,7 @@ import { AdminService } from '../../services/admin.service';
 import { MockUser } from '../../../../core/config/mock-users.config';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 import { BaseCrudComponent } from '../../../../shared/components/base-crud.component';
+import { TableColumn } from '../../../../shared/models/table.model';
 
 @Component({
   selector: 'app-user-list',
@@ -19,11 +20,14 @@ export class UserListComponent
   extends BaseCrudComponent<MockUser>
   implements OnInit, AfterViewInit
 {
-  @ViewChild('roleTemplate') roleTemplate!: TemplateRef<any>;
+  @ViewChild('roleTemplate') roleTemplate!: TemplateRef<{
+    $implicit: unknown;
+    row: MockUser;
+  }>;
 
   permissions = PERMISSIONS;
 
-  cols: any[] = [
+  cols: TableColumn<MockUser>[] = [
     { field: 'username', header: 'Username' },
     { field: 'role', header: 'Role' },
   ];

@@ -8,6 +8,8 @@ import {
 import { MessageService } from 'primeng/api';
 import { BaseCrudComponent } from '../../../../shared/components/base-crud.component';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
+import { Patient } from '../../../../core/models/patient.model';
+import { TableColumn } from '../../../../shared/models/table.model';
 
 @Component({
   selector: 'app-patient-list',
@@ -15,14 +17,17 @@ import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
   styleUrls: ['./patient-list.component.scss'],
 })
 export class PatientListComponent
-  extends BaseCrudComponent<any>
+  extends BaseCrudComponent<Patient>
   implements OnInit, AfterViewInit
 {
-  @ViewChild('genderTemplate') genderTemplate!: TemplateRef<any>;
+  @ViewChild('genderTemplate') genderTemplate!: TemplateRef<{
+    $implicit: unknown;
+    row: Patient;
+  }>;
 
   permissions = PERMISSIONS;
 
-  cols: any[] = [
+  cols: TableColumn<Patient>[] = [
     { field: 'name', header: 'Name' },
     { field: 'age', header: 'Age' },
     { field: 'gender', header: 'Gender' },
@@ -63,7 +68,7 @@ export class PatientListComponent
     }
   }
 
-  override onSave(patientData: any) {
+  override onSave(patientData: Patient) {
     // Logic adapted to use this.selectedItem (which corresponds to selectedPatient)
     // Actually, onSave receives patientData from event.
     // BaseCrudComponent has abstract onSave(item: any).
@@ -72,7 +77,7 @@ export class PatientListComponent
 
     if (this.selectedItem) {
       // Update
-      const index = this.data.findIndex((x) => x.id === this.selectedItem.id);
+      const index = this.data.findIndex((x) => x.id === this.selectedItem!.id);
       if (index !== -1) {
         // Merge updates
         this.data[index] = { ...this.data[index], ...patientData };

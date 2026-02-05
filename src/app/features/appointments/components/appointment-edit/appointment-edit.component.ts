@@ -8,7 +8,14 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class AppointmentEditComponent implements OnInit {
   appointmentId: string | null = null;
-  appointment: any = {
+  appointment: {
+    id: number;
+    patientName: string;
+    doctorName: string;
+    date: string;
+    time: Date;
+    status: string;
+  } = {
     id: 101,
     patientName: 'John Doe',
     doctorName: 'Dr. Smith',

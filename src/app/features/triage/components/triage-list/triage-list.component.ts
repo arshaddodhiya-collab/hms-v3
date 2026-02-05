@@ -5,6 +5,16 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
+import { TableColumn } from '../../../../shared/models/table.model';
+
+interface QueueItem {
+  id: number;
+  patientName: string;
+  doctorName: string;
+  status: string;
+  time: string;
+  priority: string;
+}
 
 @Component({
   selector: 'app-triage-list',
@@ -13,11 +23,17 @@ import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 })
 export class TriageListComponent implements AfterViewInit {
   permissions = PERMISSIONS;
-  @ViewChild('priorityTemplate') priorityTemplate!: TemplateRef<any>;
-  @ViewChild('statusTemplate') statusTemplate!: TemplateRef<any>;
+  @ViewChild('priorityTemplate') priorityTemplate!: TemplateRef<{
+    $implicit: unknown;
+    row: QueueItem;
+  }>;
+  @ViewChild('statusTemplate') statusTemplate!: TemplateRef<{
+    $implicit: unknown;
+    row: QueueItem;
+  }>;
 
   // Mock Data - in real app would come from service filtering for 'Checked In' or 'Triaged'
-  triageQueue = [
+  triageQueue: QueueItem[] = [
     {
       id: 101,
       patientName: 'John Doe',
@@ -44,7 +60,7 @@ export class TriageListComponent implements AfterViewInit {
     },
   ];
 
-  cols: any[] = [
+  cols: TableColumn<QueueItem>[] = [
     { field: 'id', header: 'ID' },
     { field: 'patientName', header: 'Patient' },
     { field: 'doctorName', header: 'Doctor' },

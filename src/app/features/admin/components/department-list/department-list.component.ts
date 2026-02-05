@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AdminService, Department } from '../../services/admin.service';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 import { BaseCrudComponent } from '../../../../shared/components/base-crud.component';
+import { TableColumn } from '../../../../shared/models/table.model';
 
 @Component({
   selector: 'app-department-list',
@@ -15,7 +16,7 @@ export class DepartmentListComponent
   permissions = PERMISSIONS;
 
   // Table Config
-  cols: any[] = [
+  cols: TableColumn<Department>[] = [
     { field: 'id', header: 'ID' },
     { field: 'name', header: 'Name' },
     { field: 'head', header: 'Head of Dept' },
@@ -36,7 +37,7 @@ export class DepartmentListComponent
     });
   }
 
-  override onSave(deptData: any) {
+  override onSave(deptData: Department) {
     if (this.selectedItem) {
       const updated: Department = {
         ...this.selectedItem,
@@ -45,8 +46,8 @@ export class DepartmentListComponent
       this.adminService.updateDepartment(updated);
     } else {
       const newDept: Department = {
-        id: 'DEPT-' + (Math.floor(Math.random() * 900) + 100),
         ...deptData,
+        id: 'DEPT-' + (Math.floor(Math.random() * 900) + 100),
       };
       this.adminService.addDepartment(newDept);
     }

@@ -3,7 +3,6 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  OnInit,
   Output,
   SimpleChanges,
 } from '@angular/core';
@@ -17,7 +16,7 @@ import { Department } from '../../services/admin.service';
 })
 export class DepartmentCreateComponent implements OnChanges {
   @Input() deptToEdit: Department | null = null;
-  @Output() save = new EventEmitter<any>();
+  @Output() save = new EventEmitter<Department>();
   @Output() cancel = new EventEmitter<void>();
 
   deptForm: FormGroup;

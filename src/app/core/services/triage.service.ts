@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 import { AppointmentService } from './appointment.service';
 import { VisitStatus } from '../models/patient.model';

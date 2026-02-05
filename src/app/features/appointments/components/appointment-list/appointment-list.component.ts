@@ -7,7 +7,7 @@ import {
   TemplateRef,
   AfterViewInit,
 } from '@angular/core';
-import { formatDate } from '@angular/common';
+import { TableColumn } from '../../../../shared/models/table.model';
 import { MessageService } from 'primeng/api';
 import { BaseCrudComponent } from '../../../../shared/components/base-crud.component';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
@@ -21,8 +21,12 @@ import { Visit } from '../../../../core/models/patient.model';
 })
 export class AppointmentListComponent
   extends BaseCrudComponent<Visit>
-  implements OnInit, AfterViewInit {
-  @ViewChild('statusTemplate') statusTemplate!: TemplateRef<any>;
+  implements OnInit, AfterViewInit
+{
+  @ViewChild('statusTemplate') statusTemplate!: TemplateRef<{
+    $implicit: unknown;
+    row: Visit;
+  }>;
 
   permissions = PERMISSIONS;
 
@@ -33,7 +37,7 @@ export class AppointmentListComponent
     { label: 'Cancelled', value: 'Cancelled' },
   ];
 
-  cols: any[] = [
+  cols: TableColumn<Visit>[] = [
     { field: 'id', header: 'ID' },
     { field: 'patientName', header: 'Patient' },
     { field: 'doctorName', header: 'Doctor' },
@@ -91,7 +95,7 @@ export class AppointmentListComponent
     this.displayDialog = true;
   }
 
-  override editItem(appointment: any, header: string = 'Edit Appointment') {
+  override editItem(appointment: Visit, header: string = 'Edit Appointment') {
     this.selectedItem = { ...appointment };
     // Initialize separate date/time from the single appointmentTime
     if (appointment.appointmentTime) {
@@ -115,7 +119,7 @@ export class AppointmentListComponent
     this.appointmentTime = null;
   }
 
-  override onSave(item: any) {
+  override onSave(_: Visit | null) {
     this.submitted = true;
     const appt = this.selectedItem;
 

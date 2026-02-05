@@ -10,6 +10,7 @@ import {
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { Patient } from '../../../../core/models/patient.model';
 
 @Component({
   selector: 'app-patient-register',
@@ -18,8 +19,8 @@ import { MessageService } from 'primeng/api';
 })
 export class PatientRegisterComponent implements OnInit, OnChanges {
   @Input() isModal: boolean = false;
-  @Input() patientData: any = null;
-  @Output() onSave = new EventEmitter<any>();
+  @Input() patientData: Patient | null = null;
+  @Output() onSave = new EventEmitter<Patient>();
   @Output() onCancel = new EventEmitter<void>();
 
   patientForm!: FormGroup;
@@ -70,24 +71,25 @@ export class PatientRegisterComponent implements OnInit, OnChanges {
   }
 
   patchForm() {
-    // Handle name split if necessary, or assume input matches form
-    // If patientData has 'name' but not first/last, we split it crudely for now
-    let firstName = this.patientData.firstName;
-    let lastName = this.patientData.lastName;
+    if (!this.patientData) return;
 
-    if (!firstName && this.patientData.name) {
+    // Handle name split
+    let firstName = '';
+    let lastName = '';
+
+    if (this.patientData.name) {
       const parts = this.patientData.name.split(' ');
       firstName = parts[0];
       lastName = parts.slice(1).join(' ');
     }
 
     this.patientForm.patchValue({
-      firstName: firstName || '',
-      lastName: lastName || '',
+      firstName: firstName,
+      lastName: lastName,
       age: this.patientData.age,
       gender: this.patientData.gender,
-      phone: this.patientData.contact || this.patientData.phone, // Handle 'contact' key from list
-      email: this.patientData.email || 'test@example.com', // Fallback if list lacks email
+      phone: this.patientData.contact,
+      email: this.patientData.email || 'test@example.com',
     });
   }
 
