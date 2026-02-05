@@ -71,20 +71,69 @@ Represents all system users (Admin, Doctor, Nurse, Receptionist).
 **Indexes**: `idx_user_username`, `idx_user_email`
 
 #### 🗄️ Table: `role`
-Pre-defined roles (Admin, Doctor, etc).
+Pre-defined roles.
 
 | Column | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
-| `name` | `VARCHAR(50)` | `UQ, NN` | ROLE_ADMIN, ROLE_DOCTOR |
+| `name` | `VARCHAR(50)` | `UQ, NN` | e.g. 'Administrator', 'Doctor' |
 | `description` | `VARCHAR(255)`| | Human readable description |
+
+**Seed Data (Roles)**:
+- `Administrator`
+- `Doctor`
+- `Nurse`
+- `Lab Technician`
+- `Front Desk`
 
 #### 🗄️ Table: `permission`
 Granular permissions (e.g., `PATIENT_CREATE`, `LAB_VIEW`).
 
 | Column | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
-| `name` | `VARCHAR(50)` | `UQ, NN` | Permission Key |
-| `module` | `VARCHAR(50)` | `NN` | Grouping (e.g., PATIENTS) |
+| `code` | `VARCHAR(50)` | `UQ, NN` | Permission Key (e.g. MOD_PATIENTS) |
+| `module` | `VARCHAR(50)` | `NN` | Grouping (e.g. PATIENTS) |
+| `description` | `VARCHAR(255)`| | |
+
+**Seed Data (Permissions)**:
+> Derived from `src/app/core/constants/permissions.constants.ts`
+
+| Module | Code | Description |
+| :--- | :--- | :--- |
+| **Modules** | `MOD_DASHBOARD` | Access Dashboard |
+| | `MOD_PATIENTS` | Access Patients Module |
+| | `MOD_APPOINTMENTS` | Access Appointments Module |
+| | `MOD_TRIAGE` | Access Triage Module |
+| | `MOD_CONSULTATION` | Access Consultation Module |
+| | `MOD_LAB` | Access Lab Module |
+| | `MOD_BILLING` | Access Billing Module |
+| | `MOD_ADMIN` | Access Admin Module |
+| | `MOD_VOICE` | Access Voice Module |
+| **Actions** | `ACT_VIEW` | &nbsp; |
+| | `ACT_CREATE` | &nbsp; |
+| | `ACT_EDIT` | &nbsp; |
+| | `ACT_DELETE` | &nbsp; |
+| **Components** | `CMP_VITALS_WRITE` | &nbsp; |
+| | `CMP_VITALS_READ` | &nbsp; |
+| | `CMP_PATIENT_ADD` | &nbsp; |
+| | `CMP_PATIENT_LIST` | &nbsp; |
+| | `CMP_PATIENT_VIEW` | &nbsp; |
+| | `CMP_PATIENT_EDIT` | &nbsp; |
+| | `CMP_APPOINTMENT_LIST` | &nbsp; |
+| | `CMP_APPOINTMENT_CREATE` | &nbsp; |
+| | `CMP_APPOINTMENT_VIEW` | &nbsp; |
+| | `CMP_APPOINTMENT_EDIT` | &nbsp; |
+| | `CMP_CONSULTATION_READ` | &nbsp; |
+| | `CMP_CONSULTATION_WRITE` | &nbsp; |
+| | `CMP_LAB_ENTRY` | &nbsp; |
+| | `CMP_LAB_READ` | &nbsp; |
+| | `CMP_INVOICE_GENERATE` | &nbsp; |
+| | `CMP_PAYMENT_RECEIPT` | &nbsp; |
+| | `CMP_BILLING_SUMMARY` | &nbsp; |
+| | `CMP_ADMIN_DEPT_READ` | &nbsp; |
+| | `CMP_ADMIN_DEPT_WRITE` | &nbsp; |
+| | `CMP_ADMIN_USER_READ` | &nbsp; |
+| | `CMP_ADMIN_USER_WRITE` | &nbsp; |
+| | `CMP_ADMIN_ROLE_WRITE` | &nbsp; |
 
 #### 🗄️ Table: `patient`
 Core patient demographic data.
@@ -107,8 +156,16 @@ Core patient demographic data.
 ## 5️⃣ Relationship Mapping
 
 ### 🔗 User-Role-Permission (RBAC)
-- **`user_role`**: Many-to-Many (`user_id`, `role_id`)
-- **`role_permission`**: Many-to-Many (`role_id`, `permission_id`)
+- **`user_role`**: Many-to-Many (`user_id`, `role_id`).
+    - Maps Users to Roles (e.g. User 'john' is a 'Doctor').
+- **`role_permission`**: Many-to-Many (`role_id`, `permission_id`).
+    - Maps Roles to Permissions.
+    - **Seed Data** (from `mock-users.config.ts`):
+        - **Administrator**: All Permissions.
+        - **Doctor**: `MOD_DASHBOARD`, `MOD_PATIENTS`, `MOD_APPOINTMENTS`, `MOD_CONSULTATION`, `ACT_VIEW`, `ACT_CREATE`, `ACT_EDIT`, `CMP_PATIENT_LIST`, `CMP_PATIENT_VIEW`, `CMP_APPOINTMENT_LIST`, `CMP_APPOINTMENT_VIEW`, `CMP_VITALS_READ`, `CMP_CONSULTATION_WRITE`, `CMP_CONSULTATION_READ`, `CMP_LAB_READ`.
+        - **Nurse**: `MOD_DASHBOARD`, `MOD_PATIENTS`, `MOD_APPOINTMENTS`, `MOD_TRIAGE`, `MOD_CONSULTATION`, `ACT_VIEW`, `ACT_CREATE`, `CMP_APPOINTMENT_LIST`, `CMP_APPOINTMENT_VIEW`, `CMP_VITALS_WRITE`, `CMP_VITALS_READ`, `CMP_CONSULTATION_READ`, `CMP_LAB_READ`.
+        - **Lab Technician**: `MOD_DASHBOARD`, `MOD_LAB`, `ACT_VIEW`, `ACT_CREATE`, `CMP_LAB_ENTRY`, `CMP_LAB_READ`.
+        - **Front Desk**: `MOD_DASHBOARD`, `MOD_PATIENTS`, `MOD_APPOINTMENTS`, `MOD_BILLING`, `ACT_VIEW`, `ACT_CREATE`, `ACT_EDIT`, `CMP_PATIENT_ADD`, `CMP_PATIENT_LIST`, `CMP_PATIENT_VIEW`, `CMP_PATIENT_EDIT`, `CMP_APPOINTMENT_LIST`, `CMP_APPOINTMENT_CREATE`, `CMP_APPOINTMENT_VIEW`, `CMP_APPOINTMENT_EDIT`, `CMP_INVOICE_GENERATE`, `CMP_PAYMENT_RECEIPT`, `CMP_BILLING_SUMMARY`.
 
 ### 🔗 Clinical Logic
 - `user` -> `department` (Many-to-One)
