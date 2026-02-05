@@ -5,7 +5,7 @@
 ></app-page-header>
 
 <div class="flex flex-column gap-4 p-4">
-  <div *ngFor="let ward of wards" class="card">
+  <app-card *ngFor="let ward of wards">
     <h3 class="mt-0 mb-3 text-xl font-bold text-gray-800">{{ ward.name }}</h3>
     <div class="flex flex-wrap gap-3">
       <div
@@ -37,5 +37,5 @@
         </span>
       </div>
     </div>
-  </div>
+  </app-card>
 </div>

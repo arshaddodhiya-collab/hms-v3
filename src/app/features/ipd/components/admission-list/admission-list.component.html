@@ -4,7 +4,7 @@
   icon="file"
 ></app-page-header>
 
-<div class="card">
+<app-card>
   <div class="flex justify-content-end mb-3">
     <button
       pButton
@@ -23,7 +23,7 @@
     [actionsTemplate]="actions"
     styleClass="p-datatable-sm"
   ></app-table>
-</div>
+</app-card>
 
 <ng-template #actions let-admission>
   <button

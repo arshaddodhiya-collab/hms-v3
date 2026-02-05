@@ -1,4 +1,4 @@
-<div class="card">
+<app-card>
   <app-page-header
     title="Book Appointment"
     icon="pi pi-calendar-plus"
@@ -7,40 +7,18 @@
   <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
     <div class="p-fluid grid formgrid">
       <div class="field col-12 md:col-6">
-        <label htmlFor="patient">Patient Name</label>
-        <input
-          pInputText
+        <app-input-text
           id="patient"
-          type="text"
+          label="Patient Name"
           formControlName="patientName"
-          [ngClass]="{
-            'ng-invalid ng-dirty':
-              appointmentForm.get('patientName')?.invalid &&
-              appointmentForm.get('patientName')?.touched,
-          }"
-        />
-        <app-validation-message
-          [control]="appointmentForm.get('patientName')!"
-          name="Patient Name"
-        ></app-validation-message>
+        ></app-input-text>
       </div>
       <div class="field col-12 md:col-6">
-        <label htmlFor="doctor">Doctor</label>
-        <input
-          pInputText
+        <app-input-text
           id="doctor"
-          type="text"
+          label="Doctor"
           formControlName="doctorName"
-          [ngClass]="{
-            'ng-invalid ng-dirty':
-              appointmentForm.get('doctorName')?.invalid &&
-              appointmentForm.get('doctorName')?.touched,
-          }"
-        />
-        <app-validation-message
-          [control]="appointmentForm.get('doctorName')!"
-          name="Doctor"
-        ></app-validation-message>
+        ></app-input-text>
       </div>
       <div class="field col-12 md:col-6">
         <label htmlFor="date">Date</label>
@@ -110,4 +88,4 @@
       ></button>
     </div>
   </form>
-</div>
+</app-card>

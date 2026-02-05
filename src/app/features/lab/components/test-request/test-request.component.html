@@ -4,7 +4,7 @@
   icon="flask"
 ></app-page-header>
 
-<div class="card p-fluid">
+<app-card styleClass="p-fluid">
   <div class="field grid">
     <label class="col-12 md:col-2">Patient</label>
     <div class="col-12 md:col-10">
@@ -55,13 +55,11 @@
   <div class="field grid">
     <label class="col-12 md:col-2">Doctor</label>
     <div class="col-12 md:col-10">
-      <input
-        pInputText
+      <app-input-text
         [(ngModel)]="doctorName"
         placeholder="Referring Doctor"
-        aria-label="Referring Doctor"
         [ngClass]="{ 'ng-invalid ng-dirty': submitted && !doctorName }"
-      />
+      ></app-input-text>
       <small *ngIf="submitted && !doctorName" class="p-error"
         >Doctor name is required.</small
       >
@@ -97,4 +95,4 @@
       [loading]="loading"
     ></button>
   </div>
-</div>
+</app-card>

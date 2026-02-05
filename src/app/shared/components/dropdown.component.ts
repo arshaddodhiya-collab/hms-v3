@@ -27,7 +27,9 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
         [styleClass]="
           'w-full ' +
           inputStyleClass +
-          (ngControl?.invalid && (ngControl?.dirty || ngControl?.touched)
+          (ngControl &&
+          ngControl.invalid &&
+          (ngControl.dirty || ngControl.touched)
             ? ' ng-invalid ng-dirty'
             : '')
         "

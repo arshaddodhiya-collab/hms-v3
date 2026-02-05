@@ -1,4 +1,4 @@
-<div class="card p-0">
+<app-card styleClass="p-0">
   <app-page-header title="Appointments" icon="pi pi-calendar">
     <button
       *appHasPermission="permissions.CMP_APPOINTMENT_CREATE"
@@ -15,7 +15,7 @@
 
   <app-table [data]="data" [columns]="cols" [actionsTemplate]="actions">
   </app-table>
-</div>
+</app-card>
 
 <ng-template #statusTemplate let-value>
   <app-status-badge
@@ -67,26 +67,22 @@
   <ng-template pTemplate="content">
     <div *ngIf="selectedItem">
       <div class="field">
-        <label for="patientName">Patient Name</label>
-        <input
-          type="text"
-          pInputText
+        <app-input-text
           id="patientName"
+          label="Patient Name"
           [(ngModel)]="selectedItem.patientName"
-          required
-        />
+          [required]="true"
+        ></app-input-text>
         <small class="p-error" *ngIf="submitted && !selectedItem.patientName"
           >Patient Name is required.</small
         >
       </div>
       <div class="field">
-        <label for="doctorName">Doctor Name</label>
-        <input
-          type="text"
-          pInputText
+        <app-input-text
           id="doctorName"
+          label="Doctor Name"
           [(ngModel)]="selectedItem.doctorName"
-        />
+        ></app-input-text>
       </div>
       <div class="formgrid grid">
         <div class="field col">

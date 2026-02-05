@@ -1,9 +1,9 @@
-<div class="card">
+<app-card>
   <app-page-header title="Triage Queue" icon="pi pi-list"></app-page-header>
 
   <app-table [data]="triageQueue" [columns]="cols" [actionsTemplate]="actions">
   </app-table>
-</div>
+</app-card>
 
 <ng-template #priorityTemplate let-value>
   <app-status-badge

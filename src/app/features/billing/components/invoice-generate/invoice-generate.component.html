@@ -1,26 +1,22 @@
-<div class="card">
+<app-card>
   <h2>Generate New Invoice</h2>
   <form [formGroup]="invoiceForm">
     <div class="grid p-fluid mb-4">
       <div class="col-12 md:col-6">
-        <label for="patientName" class="block font-bold mb-2"
-          >Patient Name</label
-        >
-        <input
-          pInputText
+        <app-input-text
           id="patientName"
+          label="Patient Name"
           formControlName="patientName"
           placeholder="Enter patient name"
-        />
+        ></app-input-text>
       </div>
       <div class="col-12 md:col-6">
-        <label for="patientId" class="block font-bold mb-2">Patient ID</label>
-        <input
-          pInputText
+        <app-input-text
           id="patientId"
+          label="Patient ID"
           formControlName="patientId"
           placeholder="e.g. P-101"
-        />
+        ></app-input-text>
       </div>
     </div>
 
@@ -92,4 +88,4 @@
       ></button>
     </div>
   </form>
-</div>
+</app-card>

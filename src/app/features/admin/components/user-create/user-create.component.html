@@ -2,17 +2,19 @@
   <form [formGroup]="userForm">
     <div class="grid p-fluid mb-4">
       <div class="col-12 md:col-6">
-        <label for="username" class="block font-bold mb-2">Username</label>
-        <input pInputText id="username" formControlName="username" />
+        <app-input-text
+          id="username"
+          label="Username"
+          formControlName="username"
+        ></app-input-text>
       </div>
       <div class="col-12 md:col-6">
-        <label for="password" class="block font-bold mb-2">Password</label>
-        <input
-          pInputText
-          type="password"
+        <app-input-text
           id="password"
+          label="Password"
+          type="password"
           formControlName="password"
-        />
+        ></app-input-text>
       </div>
       <div class="col-12 md:col-6">
         <label for="role" class="block font-bold mb-2">Role</label>

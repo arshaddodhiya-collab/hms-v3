@@ -1,25 +1,21 @@
-<div class="card" class="p-0 border-none shadow-none">
+<app-card styleClass="p-0 border-none shadow-none">
   <form [formGroup]="deptForm">
     <div class="grid p-fluid mb-4">
       <div class="col-12 md:col-6">
-        <label for="name" class="block font-bold mb-2">Department Name</label>
-        <input
-          pInputText
+        <app-input-text
           id="name"
+          label="Department Name"
           formControlName="name"
           placeholder="e.g. Cardiology"
-        />
+        ></app-input-text>
       </div>
       <div class="col-12 md:col-6">
-        <label for="head" class="block font-bold mb-2"
-          >Head of Department</label
-        >
-        <input
-          pInputText
+        <app-input-text
           id="head"
+          label="Head of Department"
           formControlName="head"
           placeholder="e.g. Dr. Smith"
-        />
+        ></app-input-text>
       </div>
       <div class="col-12 md:col-6">
         <label for="staffCount" class="block font-bold mb-2">Staff Count</label>
@@ -49,4 +45,4 @@
       ></button>
     </div>
   </form>
-</div>
+</app-card>

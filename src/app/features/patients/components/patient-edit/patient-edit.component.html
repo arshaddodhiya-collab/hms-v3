@@ -1,4 +1,4 @@
-<div class="card">
+<app-card>
   <app-page-header
     title="Edit Patient"
     icon="pi pi-user-edit"
@@ -6,12 +6,18 @@
   ></app-page-header>
   <div class="p-fluid grid formgrid">
     <div class="field col-12 md:col-6">
-      <label htmlFor="firstname">Firstname</label>
-      <input pInputText id="firstname" type="text" />
+      <app-input-text
+        id="firstname"
+        label="Firstname"
+        type="text"
+      ></app-input-text>
     </div>
     <div class="field col-12 md:col-6">
-      <label htmlFor="lastname">Lastname</label>
-      <input pInputText id="lastname" type="text" />
+      <app-input-text
+        id="lastname"
+        label="Lastname"
+        type="text"
+      ></app-input-text>
     </div>
   </div>
-</div>
+</app-card>

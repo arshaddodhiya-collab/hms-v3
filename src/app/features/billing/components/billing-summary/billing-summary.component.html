@@ -1,4 +1,4 @@
-<div class="card">
+<app-card>
   <app-page-header title="Billing & Invoices" icon="pi pi-wallet">
     <button
       pButton
@@ -11,7 +11,7 @@
 
   <app-table [data]="invoices" [columns]="cols" [actionsTemplate]="actions">
   </app-table>
-</div>
+</app-card>
 
 <ng-template #dateTemplate let-value>
   {{ value | date: 'shortDate' }}

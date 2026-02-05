@@ -1,15 +1,19 @@
-<div class="card">
-  <h4>Prescription</h4>
-
+<app-card header="Prescription">
   <!-- Add Medicine Form -->
   <div class="p-fluid grid formgrid mb-4">
     <div class="field col-12 md:col-4">
-      <label>Medicine Name</label>
-      <input pInputText [(ngModel)]="newMed.name" placeholder="Paracetamol" />
+      <app-input-text
+        label="Medicine Name"
+        [(ngModel)]="newMed.name"
+        placeholder="Paracetamol"
+      ></app-input-text>
     </div>
     <div class="field col-12 md:col-3">
-      <label>Dosage</label>
-      <input pInputText [(ngModel)]="newMed.dosage" placeholder="500mg" />
+      <app-input-text
+        label="Dosage"
+        [(ngModel)]="newMed.dosage"
+        placeholder="500mg"
+      ></app-input-text>
     </div>
     <div class="field col-12 md:col-3">
       <label>Frequency</label>
@@ -21,8 +25,11 @@
       ></app-dropdown>
     </div>
     <div class="field col-12 md:col-2">
-      <label>Duration</label>
-      <input pInputText [(ngModel)]="newMed.duration" placeholder="5 days" />
+      <app-input-text
+        label="Duration"
+        [(ngModel)]="newMed.duration"
+        placeholder="5 days"
+      ></app-input-text>
     </div>
     <div class="col-12 flex justify-content-end">
       <button
@@ -78,4 +85,4 @@
       </tr>
     </ng-template>
   </p-table>
-</div>
+</app-card>

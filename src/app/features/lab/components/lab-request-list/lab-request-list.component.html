@@ -1,4 +1,4 @@
-<div class="card">
+<app-card>
   <app-page-header title="Lab Requests" icon="pi pi-search"> </app-page-header>
 
   <div class="flex justify-content-end mb-3">
@@ -17,7 +17,7 @@
     [actionsTemplate]="actions"
   >
   </app-table>
-</div>
+</app-card>
 
 <ng-template #dateTemplate let-value>
   {{ value | date: 'short' }}

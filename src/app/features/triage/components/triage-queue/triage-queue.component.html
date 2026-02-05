@@ -4,7 +4,7 @@
   icon="heart"
 ></app-page-header>
 
-<div class="card">
+<app-card>
   <app-table
     [data]="queue"
     [columns]="cols"
@@ -26,4 +26,4 @@
       (click)="onRecordVitals(visit)"
     ></button>
   </ng-template>
-</div>
+</app-card>

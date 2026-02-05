@@ -42,50 +42,31 @@
         </div>
 
         <div class="field col-12 md:col-6">
-          <label for="firstname" class="font-medium mb-2 block">
-            First Name
-          </label>
-          <input
-            pInputText
+          <app-input-text
             id="firstname"
+            label="First Name"
             formControlName="firstName"
             placeholder="Enter first name"
-          />
-          <app-validation-message
-            [control]="patientForm.get('firstName')!"
-            name="First Name"
-          ></app-validation-message>
+          ></app-input-text>
         </div>
 
         <div class="field col-12 md:col-6">
-          <label for="lastname" class="font-medium mb-2 block">
-            Last Name
-          </label>
-          <input
-            pInputText
+          <app-input-text
             id="lastname"
+            label="Last Name"
             formControlName="lastName"
             placeholder="Enter last name"
-          />
-          <app-validation-message
-            [control]="patientForm.get('lastName')!"
-            name="Last Name"
-          ></app-validation-message>
+          ></app-input-text>
         </div>
 
         <div class="field col-12 md:col-6">
-          <label for="age" class="font-medium mb-2 block"> Age </label>
-          <input
-            pInputText
+          <app-input-text
             id="age"
+            label="Age"
             type="number"
             formControlName="age"
             placeholder="Age"
-          />
-          <app-validation-message
-            [control]="patientForm.get('age')!"
-            name="Age"
-          ></app-validation-message>
+          ></app-input-text>
         </div>
 
         <div class="field col-12 md:col-6">
@@ -110,34 +91,22 @@
         </div>
 
         <div class="field col-12 md:col-6">
-          <label for="phone" class="font-medium mb-2 block">
-            Phone Number
-          </label>
-          <input
-            pInputText
+          <app-input-text
             id="phone"
+            label="Phone Number"
             formControlName="phone"
             placeholder="+1 (555) 000-0000"
-          />
-          <app-validation-message
-            [control]="patientForm.get('phone')!"
-            name="Phone Number"
-          ></app-validation-message>
+          ></app-input-text>
         </div>
 
         <div class="field col-12 md:col-6">
-          <label for="email" class="font-medium mb-2 block"> Email </label>
-          <input
-            pInputText
+          <app-input-text
             id="email"
+            label="Email"
             type="email"
             formControlName="email"
             placeholder="patient@example.com"
-          />
-          <app-validation-message
-            [control]="patientForm.get('email')!"
-            name="Email"
-          ></app-validation-message>
+          ></app-input-text>
         </div>
 
         <!-- Actions -->
