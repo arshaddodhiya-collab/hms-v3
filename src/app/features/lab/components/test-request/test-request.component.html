@@ -8,7 +8,7 @@
   <div class="field grid">
     <label class="col-12 md:col-2">Patient</label>
     <div class="col-12 md:col-10">
-      <p-dropdown
+      <app-dropdown
         [options]="patients"
         [(ngModel)]="selectedPatient"
         optionLabel="name"
@@ -16,8 +16,7 @@
         filterBy="name"
         placeholder="Select a Patient"
         [showClear]="true"
-        [ngClass]="{ 'ng-invalid ng-dirty': submitted && !selectedPatient }"
-      ></p-dropdown>
+      ></app-dropdown>
       <small *ngIf="submitted && !selectedPatient" class="p-error"
         >Patient is required.</small
       >
@@ -27,7 +26,7 @@
   <div class="field grid">
     <label class="col-12 md:col-2">Test Name</label>
     <div class="col-12 md:col-10">
-      <p-dropdown
+      <app-dropdown
         [options]="tests"
         [(ngModel)]="selectedTest"
         optionLabel="name"
@@ -35,8 +34,7 @@
         filterBy="name"
         placeholder="Select a Test"
         [showClear]="true"
-        [ngClass]="{ 'ng-invalid ng-dirty': submitted && !selectedTest }"
-      ></p-dropdown>
+      ></app-dropdown>
       <small *ngIf="submitted && !selectedTest" class="p-error"
         >Test is required.</small
       >
@@ -46,11 +44,11 @@
   <div class="field grid">
     <label class="col-12 md:col-2">Priority</label>
     <div class="col-12 md:col-10">
-      <p-dropdown
+      <app-dropdown
         [options]="priorities"
         [(ngModel)]="priority"
         placeholder="Select Priority"
-      ></p-dropdown>
+      ></app-dropdown>
     </div>
   </div>
 

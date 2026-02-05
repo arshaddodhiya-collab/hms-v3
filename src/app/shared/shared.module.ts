@@ -36,6 +36,7 @@ import { ValidationMessageComponent } from './components/validation-message/vali
 
 import { VoiceHudComponent } from './components/voice-hud/voice-hud.component';
 import { VoiceInputDirective } from './directives/voice-input.directive';
+import { DropdownComponent } from './components/dropdown.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { VoiceInputDirective } from './directives/voice-input.directive';
     ValidationMessageComponent,
     VoiceHudComponent,
     VoiceInputDirective,
+    DropdownComponent,
   ],
   imports: [
     CommonModule,
@@ -90,6 +92,7 @@ import { VoiceInputDirective } from './directives/voice-input.directive';
     ValidationMessageComponent,
     VoiceHudComponent,
     VoiceInputDirective,
+    DropdownComponent,
     // PrimeNG Modules
     ButtonModule,
     InputTextModule,

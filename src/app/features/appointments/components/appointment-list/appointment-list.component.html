@@ -114,14 +114,13 @@
       </div>
       <div class="field" *ngIf="selectedItem.id">
         <label for="status">Status</label>
-        <p-dropdown
+        <app-dropdown
           [options]="statuses"
           [(ngModel)]="selectedItem.status"
           placeholder="Select a Status"
-          [style]="{ width: '100%' }"
           appendTo="body"
         >
-        </p-dropdown>
+        </app-dropdown>
       </div>
     </div>
   </ng-template>

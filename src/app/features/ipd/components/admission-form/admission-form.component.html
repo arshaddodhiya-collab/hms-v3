@@ -8,7 +8,7 @@
   <div class="field grid">
     <label class="col-12 md:col-2">Patient</label>
     <div class="col-12 md:col-10">
-      <p-dropdown
+      <app-dropdown
         [options]="patients"
         [(ngModel)]="selectedPatient"
         optionLabel="name"
@@ -16,8 +16,7 @@
         filterBy="name"
         placeholder="Select a Patient"
         [showClear]="true"
-        [ngClass]="{ 'ng-invalid ng-dirty': submitted && !selectedPatient }"
-      ></p-dropdown>
+      ></app-dropdown>
       <small *ngIf="submitted && !selectedPatient" class="p-error"
         >Patient is required.</small
       >
@@ -27,13 +26,12 @@
   <div class="field grid">
     <label class="col-12 md:col-2">Ward</label>
     <div class="col-12 md:col-10">
-      <p-dropdown
+      <app-dropdown
         [options]="wards"
         [(ngModel)]="selectedWard"
         placeholder="Select Ward"
         (onChange)="onWardChange()"
-        [ngClass]="{ 'ng-invalid ng-dirty': submitted && !selectedWard }"
-      ></p-dropdown>
+      ></app-dropdown>
       <small *ngIf="submitted && !selectedWard" class="p-error"
         >Ward is required.</small
       >
@@ -43,15 +41,14 @@
   <div class="field grid">
     <label class="col-12 md:col-2">Bed</label>
     <div class="col-12 md:col-10">
-      <p-dropdown
+      <app-dropdown
         [options]="availableBeds"
         [(ngModel)]="selectedBed"
         optionLabel="number"
         placeholder="Select Bed"
         [disabled]="!selectedWard"
         emptyMessage="No available beds in this ward"
-        [ngClass]="{ 'ng-invalid ng-dirty': submitted && !selectedBed }"
-      ></p-dropdown>
+      ></app-dropdown>
       <small *ngIf="submitted && !selectedBed" class="p-error"
         >Bed is required.</small
       >

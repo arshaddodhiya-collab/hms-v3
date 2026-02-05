@@ -13,13 +13,12 @@
     </div>
     <div class="field col-12 md:col-3">
       <label>Frequency</label>
-      <p-dropdown
+      <app-dropdown
         [options]="frequencies"
         [(ngModel)]="newMed.frequency"
         placeholder="Select"
-        [style]="{ width: '100%' }"
         appendTo="body"
-      ></p-dropdown>
+      ></app-dropdown>
     </div>
     <div class="field col-12 md:col-2">
       <label>Duration</label>

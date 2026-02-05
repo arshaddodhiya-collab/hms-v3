@@ -90,14 +90,14 @@
 
         <div class="field col-12 md:col-6">
           <label for="gender" class="font-medium mb-2 block"> Gender </label>
-          <p-dropdown
+          <app-dropdown
             id="gender"
             [options]="genderOptions"
             formControlName="gender"
             placeholder="Select gender"
             optionLabel="label"
             optionValue="value"
-          ></p-dropdown>
+          ></app-dropdown>
           <app-validation-message
             [control]="patientForm.get('gender')!"
             name="Gender"
