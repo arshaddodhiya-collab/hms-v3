@@ -18,7 +18,7 @@ export class HasPermissionDirective implements OnInit, OnDestroy {
   private isViewCreated = false;
 
   constructor(
-    private templateRef: TemplateRef<any>,
+    private templateRef: TemplateRef<unknown>,
     private viewContainer: ViewContainerRef,
     private authService: MockAuthService,
   ) {}

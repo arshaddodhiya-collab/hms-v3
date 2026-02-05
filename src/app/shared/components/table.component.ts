@@ -5,6 +5,7 @@ import {
   Output,
   TemplateRef,
 } from '@angular/core';
+import { TableColumn } from '../models/table.model';
 
 @Component({
   selector: 'app-table',
@@ -209,24 +210,20 @@ import {
     `,
   ],
 })
-export class TableComponent {
+export class TableComponent<T = any> {
   // ... Inputs/Outputs stay exactly the same as your code
-  @Input() columns: {
-    field: string;
-    header: string;
-    template?: TemplateRef<any>;
-  }[] = [];
-  @Input() data: any[] = [];
+  @Input() columns: TableColumn<T>[] = [];
+  @Input() data: T[] = [];
   @Input() rows = 10;
   @Input() rowsPerPageOptions: number[] = [10, 20, 50];
   @Input() paginator = true;
   @Input() loading = false;
   @Input() globalFilterFields: string[] = [];
   @Input() showSearch = true;
-  @Input() actionsTemplate: TemplateRef<any> | null = null;
+  @Input() actionsTemplate: TemplateRef<unknown> | null = null;
   @Input() styleClass = 'p-datatable-sm';
   @Input() responsiveLayout = 'scroll';
-  @Input() selection: any;
-  @Output() selectionChange = new EventEmitter<any>();
+  @Input() selection: T | T[] | null = null;
+  @Output() selectionChange = new EventEmitter<T | T[]>();
   @Input() selectionMode: 'single' | 'multiple' | null = null;
 }
