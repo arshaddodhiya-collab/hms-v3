@@ -39,7 +39,60 @@
     <div class="col-12 xl:col-8">
       <!-- <div class="surface-card shadow-2 border-round p-4 h-full"> -->
       <!-- <h5 class="text-xl font-bold text-900 mb-4">Today's Activity</h5> -->
-      <app-today-activity></app-today-activity>
+      <!-- Doctor's Specific Widget -->
+      <div class="mb-5" *ngIf="userRole === 'Doctor'">
+        <app-card>
+          <div class="flex justify-content-between align-items-center mb-3">
+            <h5 class="text-xl font-bold m-0 text-900">
+              My Upcoming Appointments
+            </h5>
+            <button
+              pButton
+              label="View All"
+              class="p-button-text"
+              routerLink="/appointments"
+            ></button>
+          </div>
+          <p-table
+            [value]="myAppointments"
+            [tableStyle]="{ 'min-width': '100%' }"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Patient</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-appt>
+              <tr>
+                <td class="font-bold">{{ appt.patientName }}</td>
+                <td>{{ appt.date | date: 'shortTime' }}</td>
+                <td>
+                  <app-status-badge [status]="appt.status"></app-status-badge>
+                </td>
+                <td>
+                  <button
+                    pButton
+                    icon="pi pi-play"
+                    class="p-button-rounded p-button-success p-button-text"
+                    pTooltip="Start Consultation"
+                    routerLink="/consultation/{{ appt.id }}"
+                  ></button>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="4">No upcoming appointments.</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </app-card>
+      </div>
+
+      <app-today-activity *ngIf="userRole !== 'Doctor'"></app-today-activity>
       <!-- </div> -->
     </div>
     <div class="col-12 xl:col-4">

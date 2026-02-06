@@ -37,7 +37,7 @@
   <p-tabView>
     <p-tabPanel header="Vitals (Triage)" leftIcon="pi pi-heart">
       <!-- Reusing Vitals View from Triage Module -->
-      <app-vitals-view></app-vitals-view>
+      <app-vitals-view [appointmentId]="appointmentId"></app-vitals-view>
     </p-tabPanel>
 
     <p-tabPanel header="Diagnosis & Notes" leftIcon="pi pi-book">

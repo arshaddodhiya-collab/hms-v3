@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   TriageService,
@@ -11,7 +11,7 @@ import {
   styleUrls: ['./vitals-view.component.scss'],
 })
 export class VitalsViewComponent implements OnInit {
-  appointmentId: string | null = null;
+  @Input() appointmentId: string | number | null = null;
   vitals: Vitals | null | undefined = null;
 
   constructor(
@@ -20,10 +20,13 @@ export class VitalsViewComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('appointmentId');
-    if (id) {
-      this.appointmentId = id;
-      this.triageService.getVitals(+id).subscribe((data) => {
+    // Priority: Input > Route Param
+    if (!this.appointmentId) {
+      this.appointmentId = this.route.snapshot.paramMap.get('appointmentId');
+    }
+
+    if (this.appointmentId) {
+      this.triageService.getVitals(+this.appointmentId).subscribe((data) => {
         this.vitals = data;
       });
     }

@@ -32,7 +32,7 @@ export class ConsultationDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private encounterService: EncounterService,
-    private labService: LabService,
+    // private labService: LabService,
     private messageService: MessageService,
   ) {}
 
