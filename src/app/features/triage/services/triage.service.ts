@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
-import { AppointmentService } from './appointment.service';
-import { VisitStatus } from '../models/patient.model';
+import { AppointmentService } from '../../appointments/services/appointment.service';
+import { VisitStatus } from '../../../core/models/patient.model';
 
 export interface Vitals {
   appointmentId: number;
@@ -24,7 +24,7 @@ export class TriageService {
   // Mock Storage for Vitals
   private vitalsMap = new Map<number, Vitals>();
 
-  constructor(private appointmentService: AppointmentService) {}
+  constructor(private appointmentService: AppointmentService) { }
 
   saveVitals(vitals: Vitals): Observable<boolean> {
     return of(true).pipe(

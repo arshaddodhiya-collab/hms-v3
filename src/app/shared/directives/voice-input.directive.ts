@@ -8,7 +8,7 @@ import {
   NgZone,
 } from '@angular/core';
 import { NgControl } from '@angular/forms';
-import { VoiceRecognitionService } from '../../core/services/voice-recognition.service';
+import { VoiceRecognitionService } from '../../features/voice-navigation/services/voice-recognition.service';
 import { Subscription } from 'rxjs';
 import Fuse from 'fuse.js';
 
@@ -24,7 +24,7 @@ export class VoiceInputDirective implements OnInit, OnDestroy {
     private voiceService: VoiceRecognitionService,
     private zone: NgZone,
     @Optional() private control: NgControl,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.sub = this.voiceService.result$.subscribe((result) => {

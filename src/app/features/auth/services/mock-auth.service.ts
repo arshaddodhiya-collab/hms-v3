@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { MOCK_USERS, MockUser } from '../config/mock-users.config';
+import { MOCK_USERS, MockUser } from '../../../core/config/mock-users.config';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +15,7 @@ export class MockAuthService {
     if (savedUser) {
       const user = JSON.parse(savedUser);
       // Refresh user data from config to get latest permissions
-      const configUser = MOCK_USERS.find((u) => u.username === user.username);
+      const configUser = MOCK_USERS.find((u: MockUser) => u.username === user.username);
 
       if (configUser) {
         this.currentUserSubject.next(configUser);
@@ -30,7 +30,7 @@ export class MockAuthService {
 
   login(username: string, password: string): boolean {
     const user = MOCK_USERS.find(
-      (u) => u.username === username && u.password === password,
+      (u: MockUser) => u.username === username && u.password === password,
     );
 
     if (user) {

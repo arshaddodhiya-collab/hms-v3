@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   BillingService,
   Invoice,
-} from '../../../../core/services/billing.service';
+} from '../../services/billing.service';
 import { Location } from '@angular/common';
 
 @Component({
@@ -20,7 +20,7 @@ export class PaymentReceiptComponent implements OnInit {
     private router: Router,
     private billingService: BillingService,
     private location: Location,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { TriageService } from '../../../../core/services/triage.service';
+import { TriageService } from '../../services/triage.service';
 
 @Component({
   selector: 'app-vitals-entry',
@@ -28,7 +28,7 @@ export class VitalsEntryComponent implements OnInit {
     private router: Router,
     private messageService: MessageService,
     private triageService: TriageService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.appointmentId = this.route.snapshot.paramMap.get('appointmentId');

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { MockAuthService } from './core/services/mock-auth.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { MockAuthService } from './features/auth/services/mock-auth.service';
 
 @Component({
   selector: 'app-root',

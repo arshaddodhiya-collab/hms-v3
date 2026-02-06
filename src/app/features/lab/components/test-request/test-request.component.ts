@@ -5,8 +5,8 @@ import {
   LabService,
   LabRequest,
   LabTest,
-} from '../../../../core/services/lab.service';
-import { PatientService } from '../../../../core/services/patient.service';
+} from '../../services/lab.service';
+import { PatientService } from '../../../patients/services/patient.service';
 import { Patient } from '../../../../core/models/patient.model';
 
 @Component({
@@ -37,7 +37,7 @@ export class TestRequestComponent implements OnInit {
     private patientService: PatientService,
     private messageService: MessageService,
     private router: Router,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.patientService

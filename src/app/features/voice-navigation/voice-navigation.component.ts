@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {
   VoiceCommandService,
   VoiceCommand,
-} from '../../core/services/voice-command.service';
+} from './services/voice-command.service';
 
 @Component({
   selector: 'app-voice-navigation',
@@ -12,7 +12,7 @@ import {
 export class VoiceNavigationComponent implements OnInit {
   commands: VoiceCommand[] = [];
 
-  constructor(private voiceCommandService: VoiceCommandService) {}
+  constructor(private voiceCommandService: VoiceCommandService) { }
 
   ngOnInit(): void {
     this.commands = this.voiceCommandService.getCommands();

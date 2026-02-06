@@ -4,8 +4,8 @@ import {
   EncounterService,
   Encounter,
   PrescriptionItem,
-} from '../../../../core/services/encounter.service';
-import { LabService } from '../../../../core/services/lab.service';
+} from '../../services/encounter.service';
+import { LabService } from '../../../lab/services/lab.service';
 import { MessageService } from 'primeng/api';
 
 @Component({
@@ -34,7 +34,7 @@ export class ConsultationDetailComponent implements OnInit {
     private encounterService: EncounterService,
     // private labService: LabService,
     private messageService: MessageService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.appointmentId = this.route.snapshot.paramMap.get('appointmentId');

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Bed } from '../../../../core/models/patient.model';
-import { IpdService } from '../../../../core/services/ipd.service';
+import { IpdService } from '../../services/ipd.service';
 
 @Component({
   selector: 'app-bed-management',
@@ -12,7 +12,7 @@ export class BedManagementComponent implements OnInit {
   wards: { name: string; beds: Bed[] }[] = [];
   loading = false;
 
-  constructor(private ipdService: IpdService) {}
+  constructor(private ipdService: IpdService) { }
 
   ngOnInit(): void {
     this.refreshData();

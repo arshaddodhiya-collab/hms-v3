@@ -7,7 +7,8 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { MockAuthService } from '../../core/services/mock-auth.service';
+import { MockAuthService } from '../../features/auth/services/mock-auth.service';
+
 
 @Directive({
   selector: '[appHasPermission]',
@@ -21,7 +22,7 @@ export class HasPermissionDirective implements OnInit, OnDestroy {
     private templateRef: TemplateRef<unknown>,
     private viewContainer: ViewContainerRef,
     private authService: MockAuthService,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.subscription.add(

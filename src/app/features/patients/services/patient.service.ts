@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay, map, tap } from 'rxjs/operators';
-import { Patient } from '../models/patient.model';
+import { Patient } from '../../../core/models/patient.model';
 
 @Injectable({
   providedIn: 'root',
@@ -40,7 +40,7 @@ export class PatientService {
   private patientsSubject = new BehaviorSubject<Patient[]>(this.mockPatients);
   public patients$ = this.patientsSubject.asObservable();
 
-  constructor() {}
+  constructor() { }
 
   getPatients(): Observable<Patient[]> {
     return this.patients$.pipe(delay(500)); // Simulate network latency

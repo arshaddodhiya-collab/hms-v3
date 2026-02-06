@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {
   VoiceRecognitionService,
   VoiceResult,
-} from '../../../core/services/voice-recognition.service';
-import { VoiceCommandService } from '../../../core/services/voice-command.service';
+} from '../../../features/voice-navigation/services/voice-recognition.service';
+import { VoiceCommandService } from '../../../features/voice-navigation/services/voice-command.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 

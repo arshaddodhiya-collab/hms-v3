@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MockAuthService } from '../../../../core/services/mock-auth.service';
+
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
+import { MockAuthService } from '../../../auth/services/mock-auth.service';
 
 @Component({
   selector: 'app-stats-cards',
@@ -10,7 +11,7 @@ import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 export class StatsCardsComponent implements OnInit {
   stats: any[] = [];
 
-  constructor(private authService: MockAuthService) {}
+  constructor(private authService: MockAuthService) { }
 
   ngOnInit() {
     this.loadStats();

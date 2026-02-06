@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { IpdService } from '../../../../core/services/ipd.service';
+import { IpdService } from '../../services/ipd.service';
 import {
   BillingService,
   Invoice,
-} from '../../../../core/services/billing.service';
+} from '../../../billing/services/billing.service';
 import { Admission } from '../../../../core/models/patient.model';
 
 @Component({
@@ -31,7 +31,7 @@ export class DischargeSummaryComponent implements OnInit {
     private ipdService: IpdService,
     private billingService: BillingService,
     private messageService: MessageService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('admissionId');

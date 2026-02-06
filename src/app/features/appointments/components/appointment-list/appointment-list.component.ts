@@ -11,7 +11,7 @@ import { TableColumn } from '../../../../shared/models/table.model';
 import { MessageService } from 'primeng/api';
 import { BaseCrudComponent } from '../../../../shared/components/base-crud.component';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
-import { AppointmentService } from '../../../../core/services/appointment.service';
+import { AppointmentService } from '../../services/appointment.service';
 import { Visit } from '../../../../core/models/patient.model';
 
 @Component({
@@ -21,8 +21,7 @@ import { Visit } from '../../../../core/models/patient.model';
 })
 export class AppointmentListComponent
   extends BaseCrudComponent<Visit>
-  implements OnInit, AfterViewInit
-{
+  implements OnInit, AfterViewInit {
   @ViewChild('statusTemplate') statusTemplate!: TemplateRef<{
     $implicit: unknown;
     row: Visit;

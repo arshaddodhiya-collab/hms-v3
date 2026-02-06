@@ -9,8 +9,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { MockAuthService } from '../../../../core/services/mock-auth.service';
-import { VoiceCommandService } from '../../../../core/services/voice-command.service';
+import { MockAuthService } from '../../services/mock-auth.service';
+import { VoiceCommandService } from '../../../voice-navigation/services/voice-command.service';
 
 @Component({
   selector: 'app-login',

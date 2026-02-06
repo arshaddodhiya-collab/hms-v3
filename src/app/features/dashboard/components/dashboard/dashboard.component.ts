@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MockAuthService } from '../../../../core/services/mock-auth.service';
+import { MockAuthService } from '../../../auth/services/mock-auth.service';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
-import { AppointmentService } from '../../../../core/services/appointment.service';
+import { AppointmentService } from '../../../appointments/services/appointment.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,7 +19,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private authService: MockAuthService,
     private appointmentService: AppointmentService,
-  ) {}
+  ) { }
 
   ngOnInit() {
     const user = this.authService.getCurrentUser();

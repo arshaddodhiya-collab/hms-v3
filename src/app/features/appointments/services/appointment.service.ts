@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
-import { Visit, VisitStatus } from '../models/patient.model';
+import { Visit, VisitStatus } from '../../../core/models/patient.model';
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +33,7 @@ export class AppointmentService {
   );
   public appointments$ = this.appointmentsSubject.asObservable();
 
-  constructor() {}
+  constructor() { }
 
   getAppointments(): Observable<Visit[]> {
     return this.appointments$.pipe(delay(500));

@@ -3,7 +3,7 @@ import {
   Admission,
   AdmissionStatus,
 } from '../../../../core/models/patient.model';
-import { IpdService } from '../../../../core/services/ipd.service';
+import { IpdService } from '../../services/ipd.service';
 
 @Component({
   selector: 'app-admission-list',
@@ -23,7 +23,7 @@ export class AdmissionListComponent implements OnInit {
   data: Admission[] = [];
   loading = false;
 
-  constructor(private ipdService: IpdService) {}
+  constructor(private ipdService: IpdService) { }
 
   ngOnInit(): void {
     this.refreshData();

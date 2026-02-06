@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
-import { Admission, AdmissionStatus, Bed } from '../models/patient.model';
+import { Admission, AdmissionStatus, Bed } from '../../../core/models/patient.model';
 
 @Injectable({
   providedIn: 'root',
@@ -55,7 +55,7 @@ export class IpdService {
   private bedsSubject = new BehaviorSubject<Bed[]>(this.mockBeds);
   public beds$ = this.bedsSubject.asObservable();
 
-  constructor() {}
+  constructor() { }
 
   getAdmissions(): Observable<Admission[]> {
     return this.admissions$.pipe(delay(500));
@@ -106,10 +106,10 @@ export class IpdService {
           const updatedAdmissions = currentAdmissions.map((a) =>
             a.id === admissionId
               ? {
-                  ...a,
-                  status: AdmissionStatus.DISCHARGED,
-                  dischargeDate: new Date(),
-                }
+                ...a,
+                status: AdmissionStatus.DISCHARGED,
+                dischargeDate: new Date(),
+              }
               : a,
           );
           this.admissionsSubject.next(updatedAdmissions);

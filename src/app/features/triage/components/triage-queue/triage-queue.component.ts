@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppointmentService } from '../../../../core/services/appointment.service';
+import { AppointmentService } from '../../../appointments/services/appointment.service';
 import { Visit, VisitStatus } from '../../../../core/models/patient.model';
 
 @Component({
@@ -22,7 +22,7 @@ export class TriageQueueComponent implements OnInit {
   constructor(
     private appointmentService: AppointmentService,
     private router: Router,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loading = true;

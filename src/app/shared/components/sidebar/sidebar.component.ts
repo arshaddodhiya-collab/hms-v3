@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router, NavigationEnd, Event } from '@angular/router';
-import { MockAuthService } from '../../../core/services/mock-auth.service';
+import { MockAuthService } from '../../../features/auth/services/mock-auth.service';
 import { MENU_CONFIG } from '../../../core/config/menu.config';
 import { filter } from 'rxjs/operators';
 import { MenuItem } from '../../../core/models/menu.model';

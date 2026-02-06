@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { VoiceRecognitionService } from './voice-recognition.service';
-import { MockAuthService } from './mock-auth.service';
+import { MockAuthService } from '../../auth/services/mock-auth.service';
 import { Subscription } from 'rxjs';
 import { Location } from '@angular/common';
 import Fuse from 'fuse.js';

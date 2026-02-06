@@ -5,7 +5,7 @@ import { Location } from '@angular/common';
 import {
   BillingService,
   Invoice,
-} from '../../../../core/services/billing.service';
+} from '../../services/billing.service';
 
 @Component({
   selector: 'app-invoice-generate',

@@ -8,7 +8,7 @@ import {
 import {
   BillingService,
   Invoice,
-} from '../../../../core/services/billing.service';
+} from '../../services/billing.service';
 import { Router } from '@angular/router';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 
@@ -36,7 +36,7 @@ export class BillingSummaryComponent implements OnInit, AfterViewInit {
   constructor(
     private billingService: BillingService,
     private router: Router,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.billingService.getInvoices().subscribe((data) => {

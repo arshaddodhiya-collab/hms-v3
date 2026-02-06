@@ -5,7 +5,7 @@ import {
   LabService,
   LabRequest,
   LabTestResult,
-} from '../../../../core/services/lab.service';
+} from '../../services/lab.service';
 import { Location } from '@angular/common';
 
 @Component({
@@ -25,7 +25,7 @@ export class LabTestEntryComponent implements OnInit {
     private labService: LabService,
     private location: Location,
     private fb: FormBuilder,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initForm();

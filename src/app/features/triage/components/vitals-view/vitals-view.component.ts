@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import {
   TriageService,
   Vitals,
-} from '../../../../core/services/triage.service';
+} from '../../services/triage.service';
 
 @Component({
   selector: 'app-vitals-view',
@@ -17,7 +17,7 @@ export class VitalsViewComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private triageService: TriageService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Priority: Input > Route Param

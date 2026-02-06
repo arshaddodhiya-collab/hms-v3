@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { IpdService } from '../../../../core/services/ipd.service';
-import { PatientService } from '../../../../core/services/patient.service';
+import { IpdService } from '../../services/ipd.service';
+import { PatientService } from '../../../patients/services/patient.service';
 import {
   Admission,
   Bed,
@@ -39,7 +39,7 @@ export class AdmissionFormComponent implements OnInit {
     private patientService: PatientService,
     private messageService: MessageService,
     private router: Router,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadPatients();

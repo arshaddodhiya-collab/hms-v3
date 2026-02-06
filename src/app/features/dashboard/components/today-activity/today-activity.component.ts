@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MockAuthService } from '../../../../core/services/mock-auth.service';
+import { MockAuthService } from '../../../auth/services/mock-auth.service';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 
 @Component({
@@ -11,7 +11,7 @@ export class TodayActivityComponent implements OnInit {
   activities: any[] = [];
   cols: any[] = [];
 
-  constructor(private authService: MockAuthService) {}
+  constructor(private authService: MockAuthService) { }
 
   ngOnInit() {
     this.setupTable();

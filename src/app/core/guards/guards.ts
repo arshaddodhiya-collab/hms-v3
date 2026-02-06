@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
-import { MockAuthService } from '../services/mock-auth.service';
+import { MockAuthService } from '../../features/auth/services/mock-auth.service';
 import { MessageService } from 'primeng/api';
 
 @Injectable({
@@ -10,7 +10,7 @@ export class AuthGuard implements CanActivate {
   constructor(
     private authService: MockAuthService,
     private router: Router,
-  ) {}
+  ) { }
 
   canActivate(): boolean {
     if (this.authService.isAuthenticated()) {
@@ -29,7 +29,7 @@ export class PermissionGuard implements CanActivate {
     private authService: MockAuthService,
     private router: Router,
     private messageService: MessageService,
-  ) {}
+  ) { }
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
     const requiredPermission = route.data['permission'];
