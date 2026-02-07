@@ -1,18 +1,217 @@
-<app-card>
-  <app-page-header
-    title="Patient Details"
-    icon="pi pi-user"
-    [showBack]="true"
-  ></app-page-header>
+<app-page-header
+  title="Patient Details"
+  subtitle="View and manage patient information"
+  icon="pi pi-user"
+  [showBack]="true"
+></app-page-header>
 
-  <div class="grid">
-    <div class="col-12 md:col-6">
-      <p><strong>Name:</strong> {{ patient.name }}</p>
-      <p><strong>Age:</strong> {{ patient.age }}</p>
-    </div>
-    <div class="col-12 md:col-6">
-      <p><strong>Gender:</strong> {{ patient.gender }}</p>
-      <p><strong>Contact:</strong> {{ patient.contact }}</p>
-    </div>
+<div class="grid">
+  <!-- Left Column: Patient Profile Summary -->
+  <div class="col-12 md:col-4 lg:col-3">
+    <app-card styleClass="text-center h-full">
+      <div class="flex flex-column align-items-center mb-4">
+        <p-avatar
+          [image]="patient.avatar"
+          size="xlarge"
+          shape="circle"
+          styleClass="mb-3 shadow-2"
+        ></p-avatar>
+        <h2 class="text-xl font-bold m-0 text-900">{{ patient.name }}</h2>
+        <span class="text-500 text-sm mt-1">ID: #{{ patient.id }}</span>
+        <p-tag [value]="'Active'" severity="success" styleClass="mt-2"></p-tag>
+      </div>
+
+      <p-divider></p-divider>
+
+      <div class="text-left">
+        <div class="flex justify-content-between mb-2">
+          <span class="text-600">Gender</span>
+          <span class="font-medium text-900">{{ patient.gender }}</span>
+        </div>
+        <div class="flex justify-content-between mb-2">
+          <span class="text-600">Age</span>
+          <span class="font-medium text-900">{{ patient.age }} Years</span>
+        </div>
+        <div class="flex justify-content-between mb-2">
+          <span class="text-600">Blood Group</span>
+          <span class="font-medium text-900">{{ patient.bloodGroup }}</span>
+        </div>
+        <div class="flex justify-content-between mb-2">
+          <span class="text-600">Last Visit</span>
+          <span class="font-medium text-900">{{
+            patient.lastVisit | date
+          }}</span>
+        </div>
+      </div>
+
+      <p-divider></p-divider>
+
+      <div class="text-left">
+        <h4 class="text-900 font-medium mb-3">Contact info</h4>
+        <div class="flex align-items-center mb-3">
+          <i class="pi pi-phone text-primary mr-2"></i>
+          <span class="text-900">{{ patient.contact }}</span>
+        </div>
+        <div class="flex align-items-center mb-3">
+          <i class="pi pi-envelope text-primary mr-2"></i>
+          <span class="text-900 text-sm">{{ patient.email }}</span>
+        </div>
+        <div class="flex align-items-start">
+          <i class="pi pi-map-marker text-primary mr-2 mt-1"></i>
+          <span class="text-900 text-sm">{{ patient.address }}</span>
+        </div>
+      </div>
+
+      <p-divider *ngIf="patient.allergies"></p-divider>
+
+      <div class="text-left" *ngIf="patient.allergies">
+        <h4 class="text-900 font-medium mb-2">Allergies</h4>
+        <div class="flex flex-wrap gap-2">
+          <p-tag
+            *ngFor="let allergy of patient.allergies.split(',')"
+            [value]="allergy.trim()"
+            severity="danger"
+            [rounded]="true"
+          ></p-tag>
+        </div>
+      </div>
+    </app-card>
   </div>
-</app-card>
+
+  <!-- Right Column: Detailed Info -->
+  <div class="col-12 md:col-8 lg:col-9">
+    <!-- Vitals Row -->
+    <div class="grid mb-3">
+      <div class="col-6 md:col-3">
+        <div
+          class="surface-card shadow-1 p-3 border-round border-left-3 border-blue-500"
+        >
+          <div class="text-500 font-medium mb-1">Blood Pressure</div>
+          <div class="text-900 font-bold text-xl">{{ activeVitals.bp }}</div>
+        </div>
+      </div>
+      <div class="col-6 md:col-3">
+        <div
+          class="surface-card shadow-1 p-3 border-round border-left-3 border-green-500"
+        >
+          <div class="text-500 font-medium mb-1">Heart Rate</div>
+          <div class="text-900 font-bold text-xl">{{ activeVitals.pulse }}</div>
+        </div>
+      </div>
+      <div class="col-6 md:col-3">
+        <div
+          class="surface-card shadow-1 p-3 border-round border-left-3 border-orange-500"
+        >
+          <div class="text-500 font-medium mb-1">Temperature</div>
+          <div class="text-900 font-bold text-xl">
+            {{ activeVitals.temperature }}
+          </div>
+        </div>
+      </div>
+      <div class="col-6 md:col-3">
+        <div
+          class="surface-card shadow-1 p-3 border-round border-left-3 border-purple-500"
+        >
+          <div class="text-500 font-medium mb-1">Weight</div>
+          <div class="text-900 font-bold text-xl">
+            {{ activeVitals.weight }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <app-card>
+      <p-tabView>
+        <p-tabPanel header="Overview">
+          <h3 class="text-lg font-bold mb-3">Medical History</h3>
+          <p-table
+            [value]="medicalHistory"
+            styleClass="p-datatable-sm"
+            [rowHover]="true"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Condition</th>
+                <th>Diagnosed Date</th>
+                <th>Status</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+              <tr>
+                <td>{{ item.condition }}</td>
+                <td>{{ item.diagnosedDate | date }}</td>
+                <td>
+                  <p-tag
+                    [value]="item.status"
+                    [severity]="getSeverity(item.status)"
+                  ></p-tag>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-tabPanel>
+
+        <p-tabPanel header="Appointments">
+          <p-table
+            [value]="appointments"
+            styleClass="p-datatable-sm"
+            [rowHover]="true"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Date</th>
+                <th>Doctor</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-apt>
+              <tr>
+                <td>{{ apt.date | date }}</td>
+                <td>{{ apt.doctor }}</td>
+                <td>{{ apt.type }}</td>
+                <td>
+                  <p-tag
+                    [value]="apt.status"
+                    [severity]="getSeverity(apt.status)"
+                  ></p-tag>
+                </td>
+                <td>
+                  <button
+                    pButton
+                    icon="pi pi-eye"
+                    class="p-button-text p-button-sm"
+                  ></button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-tabPanel>
+
+        <p-tabPanel header="Prescriptions">
+          <div
+            *ngFor="let rx of prescriptions"
+            class="mb-3 surface-ground p-3 border-round"
+          >
+            <div class="flex justify-content-between mb-2">
+              <span class="font-bold">Date: {{ rx.date | date }}</span>
+              <span class="text-600">Dr. {{ rx.doctor }}</span>
+            </div>
+            <ul class="pl-3 m-0">
+              <li *ngFor="let med of rx.medicines">{{ med }}</li>
+            </ul>
+          </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Documents">
+          <div class="text-center p-5 text-500">
+            <i class="pi pi-file text-4xl mb-3"></i>
+            <p>No documents uploaded yet.</p>
+          </div>
+        </p-tabPanel>
+      </p-tabView>
+    </app-card>
+  </div>
+</div>

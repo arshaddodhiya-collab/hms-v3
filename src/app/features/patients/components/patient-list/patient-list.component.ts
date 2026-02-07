@@ -1,10 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  TemplateRef,
-  AfterViewInit,
-} from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { BaseCrudComponent } from '../../../../shared/components/base-crud.component';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
@@ -18,9 +12,9 @@ import { TableColumn } from '../../../../shared/models/table.model';
 })
 export class PatientListComponent
   extends BaseCrudComponent<Patient>
-  implements OnInit, AfterViewInit
+  implements OnInit
 {
-  @ViewChild('genderTemplate') genderTemplate!: TemplateRef<{
+  @ViewChild('genderTemplate', { static: true }) genderTemplate!: TemplateRef<{
     $implicit: unknown;
     row: Patient;
   }>;
@@ -39,6 +33,10 @@ export class PatientListComponent
   }
 
   override ngOnInit(): void {
+    const genderCol = this.cols.find((c) => c.field === 'gender');
+    if (genderCol) {
+      genderCol.template = this.genderTemplate;
+    }
     this.refreshData();
   }
 
@@ -59,13 +57,6 @@ export class PatientListComponent
         contact: '0987654321',
       },
     ];
-  }
-
-  ngAfterViewInit() {
-    const genderCol = this.cols.find((c) => c.field === 'gender');
-    if (genderCol) {
-      genderCol.template = this.genderTemplate;
-    }
   }
 
   override onSave(patientData: Patient) {

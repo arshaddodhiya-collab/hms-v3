@@ -45,7 +45,7 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
 export class DropdownComponent implements ControlValueAccessor {
   @Input() options: any[] = [];
   @Input() optionLabel = 'label';
-  @Input() optionValue = 'value';
+  @Input() optionValue: any = 'value';
   @Input() placeholder = 'Select';
   @Input() showClear = false;
   @Input() filter = false;
