@@ -148,6 +148,8 @@ Core patient demographic data.
 | `email` | `VARCHAR(100)` | | Email address |
 | `address` | `TEXT` | | Full address |
 | `blood_group`| `VARCHAR(5)` | | A+, O-, etc. |
+| `allergies` | `TEXT` | | Known allergies |
+| `avatar` | `VARCHAR(255)` | | Profile image URL |
 
 **Indexes**: `idx_patient_name`, `idx_patient_contact`
 
@@ -188,7 +190,9 @@ Scheduled visits.
 | `start_time` | `DATETIME` | `NN` | |
 | `end_time` | `DATETIME` | | Optional duration |
 | `status` | `ENUM` | `NN` | PENDING, CONFIRMED, CANCELLED, COMPLETED |
+| `type` | `ENUM` | `DEF 'CONSULTATION'` | CONSULTATION, FOLLOWUP, EMERGENCY |
 | `reason` | `VARCHAR(255)`| | Chief complaint for scheduling |
+| `notes` | `TEXT` | | Internal notes |
 
 #### 🗄️ Table: `encounter`
 The central clinical record for a visit.

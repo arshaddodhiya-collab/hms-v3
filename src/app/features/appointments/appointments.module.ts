@@ -1,4 +1,6 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { TimelineModule } from 'primeng/timeline';
 import { SharedModule } from '../../shared/shared.module';
 import { AppointmentsRoutingModule } from './appointments-routing.module';
 import { AppointmentListComponent } from './components/appointment-list/appointment-list.component';
@@ -13,6 +15,11 @@ import { AppointmentEditComponent } from './components/appointment-edit/appointm
     AppointmentViewComponent,
     AppointmentEditComponent,
   ],
-  imports: [SharedModule, AppointmentsRoutingModule],
+  imports: [
+    CommonModule,
+    SharedModule,
+    AppointmentsRoutingModule,
+    TimelineModule,
+  ],
 })
 export class AppointmentsModule {}

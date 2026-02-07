@@ -66,7 +66,7 @@ This checklist tracks the development of the HMS backend, based on `docs/BACKEND
         - [ ] Secure with `PreAuthorize("hasAuthority('CMP_ADMIN_DEPT_READ')")`.
 - [ ] **Patient Module (Aggregate)**
     - [ ] Create `Patient` Entity (extends `PublicEntity`).
-        - [ ] Fields: `firstName`, `lastName`, `dob`, `gender` (Enum), `contact`, `email`, `address`.
+        - [ ] Fields: `firstName`, `lastName`, `dob`, `gender` (Enum), `contact`, `email`, `address`, `allergies`, `avatar`.
         - [ ] Indexes: `idx_patient_name`, `idx_patient_contact`.
     - [ ] Implement `PatientRepository` with `JpaSpecificationExecutor`.
         - [ ] Build `PatientSearchSpecification` (filter by name partial, phone, email).
@@ -79,7 +79,7 @@ This checklist tracks the development of the HMS backend, based on `docs/BACKEND
 ## 4. Clinical Modules (OPD)
 - [ ] **Appointment Module (Scheduling)**
     - [ ] Create `Appointment` Entity (`@Entity`).
-        - [ ] Fields: `startDateTime`, `endDateTime`, `reason`, `cancelReason`.
+        - [ ] Fields: `startDateTime`, `endDateTime`, `type`, `reason`, `notes`, `cancelReason`.
         - [ ] Status Enum: `SCHEDULED`, `CHECKED_IN` (Arrived), `IN_PROGRESS` (With Doctor), `COMPLETED`, `CANCELLED`, `NO_SHOW`.
     - [ ] Implement `AppointmentRepository`:
         - [ ] `findOverlappingAppointments(doctor, start, end)` (Validation).

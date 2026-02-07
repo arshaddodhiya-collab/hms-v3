@@ -66,7 +66,9 @@ The system is designed for **multi-tenant capability (future-proof)**, **role-ba
     "age": 30,
     "gender": "MALE",
     "contact": "1234567890",
-    "email": "john@example.com"
+    "email": "john@example.com",
+    "allergies": "Peanuts",
+    "avatar": "https://example.com/avatar.png"
   }
   ```
 - **Response**: `PatientDto` (with ID and audit fields)
@@ -85,7 +87,9 @@ The system is designed for **multi-tenant capability (future-proof)**, **role-ba
   {
     "patientId": 1,
     "doctorId": 2,
-    "dateTime": "2023-11-01T10:00:00"
+    "dateTime": "2023-11-01T10:00:00",
+    "type": "CONSULTATION",
+    "notes": "Patient complains of headache"
   }
   ```
 - **Response**: `AppointmentDto`

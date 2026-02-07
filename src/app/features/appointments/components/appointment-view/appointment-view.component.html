@@ -1,23 +1,137 @@
-<app-card>
-  <app-page-header
-    title="Appointment Details"
-    icon="pi pi-calendar"
-    [showBack]="true"
-  ></app-page-header>
+<app-page-header
+  title="Appointment Details"
+  subtitle="View appointment information and history"
+  icon="pi pi-calendar"
+  [showBack]="true"
+>
+  <button
+    pButton
+    label="Reschedule"
+    icon="pi pi-calendar-plus"
+    class="p-button-outlined mr-2"
+  ></button>
+  <button
+    pButton
+    label="Cancel"
+    icon="pi pi-times"
+    class="p-button-danger p-button-outlined"
+  ></button>
+</app-page-header>
 
-  <div class="grid">
-    <div class="col-12 md:col-6">
-      <p><strong>Patient:</strong> {{ appointment.patientName }}</p>
-      <p><strong>Doctor:</strong> {{ appointment.doctorName }}</p>
-      <p><strong>Date:</strong> {{ appointment.date }}</p>
-    </div>
-    <div class="col-12 md:col-6">
-      <p><strong>Time:</strong> {{ appointment.time }}</p>
-      <p>
-        <strong>Status:</strong>
-        <p-tag [value]="appointment.status" severity="success"></p-tag>
-      </p>
-      <p><strong>Notes:</strong> {{ appointment.notes }}</p>
-    </div>
+<div class="grid">
+  <!-- Left Column: Context (Patient & Doctor) -->
+  <div class="col-12 md:col-3">
+    <app-card header="Patient" styleClass="mb-3">
+      <div class="flex align-items-center gap-3 mb-2">
+        <p-avatar
+          icon="pi pi-user"
+          size="large"
+          shape="circle"
+          styleClass="bg-primary-100 text-primary"
+        ></p-avatar>
+        <div>
+          <div class="font-bold text-900">{{ appointment.patientName }}</div>
+          <div class="text-500 text-sm">
+            Patient ID: #P-{{ appointment.id }}
+          </div>
+        </div>
+      </div>
+      <button
+        pButton
+        label="View Profile"
+        class="p-button-text p-button-sm w-full"
+      ></button>
+    </app-card>
+
+    <app-card header="Doctor">
+      <div class="flex align-items-center gap-3 mb-2">
+        <p-avatar
+          icon="pi pi-briefcase"
+          size="large"
+          shape="circle"
+          styleClass="bg-orange-100 text-orange-500"
+        ></p-avatar>
+        <div>
+          <div class="font-bold text-900">{{ appointment.doctorName }}</div>
+          <div class="text-500 text-sm">{{ appointment.department }}</div>
+        </div>
+      </div>
+      <button
+        pButton
+        label="View Schedule"
+        class="p-button-text p-button-sm w-full"
+      ></button>
+    </app-card>
   </div>
-</app-card>
+
+  <!-- Center Column: Appointment Details -->
+  <div class="col-12 md:col-6">
+    <app-card header="Appointment Info" subheader="General Information">
+      <div class="grid">
+        <div class="col-6 mb-3">
+          <div class="text-500 mb-1">Date</div>
+          <div class="font-medium text-900 flex align-items-center gap-2">
+            <i class="pi pi-calendar text-primary"></i>
+            {{ appointment.date | date: 'fullDate' }}
+          </div>
+        </div>
+        <div class="col-6 mb-3">
+          <div class="text-500 mb-1">Time</div>
+          <div class="font-medium text-900 flex align-items-center gap-2">
+            <i class="pi pi-clock text-primary"></i>
+            {{ appointment.time }}
+          </div>
+        </div>
+        <div class="col-6 mb-3">
+          <div class="text-500 mb-1">Type</div>
+          <div class="font-medium text-900">{{ appointment.type }}</div>
+        </div>
+        <div class="col-6 mb-3">
+          <div class="text-500 mb-1">Location</div>
+          <div class="font-medium text-900">Room {{ appointment.room }}</div>
+        </div>
+        <div class="col-12 mb-3">
+          <div class="text-500 mb-1">Status</div>
+          <p-tag
+            [value]="appointment.status"
+            [severity]="getSeverity(appointment.status)"
+          ></p-tag>
+        </div>
+      </div>
+
+      <p-divider></p-divider>
+
+      <div class="mb-4">
+        <h4 class="text-900 font-medium mb-2">Reason for Visit</h4>
+        <p class="m-0 line-height-3 text-700">{{ appointment.reason }}</p>
+      </div>
+
+      <div>
+        <h4 class="text-900 font-medium mb-2">Clinical Notes</h4>
+        <div class="surface-ground p-3 border-round text-700 line-height-3">
+          {{ appointment.notes }}
+        </div>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Right Column: Timeline -->
+  <!-- <div class="col-12 md:col-3">
+    <app-card header="Status History">
+      <p-timeline [value]="events" align="left">
+        <ng-template pTemplate="marker" let-event>
+          <span
+            class="flex w-2rem h-2rem align-items-center justify-content-center text-white border-circle z-1 shadow-1"
+            [style.backgroundColor]="event.color"
+          >
+            <i [class]="event.icon"></i>
+          </span>
+        </ng-template>
+        <ng-template pTemplate="content" let-event>
+          <div class="text-sm font-bold text-900 mb-1">{{ event.status }}</div>
+          <div class="text-xs text-500">{{ event.date | date: 'short' }}</div>
+        </ng-template>
+      </p-timeline>
+    </app-card>
+  </div> -->
+</div>
