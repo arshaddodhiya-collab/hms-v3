@@ -50,18 +50,31 @@ This checklist tracks the development of the HMS backend, based on `docs/BACKEND
     - [ ] `POST /api/v1/auth/logout`: Revoke/Delete refresh token.
 
 ## 3. Master Data Modules (Core)
-- [ ] **Department Module**
-    - [ ] Create `Department` entity.
-    - [ ] Create CRUD API (`/api/v1/departments`).
-- [ ] **Patient Module**
-    - [ ] Create `Patient` entity (BaseEntity, Audit fields).
-    - [ ] Create `PatientRepository` (Search specifications).
-    - [ ] Create `PatientService` & `PatientDto`.
-    - [ ] Implement `PatientController` (`/api/v1/patients`).
-        - [ ] `POST /`: Register patient.
-        - [ ] `GET /`: List with pagination & search.
-        - [ ] `GET /{id}`: Details.
-        - [ ] `PUT /{id}`: Update.
+- [ ] **Shared Domain Kernel**
+    - [ ] Create `BaseEntity` (`@MappedSuperclass`) with:
+        - [ ] Primary Key (`id`: Long/Identity).
+        - [ ] Audit Fields (`createdAt`, `updatedAt`, `createdBy`, `updatedBy`).
+        - [ ] Soft Delete Field (`isDeleted`).
+    - [ ] Create `PublicEntity` extension (adds `uuid` for external/frontend reference).
+    - [ ] Configure JPA Auditing (`@EnableJpaAuditing` with `AuditorAware` impl).
+- [ ] **Department Module (Aggregate)**
+    - [ ] Create `Department` Entity (extends `PublicEntity`).
+        - [ ] Fields: `name` (Unique), `description`, `headOfDepartment` (One-to-One User).
+    - [ ] Implement `DepartmentService`:
+        - [ ] Logic to prevent deleting departments with active staff/patients.
+    - [ ] Implement `DepartmentController` (`/api/v1/departments`).
+        - [ ] Secure with `PreAuthorize("hasAuthority('CMP_ADMIN_DEPT_READ')")`.
+- [ ] **Patient Module (Aggregate)**
+    - [ ] Create `Patient` Entity (extends `PublicEntity`).
+        - [ ] Fields: `firstName`, `lastName`, `dob`, `gender` (Enum), `contact`, `email`, `address`.
+        - [ ] Indexes: `idx_patient_name`, `idx_patient_contact`.
+    - [ ] Implement `PatientRepository` with `JpaSpecificationExecutor`.
+        - [ ] Build `PatientSearchSpecification` (filter by name partial, phone, email).
+    - [ ] Implement `PatientService`:
+        - [ ] `register()`: Check duplicate (Name + DOB + Contact).
+        - [ ] `calculateAge()`: Transient getter or DTO mapper logic.
+        - [ ] `update()`: Handle concurrency (Optimistic Locking `@Version`).
+    - [ ] Implement `PatientController` (`/api/v1/patients`) with MapStruct DTOs.
 
 ## 4. Clinical Modules (OPD)
 - [ ] **Appointment Module**
