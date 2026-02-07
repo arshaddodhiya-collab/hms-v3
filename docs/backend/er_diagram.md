@@ -9,7 +9,7 @@ erDiagram
         BIGINT id PK
         VARCHAR name
         BIGINT head_user_id FK
-        TEXT details
+        TEXT description_text
         BOOLEAN is_deleted
         DATETIME created_at
         DATETIME updated_at
@@ -18,7 +18,7 @@ erDiagram
     USER {
         BIGINT id PK
         VARCHAR username
-        VARCHAR pwd
+        VARCHAR password_hash
         VARCHAR full_name
         VARCHAR email
         VARCHAR phone
@@ -30,14 +30,14 @@ erDiagram
     ROLE {
         BIGINT id PK
         VARCHAR name
-        VARCHAR details
+        VARCHAR description_text
     }
 
     PERMISSION {
         BIGINT id PK
         VARCHAR code UQ
-        VARCHAR module_name
-        VARCHAR details
+        VARCHAR module_key
+        VARCHAR description_text
     }
 
     PATIENT {
@@ -210,4 +210,4 @@ erDiagram
     BED ||--o| ADMISSION : "occupied by"
     PATIENT ||--o{ ADMISSION : "admits"
     ADMISSION ||--o{ INVOICE : "billed"
-`````````
+````````````
