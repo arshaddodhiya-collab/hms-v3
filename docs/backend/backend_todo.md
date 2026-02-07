@@ -15,19 +15,39 @@ This checklist tracks the development of the HMS backend, based on `docs/BACKEND
     - [ ] Create packages: `config`, `controller`, `dto`, `entity`, `exception`, `mapper`, `repository`, `security`, `service`, `util`.
 
 ## 2. Authentication & Security Module
-- [ ] **Security Configuration**
-    - [ ] Implement `SecurityConfig` (filter chain, password encoder).
-    - [ ] Implement `JwtService` (token generation, validation).
-    - [ ] Implement `JwtAuthenticationFilter`.
-    - [ ] Configure CORS (allow frontend origin).
-- [ ] **User & Role Entities**
-    - [ ] Create `User`, `Role`, `Permission` entities.
-    - [ ] Create `UserRepository`, `RoleRepository`.
-    - [ ] Implement `UserDetailsService`.
-- [ ] **Auth Endpoints**
-    - [ ] Implement `AuthController` (`/api/v1/auth`).
-    - [ ] `POST /login`: Generate JWT.
-    - [ ] `GET /me`: Return current user context.
+- [ ] **Security Architecture & Config**
+    - [ ] Implement `SecurityConfig` (SecurityFilterChain).
+        - [ ] Disable CSRF (Stateless architecture).
+        - [ ] Configure `SessionCreationPolicy.STATELESS`.
+        - [ ] Configure `CorsConfigurationSource` (Allow frontend origin).
+        - [ ] Enable `@EnableMethodSecurity` (for `@PreAuthorize`).
+    - [ ] Implement `JwtAuthenticationEntryPoint` (Custom 401 response).
+    - [ ] Implement `CustomAccessDeniedHandler` (Custom 403 response).
+- [ ] **Domain Entities & Persistence**
+    - [ ] Create `User` Entity (Audit fields, Soft delete).
+    - [ ] Create `Role` and `Permission` Entities (Many-to-Many).
+    - [ ] **[NEW]** Create `RefreshToken` Entity (For secure session management).
+        - [ ] Fields: `id`, `token` (hash), `user_id`, `expiryDate`, `revoked`.
+    - [ ] Create Repositories: `UserRepository`, `RoleRepository`, `PermissionRepository`, `RefreshTokenRepository`.
+- [ ] **JWT Core Service**
+    - [ ] Implement `JwtService`:
+        - [ ] `generateAccessToken(userDetails)` (Short expiry: ~15-30m).
+        - [ ] `generateRefreshToken(user)` (Long expiry: ~7d).
+        - [ ] `isActive(token)`: Validate signature and claims.
+    - [ ] Implement `JwtAuthenticationFilter`:
+        - [ ] Extract Header -> Validate -> Load UserDetails -> Set SecurityContext.
+- [ ] **Auth Business Logic (`AuthService`)**
+    - [ ] `register(request)`: Validate, Password Hash (BCrypt), Assign Default Role.
+    - [ ] `login(request)`: AuthManager auth, Generate Tokens, Save Refresh Token.
+    - [ ] `refreshToken(request)`: Verify persistence, Rotate tokens (Reuse detection?).
+    - [ ] **Data Seeder (`DataInitializer`)**:
+        - [ ] Sync Roles/Permissions from `permissions.constants.ts` on startup.
+        - [ ] Create default Admin/Doctor users if empty.
+- [ ] **Auth Endpoints (`AuthController`)**
+    - [ ] `POST /api/v1/auth/login`: Returns `{ access_token, refresh_token, user_context }`.
+    - [ ] `POST /api/v1/auth/refresh-token`: Returns `{ access_token, refresh_token }`.
+    - [ ] `GET /api/v1/auth/me`: Current user details + Permissions list.
+    - [ ] `POST /api/v1/auth/logout`: Revoke/Delete refresh token.
 
 ## 3. Master Data Modules (Core)
 - [ ] **Department Module**
