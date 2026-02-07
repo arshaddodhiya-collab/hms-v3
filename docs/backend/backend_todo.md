@@ -77,21 +77,38 @@ This checklist tracks the development of the HMS backend, based on `docs/BACKEND
     - [ ] Implement `PatientController` (`/api/v1/patients`) with MapStruct DTOs.
 
 ## 4. Clinical Modules (OPD)
-- [ ] **Appointment Module**
-    - [ ] Create `Appointment` entity.
-    - [ ] Implement `AppointmentController` (`/api/v1/appointments`).
-        - [ ] `POST /`: Book.
-        - [ ] `GET /`: List (filter by date/doctor).
-        - [ ] `PATCH /{id}/status`: Update status.
-- [ ] **Encounter Module (Consultation)**
-    - [ ] Create `Encounter` entity (Link appointment, patient, doctor).
-    - [ ] Create `Vitals` embeddable/entity or JSON column.
-    - [ ] Implement `EncounterController` (`/api/v1/encounters`).
-        - [ ] `POST /`: Start encounter.
-        - [ ] `PATCH /{id}`: Save notes/diagnosis.
+- [ ] **Appointment Module (Scheduling)**
+    - [ ] Create `Appointment` Entity (`@Entity`).
+        - [ ] Fields: `startDateTime`, `endDateTime`, `reason`, `cancelReason`.
+        - [ ] Status Enum: `SCHEDULED`, `CHECKED_IN` (Arrived), `IN_PROGRESS` (With Doctor), `COMPLETED`, `CANCELLED`, `NO_SHOW`.
+    - [ ] Implement `AppointmentRepository`:
+        - [ ] `findOverlappingAppointments(doctor, start, end)` (Validation).
+        - [ ] `findByDoctorAndDateRange()` (Doctor Dashboard).
+    - [ ] Implement `AppointmentService` (State Machine Logic):
+        - [ ] `book()`: Validate slot availability.
+        - [ ] `cancel()`: Require reason, audit log.
+        - [ ] `checkIn()`: Move to `CHECKED_IN`, trigger Triage Queue.
+- [ ] **Encounter Module (The Visit)**
+    - [ ] Create `Encounter` Entity.
+        - [ ] One-to-One with `Appointment`.
+        - [ ] Status Enum: `TRIAGE` (Nurse), `IN_PROGRESS` (Doctor), `COMPLETED` (Signed).
+    - [ ] **Vitals Sub-module (Triage)**
+        - [ ] Create `Vitals` Entity (One-to-One with Encounter).
+        - [ ] API: `POST /encounters/{id}/vitals` (Creates Encounter if not exists in `TRIAGE` state).
+    - [ ] **Consultation Sub-module**
+        - [ ] Update `Encounter` with `chiefComplaint`, `diagnosis`, `notes` (Doctor only).
+        - [ ] API: `PATCH /encounters/{id}/clinical-notes`.
 - [ ] **Prescription Module**
-    - [ ] Create `Prescription` & `PrescriptionItem` entities.
-    - [ ] Implement API to add prescriptions to an encounter.
+    - [ ] Create `Prescription` (Header) and `PrescriptionItem` (Detail) Entities.
+        - [ ] Header: `note`, `status` (DRAFT, ISSUED).
+        - [ ] Item: `medicineName`, `dosage`, `frequency`, `duration`, `instructions`.
+    - [ ] Implement `PrescriptionService`:
+        - [ ] `maintainPrescription(encounterId, items)`: Overwrite/Update logic (Draft mode).
+        - [ ] `issuePrescription()`: Lock for editing, generate PDF/Print data.
+- [ ] **OPD Facade Controller** (`OpdController` or split)
+    - [ ] `POST /api/v1/opd/check-in/{apptId}` (Reception).
+    - [ ] `GET /api/v1/opd/queue/triage` (Nurse Dashboard).
+    - [ ] `GET /api/v1/opd/queue/doctor` (Doctor Dashboard).
 
 ## 5. Diagnostic Module (Labs)
 - [ ] **Lab Test Catalog**
