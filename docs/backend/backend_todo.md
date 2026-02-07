@@ -89,62 +89,90 @@ This checklist tracks the development of the HMS backend, based on `docs/BACKEND
         - [ ] `cancel()`: Require reason, audit log.
         - [ ] `checkIn()`: Move to `CHECKED_IN`, trigger Triage Queue.
 - [ ] **Encounter Module (The Visit)**
-    - [ ] Create `Encounter` Entity.
+    - [ ] Create `Encounter` Entity (Maps to `encounters` table).
         - [ ] One-to-One with `Appointment`.
         - [ ] Status Enum: `TRIAGE` (Nurse), `IN_PROGRESS` (Doctor), `COMPLETED` (Signed).
     - [ ] **Vitals Sub-module (Triage)**
         - [ ] Create `Vitals` Entity (One-to-One with Encounter).
-        - [ ] API: `POST /encounters/{id}/vitals` (Creates Encounter if not exists in `TRIAGE` state).
-    - [ ] **Consultation Sub-module**
+        - [ ] API: `POST /api/v1/encounters/{id}/vitals` (Creates Encounter if not exists in `TRIAGE` state).
+    - [ ] **Consultation Flow**
         - [ ] Update `Encounter` with `chiefComplaint`, `diagnosis`, `notes` (Doctor only).
-        - [ ] API: `PATCH /encounters/{id}/clinical-notes`.
+        - [ ] API: `PATCH /api/v1/encounters/{id}/clinical-notes`.
+        - [ ] API: `GET /api/v1/encounters?status=TRIAGE` (Nurse Queue).
+        - [ ] API: `GET /api/v1/encounters?status=IN_PROGRESS&doctorId={id}` (Doctor Queue).
 - [ ] **Prescription Module**
     - [ ] Create `Prescription` (Header) and `PrescriptionItem` (Detail) Entities.
         - [ ] Header: `note`, `status` (DRAFT, ISSUED).
         - [ ] Item: `medicineName`, `dosage`, `frequency`, `duration`, `instructions`.
-    - [ ] Implement `PrescriptionService`:
-        - [ ] `maintainPrescription(encounterId, items)`: Overwrite/Update logic (Draft mode).
-        - [ ] `issuePrescription()`: Lock for editing, generate PDF/Print data.
-- [ ] **OPD Facade Controller** (`OpdController` or split)
-    - [ ] `POST /api/v1/opd/check-in/{apptId}` (Reception).
-    - [ ] `GET /api/v1/opd/queue/triage` (Nurse Dashboard).
-    - [ ] `GET /api/v1/opd/queue/doctor` (Doctor Dashboard).
+    - [ ] Implement `PrescriptionController`:
+        - [ ] `POST /api/v1/encounters/{id}/prescriptions`: Add/Update prescription.
+        - [ ] `GET /api/v1/encounters/{id}/prescriptions`: View.
 
 ## 5. Diagnostic Module (Labs)
-- [ ] **Lab Test Catalog**
-    - [ ] Create `LabTest` entity (Catalog).
-    - [ ] Seed default tests.
-- [ ] **Lab Requests**
-    - [ ] Create `LabRequest` & `LabResult` entities.
-    - [ ] Implement `LabController` (`/api/v1/lab-requests`).
-        - [ ] `GET /`: Queue for technicians.
-        - [ ] `POST /{id}/results`: Enter results.
+- [ ] **Lab Master Data (Catalog)**
+    - [ ] Create `LabTest` Entity (`@Table(name="lab_test_catalog")`).
+        - [ ] Fields: `name`, `code` (Unique), `price`, `referenceRange`, `unit`, `department`.
+    - [ ] Implement `LabTestController` (CRUD for Admin/Lab Head).
+- [ ] **Lab Request Module**
+    - [ ] Create `LabRequest` Entity.
+        - [ ] Fields: `status` (ORDERED, SAMPLED, COMPLETED, CANCELLED).
+        - [ ] Relations: `Patient`, `Encounter`, `LabTest`.
+    - [ ] Implement `LabRequestService`:
+        - [ ] `createRequest()`: From Doctor's Encounter.
+        - [ ] `collectSample()`: Transition to `SAMPLED` (Audit timestamp).
+    - [ ] Implement `LabRequestController` (`/api/v1/lab-requests`).
+        - [ ] `GET /?status=ORDERED,SAMPLED`: Lab Queue.
+- [ ] **Lab Result Module**
+    - [ ] Create `LabResult` Entity.
+        - [ ] Fields: `parameterName`, `value`, `isAbnormal`, `remarks`.
+        - [ ] Relation: Many-to-One with `LabRequest`.
+    - [ ] API: `POST /api/v1/lab-requests/{id}/results` (Lab Tech).
 
 ## 6. Inpatient Module (IPD)
 - [ ] **Ward & Bed Management**
-    - [ ] Create `Ward`, `Bed` entities.
-    - [ ] API to list wards and bed status (`/api/v1/ipd/beds`).
-- [ ] **Admission Lifecycle**
-    - [ ] Create `Admission` entity.
-    - [ ] Implement `AdmissionController` (`/api/v1/ipd`).
-        - [ ] `POST /admit`: Admit patient (occupy bed).
-        - [ ] `POST /{id}/discharge`: Discharge (free bed, summary).
+    - [ ] Create `Ward` Entity (Name, Type, Capacity, Active).
+    - [ ] Create `Bed` Entity (Number, Type, Occupied, Active).
+    - [ ] Implement `BedRepository`:
+        - [ ] `findAvailableBeds(wardId, bedType)`.
+    - [ ] Implement `WardController` (CRUD) & `BedController` (Status updates).
+- [ ] **Admission Lifecycle Module**
+    - [ ] Create `Admission` Entity.
+        - [ ] Fields: `admissionDate`, `dischargeDate`, `status` (ADMITTED, DISCHARGED), `diagnosis`, `dischargeSummary`.
+        - [ ] Relations: `Patient`, `Doctor`, `Bed`.
+    - [ ] Implement `AdmissionService`:
+        - [ ] `admitPatient(request)`: Lock Bed -> Create Record.
+        - [ ] `transferPatient(admissionId, newBedId)`: Swap Beds.
+        - [ ] `dischargePatient(id)`: Free Bed -> Set Summary -> Trigger Billing.
+    - [ ] API: `POST /api/v1/ipd/admissions/{id}/discharge`.
 
 ## 7. Financial Module (Billing)
 - [ ] **Invoice Generation**
-    - [ ] Create `Invoice` entity (`items` as JSON).
+    - [ ] Create `Invoice` entity (`items` as JSON column).
     - [ ] Implement `BillingController` (`/api/v1/billing`).
         - [ ] `POST /invoices`: Generate from Admission/Encounter.
         - [ ] `GET /invoices`: List by patient/status.
 
-## 8. Cross-Cutting Concerns
+## 8. Dashboard & Analytics Module
+- [ ] **Stats Aggregation**
+    - [ ] Implement `DashboardController` (`/api/v1/dashboard`).
+        - [ ] `GET /stats`: Returns aggregate counts (Patients, Appts, Labs, Revenue).
+        - [ ] `GET /activity`: Returns recent system activities (Audit Log projection).
+        - [ ] Use Caching (`@Cacheable`) for heavy aggregation queries.
+
+## 9. Cross-Cutting Concerns
 - [ ] **Global Exception Handling**
-    - [ ] `@ControllerAdvice` for `ResourceNotFound`, `ValidationException`.
+    - [ ] `@ControllerAdvice` for `ResourceNotFound`, `ValidationException`, `BusinessException`.
+    - [ ] Standardize API Error Response (`timestamp`, `status`, `error`, `path`).
 - [ ] **Audit Logging**
-    - [ ] Implement `AuditLog` entity.
-    - [ ] Create Aspect/Listener to log critical actions.
+    - [ ] Implement `AuditLog` entity (Maps to `audit_log` table).
+    - [ ] Create Aspect/Listener to log critical actions (Login, Write Ops).
+- [ ] **Pagination & Filtering**
+    - [ ] Implement `Pageable` support in all List APIs.
+    - [ ] Use `Specification` for advanced filtering (e.g. Patient Search).
+- [ ] **Validation**
+    - [ ] Use Jakarta Validation (`@NotNull`, `@Size`, `@Email`) on DTOs.
 - [ ] **API Documentation**
-    - [ ] Enable Swagger/OpenAPI (`/swagger-ui.html`).
+    - [ ] Enable Swagger/OpenAPI 3 (`/swagger-ui.html`).
 
 ## 9. Testing & Deployment
 - [ ] **Unit Tests**: Services & Util classes (JUnit 5, Mockito).
