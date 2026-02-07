@@ -12,7 +12,7 @@ import { TableColumn } from '../models/table.model';
   template: `
     <div class="main-table-wrapper p-4">
       <div
-        class="table-container shadow-2 border-round-xl overflow-hidden bg-white"
+        class="table-container shadow-2 border-round-xl bg-white overflow-x-auto"
       >
         <p-table
           [value]="data"
@@ -24,11 +24,12 @@ import { TableColumn } from '../models/table.model';
           [loading]="loading"
           [globalFilterFields]="globalFilterFields"
           [styleClass]="styleClass"
-          [responsiveLayout]="responsiveLayout"
+          [responsiveLayout]="'scroll'"
           [selection]="selection"
           (selectionChange)="selectionChange.emit($event)"
           [selectionMode]="selectionMode"
           [rowHover]="true"
+          [tableStyle]="{ 'min-width': '60rem' }"
           #dt
         >
           <ng-template pTemplate="caption">
@@ -139,6 +140,11 @@ import { TableColumn } from '../models/table.model';
   `,
   styles: [
     `
+      :host {
+        display: block;
+        width: 100%;
+      }
+
       :host ::ng-deep {
         /* 1. MAIN TABLE PADDING & BORDERS */
         .p-datatable .p-datatable-thead > tr > th {
