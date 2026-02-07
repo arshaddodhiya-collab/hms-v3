@@ -7,58 +7,81 @@ This checklist tracks the tasks required to connect the Angular frontend with th
     - [ ] Update `src/environments/environment.ts` with `apiUrl: 'http://localhost:8080/api/v1'`.
     - [ ] Update `src/environments/environment.prod.ts` with production API URL.
 - [ ] **HTTP Interceptor**
-    - [ ] Create `AuthInterceptor` to inject JWT token into `Authorization` header.
-    - [ ] Create `ErrorInterceptor` to handle global API errors (401, 403, 500) and show notifications.
+    - [ ] Create/Update `AuthInterceptor` to inject JWT token.
+    - [ ] Implement `ErrorInterceptor` to handle global API errors (401, 403, 500).
+        - [ ] Parse standardized error response (`{ timestamp, status, error, message, path }`).
+        - [ ] Show generic error notifications (Toastr/Snackbar).
 - [ ] **CORS Check**
-    - [ ] Ensure backend allows requests from frontend origin (e.g., `http://localhost:4200`).
+    - [ ] Verify requests from `http://localhost:4200` are blocked/allowed as expected.
 
 ## 2. Authentication Integration
 - [ ] **Update AuthService**
     - [ ] Replace mock login with `POST /api/v1/auth/login`.
-    - [ ] Store JWT/RefreshToken in LocalStorage/SessionStorage.
-    - [ ] Implement `logout()` to clear tokens.
-    - [ ] Implement `isAuthenticated()` check based on token validity.
+    - [ ] Store `access_token` and `refresh_token` in `LocalStorage`.
+    - [ ] Implement `refreshToken()` flow:
+        - [ ] Intercept 401 errors -> Call `POST /api/v1/auth/refresh-token` -> Retry original request.
+    - [ ] Implement `logout()`: Call `POST /api/v1/auth/logout` and clear storage.
+    - [ ] Implement `isAuthenticated()` check based on token presence/expiry.
 - [ ] **User Context**
     - [ ] Fetch current user details on app init (`GET /api/v1/auth/me`).
-    - [ ] Store user permissions in a simplified state/store for guard checks.
+    - [ ] Load permissions into `NgxPermissions` (or custom store) for `PermissionGuard`.
 
 ## 3. Core Module Integration (Services & Models)
-- [ ] **Patient Service Integration**
+- [ ] **Patient Integration**
     - [ ] Update `PatientService` methods:
-        - [ ] `getPatients(page, size, search)` -> `GET /api/v1/patients`.
+        - [ ] `getPatients(page, size, search)` -> `GET /api/v1/patients?page=0&size=10&search=...`.
         - [ ] `getPatient(id)` -> `GET /api/v1/patients/{id}`.
         - [ ] `createPatient(data)` -> `POST /api/v1/patients`.
         - [ ] `updatePatient(id, data)` -> `PUT /api/v1/patients/{id}`.
-    - [ ] Update `Patient` interface to match backend DTO fields.
-- [ ] **Appointment Service Integration**
-    - [ ] Update `AppointmentService`:
-        - [ ] `getAppointments(dateData)` -> `GET /api/v1/appointments`.
-        - [ ] `createAppointment(data)` -> `POST /api/v1/appointments`.
-        - [ ] `updateStatus(id, status)` -> `PATCH /api/v1/appointments/{id}/status`.
+    - [ ] Align `Patient` model with Backend Entity (Audit fields, Date format).
+- [ ] **Department Integration**
+    - [ ] `DepartmentService` -> `GET /api/v1/admin/departments` (Dropdowns).
 
-## 4. Clinical Module Integration
+## 4. Clinical Module Integration (OPD)
+- [ ] **Appointment Integration**
+    - [ ] `AppointmentService`:
+        - [ ] `bookAppointment()` -> `POST /api/v1/appointments`.
+        - [ ] `getAppointments(doctor, date)` -> `GET /api/v1/appointments?date=...`.
+        - [ ] `checkIn(id)` -> `PATCH /api/v1/appointments/{id}/status` (Status=CHECKED_IN).
 - [ ] **Encounter & Vitals**
-    - [ ] Create `EncounterService`.
-    - [ ] Connect `TriageComponent` to `POST /encounters/{id}/vitals` (or `PATCH`).
-    - [ ] Connect `ConsultationComponent` to fetch/save encounter details.
+    - [ ] `EncounterService`:
+        - [ ] `startEncounter()` -> `POST /api/v1/encounters`.
+        - [ ] `saveVitals(id, vitals)` -> `POST /api/v1/encounters/{id}/vitals`.
+        - [ ] `saveClinicalNotes(id, notes)` -> `PATCH /api/v1/encounters/{id}/clinical-notes`.
+    - [ ] **Queues**:
+        - [ ] Nurse Dashboard -> `GET /api/v1/encounters?status=TRIAGE`.
+        - [ ] Doctor Dashboard -> `GET /api/v1/encounters?status=IN_PROGRESS`.
 - [ ] **Prescription Integration**
-    - [ ] Update `PrescriptionService` to save prescriptions to backend.
+    - [ ] `PrescriptionService` -> `POST /api/v1/encounters/{id}/prescriptions`.
 
-## 5. Lab & Diagnostic Integration
+## 5. Diagnostic Module (Labs)
 - [ ] **Lab Service**
-    - [ ] Fetch catalog from `GET /api/v1/labs/tests`.
-    - [ ] Submit requests via `POST /api/v1/lab-requests`.
-    - [ ] Connect `LabDashboard` to `GET /api/v1/lab-requests` (Queue).
+    - [ ] `getTestCatalog()` -> `GET /api/v1/lab-tests` (Dropdowns).
+    - [ ] `createRequest(data)` -> `POST /api/v1/lab-requests`.
+    - [ ] `getQueue(status)` -> `GET /api/v1/lab-requests?status=ORDERED,SAMPLED`.
+    - [ ] `enterResults(id, results)` -> `POST /api/v1/lab-requests/{id}/results`.
 
-## 6. Billing Module Integration
+## 6. Inpatient Module (IPD)
+- [ ] **Ward & Bed Service**
+    - [ ] `getWards()` -> `GET /api/v1/ipd/wards`.
+    - [ ] `getBedStatus(wardId)` -> `GET /api/v1/ipd/wards/{id}/beds`.
+- [ ] **Admission Service**
+    - [ ] `admitPatient(data)` -> `POST /api/v1/ipd/admissions`.
+    - [ ] `dischargePatient(id)` -> `POST /api/v1/ipd/admissions/{id}/discharge`.
+
+## 7. Financial Module (Billing)
 - [ ] **Billing Service**
-    - [ ] Fetch invoices from `GET /api/v1/billing/invoices`.
-    - [ ] Generate invoice via `POST /api/v1/billing/invoices`.
+    - [ ] `generateInvoice(data)` -> `POST /api/v1/billing/invoices`.
+    - [ ] `getInvoices(patientId)` -> `GET /api/v1/billing/invoices?patientId=...`.
 
-## 7. UI/UX Refinements
+## 8. Dashboard Integration
+- [ ] **Dashboard Service**
+    - [ ] `getStats()` -> `GET /api/v1/dashboard/stats`.
+    - [ ] `getRecentActivity()` -> `GET /api/v1/dashboard/activity`.
+    - [ ] Update `StatsCardsComponent` and `TodayActivityComponent` to use real data.
+
+## 9. UI/UX Refinements
 - [ ] **Loading States**
     - [ ] Add loading spinners/skeletons while waiting for API responses in all lists.
-- [ ] **Error Handling**
-    - [ ] Display toast notifications for success/error messages from API.
 - [ ] **Validation Sync**
-    - [ ] Ensure frontend form validation patterns match backend `@Valid` constraints.
+    - [ ] Match Frontend RegEx with Backend `@Pattern`/`@Size`.
