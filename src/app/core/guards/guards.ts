@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
-import { MockAuthService } from '../../features/auth/services/mock-auth.service';
+import { AuthService } from '../../features/auth/services/auth.service';
 import { MessageService } from 'primeng/api';
 
 @Injectable({
@@ -8,9 +8,9 @@ import { MessageService } from 'primeng/api';
 })
 export class AuthGuard implements CanActivate {
   constructor(
-    private authService: MockAuthService,
+    private authService: AuthService,
     private router: Router,
-  ) { }
+  ) {}
 
   canActivate(): boolean {
     if (this.authService.isAuthenticated()) {
@@ -26,26 +26,25 @@ export class AuthGuard implements CanActivate {
 })
 export class PermissionGuard implements CanActivate {
   constructor(
-    private authService: MockAuthService,
+    private authService: AuthService,
     private router: Router,
     private messageService: MessageService,
-  ) { }
+  ) {}
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
     const requiredPermission = route.data['permission'];
-    console.log('PermissionGuard Checking:', {
-      requiredPermission,
-      url: (route as any)._routerState?.url,
-    });
+
+    // Allow if no permission required
     if (!requiredPermission) {
       return true;
     }
+
     const hasPerm = this.authService.hasPermission(requiredPermission);
-    console.log('PermissionGuard Result:', hasPerm, requiredPermission);
 
     if (hasPerm) {
       return true;
     }
+
     // Redirect to unauthorized or dashboard if no permission
     console.warn('Access denied. Missing permission:', requiredPermission);
     this.messageService.add({
@@ -53,7 +52,8 @@ export class PermissionGuard implements CanActivate {
       summary: 'Access Denied',
       detail: 'You do not have permission to access this resource',
     });
-    this.router.navigate(['/error/unauthorized']);
+    // Optional: Redirect to a specific error page or just false
+    // this.router.navigate(['/dashboard']);
     return false;
   }
 }

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router, NavigationEnd, Event } from '@angular/router';
-import { MockAuthService } from '../../../features/auth/services/mock-auth.service';
+import { AuthService } from '../../../features/auth/services/auth.service';
 import { MENU_CONFIG } from '../../../core/config/menu.config';
 import { filter } from 'rxjs/operators';
 import { MenuItem } from '../../../core/models/menu.model';
@@ -17,7 +17,7 @@ export class SidebarComponent implements OnInit {
   expandedMenus: { [key: string]: boolean } = {};
 
   constructor(
-    private authService: MockAuthService,
+    private authService: AuthService,
     private router: Router,
   ) {
     this.router.events
@@ -34,7 +34,12 @@ export class SidebarComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadMenu();
+    // Subscribe to user changes to reload menu when permissions are available
+    this.authService.currentUser$.subscribe((user) => {
+      if (user) {
+        this.loadMenu();
+      }
+    });
     this.updateExpandedState();
   }
 

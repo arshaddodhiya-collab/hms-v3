@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { MockAuthService } from './features/auth/services/mock-auth.service';
+import { AuthService } from './features/auth/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
   isAuthRoute = false;
 
   constructor(
-    private authService: MockAuthService,
+    private authService: AuthService,
     private router: Router,
     private breakpointObserver: BreakpointObserver,
   ) {
