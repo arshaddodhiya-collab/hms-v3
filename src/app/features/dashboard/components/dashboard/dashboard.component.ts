@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MockAuthService } from '../../../auth/services/mock-auth.service';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 import { AppointmentService } from '../../../appointments/services/appointment.service';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,7 +18,7 @@ export class DashboardComponent implements OnInit {
   myAppointments: any[] = [];
 
   constructor(
-    private authService: MockAuthService,
+    private authService: AuthService,
     private appointmentService: AppointmentService,
   ) { }
 

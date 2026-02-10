@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AdminService, Department } from '../../services/admin.service';
+import { AdminService } from '../../services/admin.service';
+import { Department } from '../../../../core/models/department.model';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 import { BaseCrudComponent } from '../../../../shared/components/base-crud.component';
 import { TableColumn } from '../../../../shared/models/table.model';
@@ -19,8 +20,10 @@ export class DepartmentListComponent
   cols: TableColumn<Department>[] = [
     { field: 'id', header: 'ID' },
     { field: 'name', header: 'Name' },
-    { field: 'head', header: 'Head of Dept' },
+    { field: 'description', header: 'Description' },
+    { field: 'headOfDepartmentName', header: 'Head of Dept' },
     { field: 'staffCount', header: 'Staff Count' },
+    { field: 'active', header: 'Active' },
   ];
 
   constructor(private adminService: AdminService) {
@@ -37,24 +40,27 @@ export class DepartmentListComponent
     });
   }
 
+  override performDelete(item: Department): void {
+    this.adminService.deleteDepartment(item.id).subscribe(() => {
+      this.refreshData();
+    });
+  }
+
   override onSave(deptData: Department) {
     if (this.selectedItem) {
       const updated: Department = {
-        ...this.selectedItem,
         ...deptData,
+        id: this.selectedItem.id, // Ensure ID is preserved
       };
-      this.adminService.updateDepartment(updated);
+      this.adminService.updateDepartment(updated).subscribe(() => {
+        this.refreshData();
+        this.hideDialog();
+      });
     } else {
-      const newDept: Department = {
-        ...deptData,
-        id: 'DEPT-' + (Math.floor(Math.random() * 900) + 100),
-      };
-      this.adminService.addDepartment(newDept);
+      this.adminService.addDepartment(deptData).subscribe(() => {
+        this.refreshData();
+        this.hideDialog();
+      });
     }
-    this.hideDialog();
-  }
-
-  override performDelete(item: Department): void {
-    this.adminService.deleteDepartment(item.id);
   }
 }

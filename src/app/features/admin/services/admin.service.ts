@@ -1,61 +1,63 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { delay } from 'rxjs/operators';
-import { MOCK_USERS, MockUser } from '../../../core/config/mock-users.config';
-
-export interface Department {
-  id: string;
-  name: string;
-  head: string;
-  staffCount: number;
-}
-
-const MOCK_DEPTS: Department[] = [
-  { id: 'DEPT-001', name: 'Cardiology', head: 'Dr. Smith', staffCount: 12 },
-  { id: 'DEPT-002', name: 'Neurology', head: 'Dr. Jones', staffCount: 8 },
-  { id: 'DEPT-003', name: 'Pediatrics', head: 'Dr. Brown', staffCount: 15 },
-  { id: 'DEPT-004', name: 'Orthopedics', head: 'Dr. White', staffCount: 10 },
-];
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Department } from '../../../core/models/department.model';
+import { User } from '../../../core/models/user.model';
+import { environment } from '../../../../environments/environment';
+// import { MockUser } from '../../../core/config/mock-users.config'; // Keep for legacy if needed, but prefer User
 
 @Injectable({
   providedIn: 'root',
 })
 export class AdminService {
-  private departments$ = new BehaviorSubject<Department[]>(MOCK_DEPTS);
-  private users$ = new BehaviorSubject<MockUser[]>(MOCK_USERS);
+  private apiUrl = environment.apiUrl;
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   // Departments
   getDepartments(): Observable<Department[]> {
-    return this.departments$.asObservable().pipe(delay(500));
+    return this.http.get<Department[]>(`${this.apiUrl}/departments`);
   }
 
-  getDepartmentById(id: string): Department | undefined {
-    return this.departments$.value.find((d) => d.id === id);
+  getDepartmentById(id: number): Observable<Department> {
+    return this.http.get<Department>(`${this.apiUrl}/departments/${id}`);
   }
 
-  addDepartment(dept: Department): void {
-    const current = this.departments$.value;
-    this.departments$.next([...current, dept]);
+  addDepartment(dept: Department): Observable<Department> {
+    return this.http.post<Department>(`${this.apiUrl}/departments`, dept);
   }
 
-  updateDepartment(dept: Department): void {
-    const current = this.departments$.value;
-    const index = current.findIndex((d) => d.id === dept.id);
-    if (index !== -1) {
-      current[index] = dept;
-      this.departments$.next([...current]);
-    }
+  updateDepartment(dept: Department): Observable<Department> {
+    return this.http.put<Department>(
+      `${this.apiUrl}/departments/${dept.id}`,
+      dept,
+    );
   }
 
-  deleteDepartment(id: string): void {
-    const current = this.departments$.value;
-    this.departments$.next(current.filter((d) => d.id !== id));
+  deleteDepartment(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/departments/${id}`);
   }
+
+  // Users (Assuming we have user endpoints, if not we'll need to add them to backend)
+  // For now, let's keep the MockUser type but fetch from backend if possible,
+  // or just use what we have if backend user management isn't fully ready for this service.
+  // Based on the plan, we should fetch users.
 
   // Users
-  getUsers(): Observable<MockUser[]> {
-    return this.users$.asObservable().pipe(delay(500));
+  // Users
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/users`);
+  }
+
+  getUserById(id: number): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/users/${id}`);
+  }
+
+  createUser(user: User): Observable<User> {
+    return this.http.post<User>(`${this.apiUrl}/users`, user);
+  }
+
+  updateUser(id: number, user: User): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/users/${id}`, user);
   }
 }

@@ -1,30 +1,62 @@
 <app-card styleClass="p-0 border-none shadow-none">
   <form [formGroup]="deptForm">
     <div class="grid p-fluid mb-4">
-      <div class="col-12 md:col-6">
-        <app-input-text
+      <div class="col-12">
+        <label for="name" class="block font-bold mb-2">Department Name</label>
+        <p-dropdown
           id="name"
-          label="Department Name"
+          [options]="departmentNames"
           formControlName="name"
-          placeholder="e.g. Cardiology"
-        ></app-input-text>
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Select a Department"
+          [editable]="true"
+        ></p-dropdown>
       </div>
+
+      <div class="col-12">
+        <label for="description" class="block font-bold mb-2"
+          >Description</label
+        >
+        <textarea
+          pInputTextarea
+          id="description"
+          formControlName="description"
+          rows="3"
+          autoResize="autoResize"
+        ></textarea>
+      </div>
+
       <div class="col-12 md:col-6">
-        <app-input-text
+        <label for="head" class="block font-bold mb-2"
+          >Head of Department</label
+        >
+        <p-dropdown
           id="head"
-          label="Head of Department"
-          formControlName="head"
-          placeholder="e.g. Dr. Smith"
-        ></app-input-text>
+          [options]="users"
+          formControlName="headOfDepartmentId"
+          optionLabel="username"
+          optionValue="id"
+          placeholder="Select a user"
+          [showClear]="true"
+        ></p-dropdown>
+        <!-- Note: MockUser doesn't have ID currently, we need to handle this.
+             If MockUser is used, optionValue should probably be 'username' or we add IDs to MockUser.
+             Backend User has ID. AdminService is fetching MockUser[] for now but from API?
+             Wait, AdminService.getUsers() returns MockUser[], effectively backend User DTO if linked correctly.
+             Let's assume backend returns objects with ID.
+        -->
       </div>
-      <div class="col-12 md:col-6">
-        <label for="staffCount" class="block font-bold mb-2">Staff Count</label>
-        <p-inputNumber
-          id="staffCount"
-          formControlName="staffCount"
-          [showButtons]="true"
-          [min]="0"
-        ></p-inputNumber>
+
+      <div class="col-12 md:col-6 flex align-items-center">
+        <div class="field-checkbox">
+          <p-checkbox
+            formControlName="active"
+            [binary]="true"
+            inputId="active"
+          ></p-checkbox>
+          <label for="active">Active</label>
+        </div>
       </div>
     </div>
 

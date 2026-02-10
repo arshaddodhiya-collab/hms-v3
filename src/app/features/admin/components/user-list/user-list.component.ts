@@ -6,7 +6,7 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { AdminService } from '../../services/admin.service';
-import { MockUser } from '../../../../core/config/mock-users.config';
+import { User } from '../../../../core/models/user.model';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 import { BaseCrudComponent } from '../../../../shared/components/base-crud.component';
 import { TableColumn } from '../../../../shared/models/table.model';
@@ -17,19 +17,22 @@ import { TableColumn } from '../../../../shared/models/table.model';
   styleUrls: ['./user-list.component.scss'],
 })
 export class UserListComponent
-  extends BaseCrudComponent<MockUser>
+  extends BaseCrudComponent<User>
   implements OnInit, AfterViewInit
 {
   @ViewChild('roleTemplate') roleTemplate!: TemplateRef<{
     $implicit: unknown;
-    row: MockUser;
+    row: User;
   }>;
 
   permissions = PERMISSIONS;
 
-  cols: TableColumn<MockUser>[] = [
+  cols: TableColumn<User>[] = [
     { field: 'username', header: 'Username' },
-    { field: 'role', header: 'Role' },
+    { field: 'fullName', header: 'Full Name' },
+    { field: 'departmentName', header: 'Department' },
+    { field: 'roles', header: 'Roles' },
+    { field: 'active', header: 'Active' },
   ];
 
   constructor(private adminService: AdminService) {
@@ -41,7 +44,7 @@ export class UserListComponent
   }
 
   ngAfterViewInit() {
-    const roleCol = this.cols.find((c) => c.field === 'role');
+    const roleCol = this.cols.find((c) => c.field === 'roles');
     if (roleCol) {
       roleCol.template = this.roleTemplate;
     }
@@ -53,13 +56,17 @@ export class UserListComponent
     });
   }
 
-  override onSave(user: MockUser) {
-    if (this.selectedItem) {
-      console.log('Updating user', user);
+  override onSave(user: User) {
+    if (this.selectedItem && this.selectedItem.id) {
+      this.adminService.updateUser(this.selectedItem.id, user).subscribe(() => {
+        this.hideDialog();
+        this.refreshData();
+      });
     } else {
-      console.log('Creating user', user);
+      this.adminService.createUser(user).subscribe(() => {
+        this.hideDialog();
+        this.refreshData();
+      });
     }
-    this.hideDialog();
-    this.refreshData();
   }
 }

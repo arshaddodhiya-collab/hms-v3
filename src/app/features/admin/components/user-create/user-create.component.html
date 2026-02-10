@@ -1,4 +1,4 @@
-<div class="card" class="p-0 border-none shadow-none">
+<div class="card p-0 border-none shadow-none">
   <form [formGroup]="userForm">
     <div class="grid p-fluid mb-4">
       <div class="col-12 md:col-6">
@@ -10,20 +10,52 @@
       </div>
       <div class="col-12 md:col-6">
         <app-input-text
+          id="fullName"
+          label="Full Name"
+          formControlName="fullName"
+        ></app-input-text>
+      </div>
+      <div class="col-12 md:col-6">
+        <app-input-text
           id="password"
           label="Password"
           type="password"
           formControlName="password"
+          [placeholder]="userToEdit ? 'Leave blank to keep current' : ''"
         ></app-input-text>
       </div>
       <div class="col-12 md:col-6">
         <label for="role" class="block font-bold mb-2">Role</label>
-        <app-dropdown
+        <p-dropdown
           [options]="roles"
           formControlName="role"
           placeholder="Select a role"
           appendTo="body"
-        ></app-dropdown>
+          optionLabel="label"
+          optionValue="value"
+        ></p-dropdown>
+      </div>
+      <div class="col-12 md:col-6">
+        <label for="department" class="block font-bold mb-2">Department</label>
+        <p-dropdown
+          [options]="departments"
+          formControlName="departmentId"
+          placeholder="Select a department"
+          appendTo="body"
+          optionLabel="name"
+          optionValue="id"
+          [showClear]="true"
+        ></p-dropdown>
+      </div>
+      <div class="col-12 md:col-6 flex align-items-center">
+        <div class="field-checkbox">
+          <p-checkbox
+            formControlName="active"
+            [binary]="true"
+            inputId="active"
+          ></p-checkbox>
+          <label for="active">Active</label>
+        </div>
       </div>
     </div>
 
