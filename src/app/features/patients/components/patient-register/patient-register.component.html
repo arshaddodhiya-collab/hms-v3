@@ -60,13 +60,20 @@
         </div>
 
         <div class="field col-12 md:col-6">
-          <app-input-text
-            id="age"
-            label="Age"
-            type="number"
-            formControlName="age"
-            placeholder="Age"
-          ></app-input-text>
+          <label for="dob" class="font-medium mb-2 block">Date of Birth</label>
+          <p-calendar
+            id="dob"
+            formControlName="dob"
+            dateFormat="yy-mm-dd"
+            [showIcon]="true"
+            placeholder="Select Date of Birth"
+            [maxDate]="maxDate"
+            appendTo="body"
+          ></p-calendar>
+          <app-validation-message
+            [control]="patientForm.get('dob')!"
+            name="Date of Birth"
+          ></app-validation-message>
         </div>
 
         <div class="field col-12 md:col-6">

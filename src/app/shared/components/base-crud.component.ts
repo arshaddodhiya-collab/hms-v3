@@ -9,6 +9,7 @@ export abstract class BaseCrudComponent<T> implements OnInit {
   displayDialog: boolean = false;
   dialogHeader: string = '';
   loading: boolean = false;
+  totalRecords: number = 0;
 
   // Delete Confirmation State
   isConfirmOpen: boolean = false;

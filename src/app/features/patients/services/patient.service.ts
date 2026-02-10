@@ -1,90 +1,60 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { delay, map, tap } from 'rxjs/operators';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Patient } from '../../../core/models/patient.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PatientService {
-  // Mock Database
-  private mockPatients: Patient[] = [
-    {
-      id: 1,
-      name: 'John Doe',
-      age: 30,
-      gender: 'Male',
-      contact: '1234567890',
-      email: 'john@example.com',
-      address: '123 Main St',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      age: 25,
-      gender: 'Female',
-      contact: '0987654321',
-      email: 'jane@example.com',
-      address: '456 Oak Ave',
-    },
-    {
-      id: 3,
-      name: 'Robert Brown',
-      age: 55,
-      gender: 'Male',
-      contact: '5551234567',
-      address: '789 Pine Rd',
-    },
-  ];
+  private apiUrl = `${environment.apiUrl}/patients`;
 
-  private patientsSubject = new BehaviorSubject<Patient[]>(this.mockPatients);
-  public patients$ = this.patientsSubject.asObservable();
+  constructor(private http: HttpClient) {}
 
-  constructor() { }
+  getPatients(
+    query?: string,
+    page: number = 0,
+    size: number = 10,
+  ): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
 
-  getPatients(): Observable<Patient[]> {
-    return this.patients$.pipe(delay(500)); // Simulate network latency
+    if (query) {
+      params = params.set('query', query);
+    }
+
+    return this.http.get<any>(this.apiUrl, { params });
   }
 
-  getPatientById(id: number): Observable<Patient | undefined> {
-    return this.patients$.pipe(
-      map((patients) => patients.find((p) => p.id === id)),
-    );
+  getPatientById(id: number): Observable<Patient> {
+    return this.http.get<Patient>(`${this.apiUrl}/${id}`);
   }
 
-  addPatient(patient: Patient): Observable<Patient> {
-    return of(patient).pipe(
-      delay(500),
-      tap((p) => {
-        p.id = Math.floor(Math.random() * 10000); // Generate ID
-        const current = this.patientsSubject.value;
-        this.patientsSubject.next([...current, p]);
-      }),
-    );
+  registerPatient(patient: any): Observable<Patient> {
+    return this.http.post<Patient>(this.apiUrl, patient);
   }
 
-  updatePatient(patient: Patient): Observable<Patient> {
-    return of(patient).pipe(
-      delay(500),
-      tap((p) => {
-        const current = this.patientsSubject.value;
-        const index = current.findIndex((x) => x.id === p.id);
-        if (index !== -1) {
-          const updated = [...current];
-          updated[index] = p;
-          this.patientsSubject.next(updated);
-        }
-      }),
-    );
+  updatePatient(id: number, patient: any): Observable<Patient> {
+    return this.http.put<Patient>(`${this.apiUrl}/${id}`, patient);
   }
 
-  deletePatient(id: number): Observable<boolean> {
-    return of(true).pipe(
-      delay(500),
-      tap(() => {
-        const current = this.patientsSubject.value;
-        this.patientsSubject.next(current.filter((p) => p.id !== id));
-      }),
-    );
+  deletePatient(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  // Helper method to calculate age from DOB if needed on client side
+  calculateAge(dob: string): number {
+    if (!dob) return 0;
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
   }
 }

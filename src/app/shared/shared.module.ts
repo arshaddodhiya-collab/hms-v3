@@ -25,6 +25,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DividerModule } from 'primeng/divider';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { PageHeaderComponent } from './components/page-header.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog.component';
@@ -82,6 +83,7 @@ import { InputTextComponent } from './components/input-text.component';
     CheckboxModule,
     InputNumberModule,
     DividerModule,
+    ProgressSpinnerModule,
   ],
   exports: [
     CommonModule,
@@ -123,6 +125,7 @@ import { InputTextComponent } from './components/input-text.component';
     CheckboxModule,
     InputNumberModule,
     DividerModule,
+    ProgressSpinnerModule,
   ],
 })
 export class SharedModule {}

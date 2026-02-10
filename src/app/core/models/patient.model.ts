@@ -1,11 +1,26 @@
 export interface Patient {
   id: number;
-  name: string;
+  firstName: string;
+  lastName: string;
+  name?: string; // transient logic to combine first and last
+  dob: string;
   age: number;
-  gender: string;
+  gender: 'MALE' | 'FEMALE' | 'OTHER';
+  bloodGroup?: string;
   contact: string;
-  address?: string; // Added fields relevant for hospital records
   email?: string;
+  address?: string;
+  allergies?: string;
+  avatar?: string;
+  lastVisit?: string; // Placeholder for now
+  medicalHistory?: MedicalHistory[];
+}
+
+export interface MedicalHistory {
+  id: number;
+  conditionName: string; // Backend calls it conditionName
+  diagnosedDate: string;
+  status: 'ONGOING' | 'HEALED' | 'CHRONIC';
 }
 
 export enum VisitStatus {

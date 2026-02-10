@@ -1,23 +1,10 @@
 <app-card>
-  <app-page-header
-    title="Edit Patient"
-    icon="pi pi-user-edit"
-    [showBack]="true"
-  ></app-page-header>
-  <div class="p-fluid grid formgrid">
-    <div class="field col-12 md:col-6">
-      <app-input-text
-        id="firstname"
-        label="Firstname"
-        type="text"
-      ></app-input-text>
-    </div>
-    <div class="field col-12 md:col-6">
-      <app-input-text
-        id="lastname"
-        label="Lastname"
-        type="text"
-      ></app-input-text>
-    </div>
+  <app-patient-register
+    *ngIf="patient"
+    [patientData]="patient"
+    [isModal]="false"
+  ></app-patient-register>
+  <div *ngIf="!patient" class="flex justify-content-center p-5">
+    <p-progressSpinner></p-progressSpinner>
   </div>
 </app-card>

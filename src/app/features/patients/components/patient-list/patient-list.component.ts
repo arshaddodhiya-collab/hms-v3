@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { MessageService, ConfirmationService } from 'primeng/api';
 import { BaseCrudComponent } from '../../../../shared/components/base-crud.component';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 import { Patient } from '../../../../core/models/patient.model';
 import { TableColumn } from '../../../../shared/models/table.model';
+import { PatientService } from '../../services/patient.service';
 
 @Component({
   selector: 'app-patient-list',
@@ -22,13 +23,18 @@ export class PatientListComponent
   permissions = PERMISSIONS;
 
   cols: TableColumn<Patient>[] = [
-    { field: 'name', header: 'Name' },
+    { field: 'firstName', header: 'First Name' },
+    { field: 'lastName', header: 'Last Name' },
     { field: 'age', header: 'Age' },
     { field: 'gender', header: 'Gender' },
     { field: 'contact', header: 'Contact' },
   ];
 
-  constructor(private messageService: MessageService) {
+  constructor(
+    private messageService: MessageService,
+    private patientService: PatientService,
+    private confirmationService: ConfirmationService,
+  ) {
     super();
   }
 
@@ -41,51 +47,55 @@ export class PatientListComponent
   }
 
   override refreshData() {
-    this.data = [
-      {
-        id: 1,
-        name: 'John Doe',
-        age: 30,
-        gender: 'Male',
-        contact: '1234567890',
+    this.loading = true;
+    this.patientService.getPatients().subscribe({
+      next: (response) => {
+        this.data = response.content;
+        this.totalRecords = response.totalElements; // If BaseCrudComponent supports pagination
+        this.loading = false;
       },
-      {
-        id: 2,
-        name: 'Jane Smith',
-        age: 25,
-        gender: 'Female',
-        contact: '0987654321',
+      error: (err) => {
+        console.error('Error fetching patients', err);
+        this.loading = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load patients',
+        });
       },
-    ];
+    });
   }
 
   override onSave(patientData: Patient) {
-    // Logic adapted to use this.selectedItem (which corresponds to selectedPatient)
-    // Actually, onSave receives patientData from event.
-    // BaseCrudComponent has abstract onSave(item: any).
-    // The previous logic used this.selectedPatient to decide update vs create.
-    // Base sets selectedItem in editItem.
+    // Determine if update or create based on existence of ID in selectedItem or patientData
+    const isUpdate = !!this.selectedItem?.id;
 
-    if (this.selectedItem) {
-      // Update
-      const index = this.data.findIndex((x) => x.id === this.selectedItem!.id);
-      if (index !== -1) {
-        // Merge updates
-        this.data[index] = { ...this.data[index], ...patientData };
-      }
-    } else {
-      // Create
-      const newPatient = { ...patientData, id: this.data.length + 1 };
-      this.data.push(newPatient);
-    }
+    // We can use an observable to handle both cases cleanly
+    const request$ = isUpdate
+      ? this.patientService.updatePatient(this.selectedItem!.id, patientData)
+      : this.patientService.registerPatient(patientData);
 
-    // Trigger change detection for table
-    this.data = [...this.data];
-    this.hideDialog();
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Patient Saved',
+    request$.subscribe({
+      next: () => {
+        this.hideDialog();
+        this.refreshData();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: isUpdate ? 'Patient Updated' : 'Patient Registered',
+        });
+      },
+      error: (err) => {
+        console.error('Error saving patient', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to save patient',
+        });
+      },
     });
   }
+
+  // Implement delete if BaseCrudComponent calls a method for it, or just use deleteItem from template
+  // If BaseCrudComponent has deleteItem and we want to override functionality:
 }

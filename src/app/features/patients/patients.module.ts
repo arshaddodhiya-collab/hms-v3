@@ -6,6 +6,7 @@ import { PatientListComponent } from './components/patient-list/patient-list.com
 import { PatientRegisterComponent } from './components/patient-register/patient-register.component';
 import { PatientViewComponent } from './components/patient-view/patient-view.component';
 import { PatientEditComponent } from './components/patient-edit/patient-edit.component';
+import { ConfirmationService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -15,5 +16,6 @@ import { PatientEditComponent } from './components/patient-edit/patient-edit.com
     PatientEditComponent,
   ],
   imports: [CommonModule, SharedModule, PatientsRoutingModule],
+  providers: [ConfirmationService],
 })
 export class PatientsModule {}

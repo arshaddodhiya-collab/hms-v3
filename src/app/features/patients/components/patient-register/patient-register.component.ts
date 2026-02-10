@@ -11,6 +11,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Patient } from '../../../../core/models/patient.model';
+import { PatientService } from '../../services/patient.service';
 
 @Component({
   selector: 'app-patient-register',
@@ -26,15 +27,18 @@ export class PatientRegisterComponent implements OnInit, OnChanges {
   patientForm!: FormGroup;
 
   genderOptions = [
-    { label: 'Male', value: 'Male' },
-    { label: 'Female', value: 'Female' },
-    { label: 'Other', value: 'Other' },
+    { label: 'Male', value: 'MALE' },
+    { label: 'Female', value: 'FEMALE' },
+    { label: 'Other', value: 'OTHER' },
   ];
+
+  maxDate = new Date();
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private messageService: MessageService,
+    private patientService: PatientService,
   ) {}
 
   ngOnInit(): void {
@@ -54,10 +58,7 @@ export class PatientRegisterComponent implements OnInit, OnChanges {
     this.patientForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(2)]],
       lastName: ['', [Validators.required, Validators.minLength(2)]],
-      age: [
-        null,
-        [Validators.required, Validators.min(0), Validators.max(120)],
-      ],
+      dob: [null, [Validators.required]],
       gender: [null, Validators.required],
       phone: [
         '',
@@ -84,12 +85,12 @@ export class PatientRegisterComponent implements OnInit, OnChanges {
     }
 
     this.patientForm.patchValue({
-      firstName: firstName,
-      lastName: lastName,
-      age: this.patientData.age,
+      firstName: this.patientData.firstName || firstName,
+      lastName: this.patientData.lastName || lastName,
+      dob: this.patientData.dob ? new Date(this.patientData.dob) : null,
       gender: this.patientData.gender,
       phone: this.patientData.contact,
-      email: this.patientData.email || 'test@example.com',
+      email: this.patientData.email,
     });
   }
 
@@ -99,24 +100,41 @@ export class PatientRegisterComponent implements OnInit, OnChanges {
       const result = {
         ...this.patientData, // Keep ID etc
         ...formValue,
-        // Reconstruct 'name' and 'contact' for the list view compatibility
-        name: `${formValue.firstName} ${formValue.lastName}`,
+        // Backend expects 'contact' instead of 'phone'
         contact: formValue.phone,
+        // Format DOB to YYYY-MM-DD
+        dob: this.formatDate(formValue.dob),
       };
+
+      const request$ = this.patientData?.id
+        ? this.patientService.updatePatient(this.patientData.id, result)
+        : this.patientService.registerPatient(result);
 
       if (this.isModal) {
         this.onSave.emit(result);
       } else {
-        // Page behavior
-        console.log(formValue);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Patient Registered Successfully',
+        request$.subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: this.patientData
+                ? 'Patient Updated'
+                : 'Patient Registered',
+            });
+            setTimeout(() => {
+              this.router.navigate(['/patients']);
+            }, 1000);
+          },
+          error: (err) => {
+            console.error('Error saving patient', err);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to save patient',
+            });
+          },
         });
-        setTimeout(() => {
-          this.router.navigate(['/patients']);
-        }, 1000);
       }
     } else {
       this.patientForm.markAllAsTouched();
@@ -134,5 +152,18 @@ export class PatientRegisterComponent implements OnInit, OnChanges {
     } else {
       this.router.navigate(['/patients']);
     }
+  }
+
+  private formatDate(date: Date): string {
+    if (!date) return '';
+    const d = new Date(date);
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
+    const year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
   }
 }

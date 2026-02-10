@@ -5,7 +5,7 @@ import { PatientListComponent } from './components/patient-list/patient-list.com
 // import { PatientRegisterComponent } from './components/patient-register/patient-register.component';
 import { PatientViewComponent } from './components/patient-view/patient-view.component';
 import { PatientRegisterComponent } from './components/patient-register/patient-register.component';
-// import { PatientEditComponent } from './components/patient-edit/patient-edit.component';
+import { PatientEditComponent } from './components/patient-edit/patient-edit.component';
 
 const routes: Routes = [
   {
@@ -25,6 +25,12 @@ const routes: Routes = [
     component: PatientViewComponent,
     canActivate: [PermissionGuard],
     data: { permission: 'CMP_PATIENT_VIEW' },
+  },
+  {
+    path: ':id/edit',
+    component: PatientEditComponent,
+    canActivate: [PermissionGuard],
+    data: { permission: 'CMP_PATIENT_EDIT' },
   },
 ];
 

@@ -11,13 +11,13 @@
     <app-card styleClass="text-center h-full">
       <div class="flex flex-column align-items-center mb-4">
         <p-avatar
-          [image]="patient.avatar"
+          [image]="patient?.avatar"
           size="xlarge"
           shape="circle"
           styleClass="mb-3 shadow-2"
         ></p-avatar>
-        <h2 class="text-xl font-bold m-0 text-900">{{ patient.name }}</h2>
-        <span class="text-500 text-sm mt-1">ID: #{{ patient.id }}</span>
+        <h2 class="text-xl font-bold m-0 text-900">{{ patient?.name }}</h2>
+        <span class="text-500 text-sm mt-1">ID: #{{ patient?.id }}</span>
         <p-tag [value]="'Active'" severity="success" styleClass="mt-2"></p-tag>
       </div>
 
@@ -26,20 +26,20 @@
       <div class="text-left">
         <div class="flex justify-content-between mb-2">
           <span class="text-600">Gender</span>
-          <span class="font-medium text-900">{{ patient.gender }}</span>
+          <span class="font-medium text-900">{{ patient?.gender }}</span>
         </div>
         <div class="flex justify-content-between mb-2">
           <span class="text-600">Age</span>
-          <span class="font-medium text-900">{{ patient.age }} Years</span>
+          <span class="font-medium text-900">{{ patient?.age }} Years</span>
         </div>
         <div class="flex justify-content-between mb-2">
           <span class="text-600">Blood Group</span>
-          <span class="font-medium text-900">{{ patient.bloodGroup }}</span>
+          <span class="font-medium text-900">{{ patient?.bloodGroup }}</span>
         </div>
         <div class="flex justify-content-between mb-2">
           <span class="text-600">Last Visit</span>
           <span class="font-medium text-900">{{
-            patient.lastVisit | date
+            patient?.lastVisit | date
           }}</span>
         </div>
       </div>
@@ -50,25 +50,25 @@
         <h4 class="text-900 font-medium mb-3">Contact info</h4>
         <div class="flex align-items-center mb-3">
           <i class="pi pi-phone text-primary mr-2"></i>
-          <span class="text-900">{{ patient.contact }}</span>
+          <span class="text-900">{{ patient?.contact }}</span>
         </div>
         <div class="flex align-items-center mb-3">
           <i class="pi pi-envelope text-primary mr-2"></i>
-          <span class="text-900 text-sm">{{ patient.email }}</span>
+          <span class="text-900 text-sm">{{ patient?.email }}</span>
         </div>
         <div class="flex align-items-start">
           <i class="pi pi-map-marker text-primary mr-2 mt-1"></i>
-          <span class="text-900 text-sm">{{ patient.address }}</span>
+          <span class="text-900 text-sm">{{ patient?.address }}</span>
         </div>
       </div>
 
-      <p-divider *ngIf="patient.allergies"></p-divider>
+      <p-divider *ngIf="patient?.allergies"></p-divider>
 
-      <div class="text-left" *ngIf="patient.allergies">
+      <div class="text-left" *ngIf="patient?.allergies">
         <h4 class="text-900 font-medium mb-2">Allergies</h4>
         <div class="flex flex-wrap gap-2">
           <p-tag
-            *ngFor="let allergy of patient.allergies.split(',')"
+            *ngFor="let allergy of patient?.allergies?.split(',')"
             [value]="allergy.trim()"
             severity="danger"
             [rounded]="true"
