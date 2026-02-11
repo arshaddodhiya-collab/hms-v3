@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AppointmentService } from '../../services/appointment.service';
+import { AppointmentResponse } from '../../models/appointment.model';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-appointment-view',
@@ -7,64 +10,38 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./appointment-view.component.scss'],
 })
 export class AppointmentViewComponent implements OnInit {
-  appointmentId: string | null = null;
-  appointment: {
-    id: number;
-    patientName: string;
-    doctorName: string;
-    date: string;
-    time: string;
-    status: string;
-    type: string;
-    department: string;
-    room: string;
-    reason: string;
-    notes: string;
-  } = {
-    id: 101,
-    patientName: 'John Doe',
-    doctorName: 'Dr. Smith',
-    date: '2023-10-25',
-    time: '10:00 AM',
-    status: 'Confirmed',
-    type: 'Follow-up',
-    department: 'Cardiology',
-    room: '304',
-    reason: 'Routine checkup after surgery',
-    notes: 'Patient reports feeling well. BP is stable.',
-  };
+  appointmentId: number | null = null;
+  appointment: AppointmentResponse | null = null;
 
-  events: any[] = [
-    {
-      status: 'Scheduled',
-      date: '2023-10-20 14:30',
-      icon: 'pi pi-calendar',
-      color: '#9C27B0',
-    },
-    {
-      status: 'Confirmed',
-      date: '2023-10-21 09:15',
-      icon: 'pi pi-check',
-      color: '#673AB7',
-    },
-    {
-      status: 'Checked In',
-      date: '2023-10-25 09:50',
-      icon: 'pi pi-map-marker',
-      color: '#FF9800',
-    },
-    {
-      status: 'Completed',
-      date: '2023-10-25 10:45',
-      icon: 'pi pi-check-circle',
-      color: '#607D8B',
-    },
-  ];
+  events: any[] = []; // Timeline events - to be implemented later based on status history if available
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute,
+    private appointmentService: AppointmentService,
+    private messageService: MessageService,
+  ) {}
 
   ngOnInit(): void {
-    this.appointmentId = this.route.snapshot.paramMap.get('id');
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.appointmentId = +id;
+      this.loadAppointment(this.appointmentId);
+    }
+  }
+
+  loadAppointment(id: number) {
+    this.appointmentService.getAppointmentById(id).subscribe({
+      next: (data) => {
+        this.appointment = data;
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Could not load appointment details',
+        });
+      },
+    });
   }
 
   getSeverity(

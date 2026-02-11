@@ -7,55 +7,120 @@
   <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
     <div class="p-fluid grid formgrid">
       <div class="field col-12 md:col-6">
-        <app-input-text
+        <label htmlFor="patient">Patient</label>
+        <p-dropdown
           id="patient"
-          label="Patient Name"
-          formControlName="patientName"
-        ></app-input-text>
+          [options]="patients"
+          formControlName="patientId"
+          optionLabel="firstName"
+          optionValue="id"
+          placeholder="Select a Patient"
+          [filter]="true"
+          filterBy="firstName,lastName"
+          [showClear]="true"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              appointmentForm.get('patientId')?.invalid &&
+              appointmentForm.get('patientId')?.touched,
+          }"
+        >
+          <ng-template let-patient pTemplate="item">
+            <div class="flex align-items-center gap-2">
+              <div>{{ patient.firstName }} {{ patient.lastName }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-patient pTemplate="selectedItem">
+            <div class="flex align-items-center gap-2" *ngIf="patient">
+              <div>{{ patient.firstName }} {{ patient.lastName }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <app-validation-message
+          [control]="appointmentForm.get('patientId')!"
+          name="Patient"
+        ></app-validation-message>
       </div>
+
       <div class="field col-12 md:col-6">
-        <app-input-text
+        <label htmlFor="doctor">Doctor</label>
+        <p-dropdown
           id="doctor"
-          label="Doctor"
-          formControlName="doctorName"
-        ></app-input-text>
-      </div>
-      <div class="field col-12 md:col-6">
-        <label htmlFor="date">Date</label>
-        <input
-          pInputText
-          id="date"
-          type="date"
-          formControlName="date"
+          [options]="doctors"
+          formControlName="doctorId"
+          optionLabel="fullName"
+          optionValue="id"
+          placeholder="Select a Doctor"
+          [filter]="true"
+          [showClear]="true"
           [ngClass]="{
             'ng-invalid ng-dirty':
-              appointmentForm.get('date')?.invalid &&
-              appointmentForm.get('date')?.touched,
+              appointmentForm.get('doctorId')?.invalid &&
+              appointmentForm.get('doctorId')?.touched,
           }"
-        />
+        >
+          <ng-template let-doctor pTemplate="item">
+            <div class="flex align-items-center gap-2">
+              <div>{{ doctor.fullName }}</div>
+              <!-- Assuming doctor has fullName or similar -->
+            </div>
+          </ng-template>
+          <ng-template let-doctor pTemplate="selectedItem">
+            <div class="flex align-items-center gap-2" *ngIf="doctor">
+              <div>{{ doctor.fullName }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
         <app-validation-message
-          [control]="appointmentForm.get('date')!"
-          name="Date"
+          [control]="appointmentForm.get('doctorId')!"
+          name="Doctor"
         ></app-validation-message>
       </div>
+
       <div class="field col-12 md:col-6">
-        <label htmlFor="time">Time</label>
-        <input
-          pInputText
-          id="time"
-          type="time"
-          formControlName="time"
+        <label htmlFor="dateTime">Date & Time</label>
+        <p-calendar
+          id="dateTime"
+          formControlName="dateTime"
+          [showTime]="true"
+          [showIcon]="true"
+          dateFormat="dd/mm/yy"
+          placeholder="Select Date & Time"
           [ngClass]="{
             'ng-invalid ng-dirty':
-              appointmentForm.get('time')?.invalid &&
-              appointmentForm.get('time')?.touched,
+              appointmentForm.get('dateTime')?.invalid &&
+              appointmentForm.get('dateTime')?.touched,
           }"
-        />
+        ></p-calendar>
         <app-validation-message
-          [control]="appointmentForm.get('time')!"
-          name="Time"
+          [control]="appointmentForm.get('dateTime')!"
+          name="Date & Time"
         ></app-validation-message>
       </div>
+
+      <div class="field col-12 md:col-6">
+        <label htmlFor="type">Type</label>
+        <p-dropdown
+          id="type"
+          [options]="[
+            { label: 'Consultation', value: 'CONSULTATION' },
+            { label: 'Checkup', value: 'CHECKUP' },
+            { label: 'Follow Up', value: 'FOLLOW_UP' },
+            { label: 'Emergency', value: 'EMERGENCY' },
+          ]"
+          formControlName="type"
+          placeholder="Select Type"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              appointmentForm.get('type')?.invalid &&
+              appointmentForm.get('type')?.touched,
+          }"
+        ></p-dropdown>
+        <app-validation-message
+          [control]="appointmentForm.get('type')!"
+          name="Type"
+        ></app-validation-message>
+      </div>
+
       <div class="field col-12">
         <label htmlFor="reason">Reason</label>
         <textarea

@@ -1,48 +1,174 @@
 <app-card>
   <app-page-header
     title="Edit Appointment"
-    icon="pi pi-file-edit"
+    icon="pi pi-pencil"
     [showBack]="true"
   ></app-page-header>
-  <div class="p-fluid grid formgrid">
-    <div class="field col-12 md:col-6">
-      <app-input-text
-        id="patient"
-        label="Patient Name"
-        [(ngModel)]="appointment.patientName"
-      ></app-input-text>
+  <form
+    [formGroup]="appointmentForm"
+    (ngSubmit)="onSubmit()"
+    *ngIf="appointmentForm"
+  >
+    <div class="p-fluid grid formgrid">
+      <div class="field col-12 md:col-6">
+        <label htmlFor="patient">Patient</label>
+        <p-dropdown
+          id="patient"
+          [options]="patients"
+          formControlName="patientId"
+          optionLabel="firstName"
+          optionValue="id"
+          placeholder="Select a Patient"
+          [filter]="true"
+          filterBy="firstName,lastName"
+          [showClear]="true"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              appointmentForm.get('patientId')?.invalid &&
+              appointmentForm.get('patientId')?.touched,
+          }"
+        >
+          <ng-template let-patient pTemplate="item">
+            <div class="flex align-items-center gap-2">
+              <div>{{ patient.firstName }} {{ patient.lastName }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-patient pTemplate="selectedItem">
+            <div class="flex align-items-center gap-2" *ngIf="patient">
+              <div>{{ patient.firstName }} {{ patient.lastName }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <app-validation-message
+          [control]="appointmentForm.get('patientId')!"
+          name="Patient"
+        ></app-validation-message>
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <label htmlFor="doctor">Doctor</label>
+        <p-dropdown
+          id="doctor"
+          [options]="doctors"
+          formControlName="doctorId"
+          optionLabel="fullName"
+          optionValue="id"
+          placeholder="Select a Doctor"
+          [filter]="true"
+          [showClear]="true"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              appointmentForm.get('doctorId')?.invalid &&
+              appointmentForm.get('doctorId')?.touched,
+          }"
+        >
+          <ng-template let-doctor pTemplate="item">
+            <div class="flex align-items-center gap-2">
+              <div>{{ doctor.fullName }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-doctor pTemplate="selectedItem">
+            <div class="flex align-items-center gap-2" *ngIf="doctor">
+              <div>{{ doctor.fullName }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <app-validation-message
+          [control]="appointmentForm.get('doctorId')!"
+          name="Doctor"
+        ></app-validation-message>
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <label htmlFor="dateTime">Date & Time</label>
+        <p-calendar
+          id="dateTime"
+          formControlName="dateTime"
+          [showTime]="true"
+          [showIcon]="true"
+          dateFormat="dd/mm/yy"
+          placeholder="Select Date & Time"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              appointmentForm.get('dateTime')?.invalid &&
+              appointmentForm.get('dateTime')?.touched,
+          }"
+        ></p-calendar>
+        <app-validation-message
+          [control]="appointmentForm.get('dateTime')!"
+          name="Date & Time"
+        ></app-validation-message>
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <label htmlFor="type">Type</label>
+        <p-dropdown
+          id="type"
+          [options]="[
+            { label: 'Consultation', value: 'CONSULTATION' },
+            { label: 'Checkup', value: 'CHECKUP' },
+            { label: 'Follow Up', value: 'FOLLOW_UP' },
+            { label: 'Emergency', value: 'EMERGENCY' },
+          ]"
+          formControlName="type"
+          placeholder="Select Type"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              appointmentForm.get('type')?.invalid &&
+              appointmentForm.get('type')?.touched,
+          }"
+        ></p-dropdown>
+        <app-validation-message
+          [control]="appointmentForm.get('type')!"
+          name="Type"
+        ></app-validation-message>
+      </div>
+
+      <div class="field col-12">
+        <label htmlFor="reason">Reason</label>
+        <textarea
+          pInputTextarea
+          id="reason"
+          rows="3"
+          formControlName="reason"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              appointmentForm.get('reason')?.invalid &&
+              appointmentForm.get('reason')?.touched,
+          }"
+        ></textarea>
+        <app-validation-message
+          [control]="appointmentForm.get('reason')!"
+          name="Reason"
+        ></app-validation-message>
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <label htmlFor="status">Status</label>
+        <p-dropdown
+          id="status"
+          [options]="[
+            { label: 'Scheduled', value: 'SCHEDULED' },
+            { label: 'Checked In', value: 'CHECKED_IN' },
+            { label: 'In Progress', value: 'IN_PROGRESS' },
+            { label: 'Completed', value: 'COMPLETED' },
+            { label: 'Cancelled', value: 'CANCELLED' },
+            { label: 'No Show', value: 'NO_SHOW' },
+          ]"
+          formControlName="status"
+          placeholder="Select Status"
+        ></p-dropdown>
+      </div>
     </div>
-    <div class="field col-12 md:col-6">
-      <app-input-text
-        id="doctor"
-        label="Doctor"
-        [(ngModel)]="appointment.doctorName"
-      ></app-input-text>
+    <div class="flex justify-content-end mt-4">
+      <button
+        pButton
+        label="Update Appointment"
+        icon="pi pi-check"
+        type="submit"
+        class="w-auto"
+        [loading]="loading"
+      ></button>
     </div>
-    <div class="field col-12 md:col-6">
-      <label htmlFor="date">Date</label>
-      <input pInputText id="date" type="date" [(ngModel)]="appointment.date" />
-    </div>
-    <div class="field col-12 md:col-6">
-      <label htmlFor="time">Time</label>
-      <p-calendar
-        id="time"
-        [(ngModel)]="appointment.time"
-        [timeOnly]="true"
-        hourFormat="12"
-        [showIcon]="true"
-      ></p-calendar>
-    </div>
-  </div>
-  <div class="flex justify-content-end mt-4">
-    <button
-      pButton
-      label="Save Changes"
-      icon="pi pi-check"
-      aria-label="Save Changes"
-      class="w-auto p-button-success"
-      pTooltip="Update appointment details"
-      tooltipPosition="left"
-    ></button>
-  </div>
+  </form>
 </app-card>
