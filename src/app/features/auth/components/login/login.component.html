@@ -1,14 +1,19 @@
 <div
-  class="flex align-items-center justify-content-center min-h-screen surface-ground px-4"
+  class="flex align-items-center justify-content-center min-h-screen login-bg px-4"
 >
   <div
-    class="surface-card p-4 shadow-6 border-round-xl w-full"
-    style="max-width: 400px"
+    class="surface-card p-5 shadow-4 border-round-2xl w-full"
+    style="max-width: 450px"
   >
     <div class="text-center mb-5">
+      <div
+        class="bg-primary-100 text-primary-700 border-circle inline-flex align-items-center justify-content-center w-4rem h-4rem mb-4"
+      >
+        <i class="pi pi-heart text-4xl"></i>
+      </div>
       <div class="text-900 text-3xl font-bold mb-3">Welcome Back</div>
-      <span class="text-600 font-medium line-height-3"
-        >Sign in to continue to HMS</span
+      <span class="text-600 font-medium line-height-3 block"
+        >Sign in to your HMS account</span
       >
     </div>
 
@@ -24,8 +29,8 @@
             type="text"
             pInputText
             formControlName="username"
-            placeholder="Enter your username"
-            class="w-full"
+            placeholder="Type your username"
+            class="w-full p-inputtext-lg"
             [ngClass]="{
               'ng-invalid ng-dirty':
                 loginForm.get('username')?.invalid &&
@@ -51,8 +56,8 @@
             type="password"
             pInputText
             formControlName="password"
-            placeholder="Enter your password"
-            class="w-full"
+            placeholder="Type your password"
+            class="w-full p-inputtext-lg"
             appVoiceInput="Password"
           />
         </span>
@@ -60,13 +65,28 @@
           [control]="loginForm.get('password')!"
           name="Password"
         ></app-validation-message>
+        <div class="flex align-items-center justify-content-between mt-2">
+          <div class="flex align-items-center">
+            <p-checkbox
+              [binary]="true"
+              inputId="remember"
+              styleClass="mr-2"
+            ></p-checkbox>
+            <label for="remember" class="text-600">Remember me</label>
+          </div>
+          <a
+            href="#"
+            class="font-medium text-primary-500 hover:text-primary-700 cursor-pointer transition-colors transition-duration-150"
+            >Forgot password?</a
+          >
+        </div>
       </div>
 
       <div
         *ngIf="error"
-        class="flex align-items-center p-3 mb-4 bg-red-50 text-red-700 border-round"
+        class="flex align-items-center p-3 mb-4 bg-red-50 text-red-700 border-round-lg shadow-1"
       >
-        <i class="pi pi-exclamation-circle mr-2"></i>
+        <i class="pi pi-exclamation-circle mr-2 text-xl"></i>
         <span class="font-medium">{{ error }}</span>
       </div>
 
@@ -77,9 +97,18 @@
         icon="pi pi-arrow-right"
         iconPos="right"
         type="submit"
-        class="w-full p-button-lg"
+        class="w-full p-button-lg border-round-lg shadow-2"
         [disabled]="loginForm.invalid"
       ></button>
     </form>
+
+    <div class="text-center mt-5 text-600 font-medium">
+      Don't have an account?
+      <a
+        href="#"
+        class="text-primary-500 hover:text-primary-700 font-bold cursor-pointer transition-colors transition-duration-150"
+        >Request Access</a
+      >
+    </div>
   </div>
 </div>
