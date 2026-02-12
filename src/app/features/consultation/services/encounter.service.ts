@@ -1,152 +1,91 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { delay, tap, map } from 'rxjs/operators';
-
-export interface PrescriptionItem {
-  name: string;
-  dosage: string;
-  frequency: string;
-  duration: string;
-}
-
-export interface Prescription {
-  id: string;
-  encounterId: string;
-  items: PrescriptionItem[];
-  note?: string;
-  status: 'DRAFT' | 'ISSUED';
-}
-
-export interface Encounter {
-  id: string;
-  appointmentId: string;
-  patientId: number;
-  doctorId: number;
-  status: 'IN_PROGRESS' | 'COMPLETED';
-  diagnosis?: string;
-  notes?: string;
-  startedAt: Date;
-  completedAt?: Date;
-  vitalsId?: number; // Link to vitals if any
-}
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import {
+  EncounterResponse,
+  EncounterCreateRequest,
+  EncounterUpdateRequest,
+} from '../../../core/models/encounter.model';
+import {
+  PrescriptionRequest,
+  PrescriptionResponse,
+} from '../../../core/models/prescription.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EncounterService {
-  private encounters: Encounter[] = [];
-  private prescriptions: Prescription[] = [];
+  private apiUrl = `${environment.apiUrl}/encounters`;
 
-  private encountersSubject = new BehaviorSubject<Encounter[]>([]);
-  public encounters$ = this.encountersSubject.asObservable();
-
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   // 1. Start or Resume Encounter
   startEncounter(
-    appointmentId: string,
-    patientId: number,
-    doctorId: number,
-  ): Observable<Encounter> {
-    return of(null).pipe(
-      delay(300),
-      map(() => {
-        let encounter = this.encounters.find(
-          (e) => e.appointmentId === appointmentId,
-        );
+    request: EncounterCreateRequest,
+  ): Observable<EncounterResponse> {
+    return this.http.post<EncounterResponse>(this.apiUrl, request);
+  }
 
-        if (!encounter) {
-          encounter = {
-            id: 'ENC-' + Math.floor(Math.random() * 10000),
-            appointmentId,
-            patientId,
-            doctorId,
-            status: 'IN_PROGRESS',
-            startedAt: new Date(),
-          };
-          this.encounters.push(encounter);
-          this.encountersSubject.next([...this.encounters]);
-        }
+  getEncounterById(id: number): Observable<EncounterResponse> {
+    return this.http.get<EncounterResponse>(`${this.apiUrl}/${id}`);
+  }
 
-        return encounter;
-      }),
+  getEncounterByAppointmentId(
+    appointmentId: number,
+  ): Observable<EncounterResponse> {
+    return this.http.get<EncounterResponse>(
+      `${this.apiUrl}/by-appointment/${appointmentId}`,
     );
   }
 
   // 2. Save Clinical Notes
-  saveDiagnosis(
-    encounterId: string,
-    diagnosis: string,
-    notes: string,
-  ): Observable<boolean> {
-    return of(true).pipe(
-      delay(300),
-      tap(() => {
-        const index = this.encounters.findIndex((e) => e.id === encounterId);
-        if (index !== -1) {
-          const updated = { ...this.encounters[index], diagnosis, notes };
-          this.encounters[index] = updated;
-          this.encountersSubject.next([...this.encounters]);
-        }
-      }),
+  updateClinicalNotes(
+    id: number,
+    request: EncounterUpdateRequest,
+  ): Observable<EncounterResponse> {
+    return this.http.patch<EncounterResponse>(
+      `${this.apiUrl}/${id}/clinical-notes`,
+      request,
     );
   }
 
   // 3. Save Prescription
   savePrescription(
-    encounterId: string,
-    items: PrescriptionItem[],
-    note?: string,
-  ): Observable<Prescription> {
-    return of(null).pipe(
-      delay(300),
-      map(() => {
-        let rx = this.prescriptions.find((p) => p.encounterId === encounterId);
-
-        if (rx) {
-          rx.items = items;
-          rx.note = note || rx.note;
-        } else {
-          rx = {
-            id: 'RX-' + Math.floor(Math.random() * 10000),
-            encounterId,
-            items,
-            note,
-            status: 'DRAFT',
-          };
-          this.prescriptions.push(rx);
-        }
-        return rx;
-      }),
+    encounterId: number,
+    request: PrescriptionRequest,
+  ): Observable<PrescriptionResponse> {
+    return this.http.post<PrescriptionResponse>(
+      `${this.apiUrl}/${encounterId}/prescriptions`,
+      request,
     );
   }
 
-  getPrescription(encounterId: string): Observable<Prescription | undefined> {
-    const rx = this.prescriptions.find((p) => p.encounterId === encounterId);
-    return of(rx).pipe(delay(200));
+  getPrescription(encounterId: number): Observable<PrescriptionResponse> {
+    return this.http.get<PrescriptionResponse>(
+      `${this.apiUrl}/${encounterId}/prescriptions`,
+    );
   }
 
   // 4. End Encounter
-  endEncounter(encounterId: string): Observable<boolean> {
-    return of(true).pipe(
-      delay(500),
-      tap(() => {
-        const index = this.encounters.findIndex((e) => e.id === encounterId);
-        if (index !== -1) {
-          this.encounters[index].status = 'COMPLETED';
-          this.encounters[index].completedAt = new Date();
+  completeEncounter(id: number): Observable<EncounterResponse> {
+    return this.http.patch<EncounterResponse>(
+      `${this.apiUrl}/${id}/complete`,
+      {},
+    );
+  }
 
-          // Also Issue the Prescription
-          const rx = this.prescriptions.find(
-            (p) => p.encounterId === encounterId,
-          );
-          if (rx) {
-            rx.status = 'ISSUED';
-          }
+  // queue
+  getDoctorQueue(doctorId: number): Observable<EncounterResponse[]> {
+    return this.http.get<EncounterResponse[]>(
+      `${this.apiUrl}/queue/doctor/${doctorId}`,
+    );
+  }
 
-          this.encountersSubject.next([...this.encounters]);
-        }
-      }),
+  // Get patient encounter history
+  getPatientEncounters(patientId: number): Observable<EncounterResponse[]> {
+    return this.http.get<EncounterResponse[]>(
+      `${this.apiUrl}/patient/${patientId}`,
     );
   }
 }

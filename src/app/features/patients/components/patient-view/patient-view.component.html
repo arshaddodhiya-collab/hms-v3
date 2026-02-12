@@ -125,7 +125,15 @@
       <p-tabView>
         <p-tabPanel header="Overview">
           <h3 class="text-lg font-bold mb-3">Medical History</h3>
+          <div
+            *ngIf="medicalHistory.length === 0"
+            class="text-center p-5 text-500"
+          >
+            <i class="pi pi-heart text-4xl mb-3"></i>
+            <p>No medical history recorded.</p>
+          </div>
           <p-table
+            *ngIf="medicalHistory.length > 0"
             [value]="medicalHistory"
             styleClass="p-datatable-sm"
             [rowHover]="true"
@@ -153,24 +161,31 @@
         </p-tabPanel>
 
         <p-tabPanel header="Appointments">
+          <div
+            *ngIf="appointments.length === 0"
+            class="text-center p-5 text-500"
+          >
+            <i class="pi pi-calendar text-4xl mb-3"></i>
+            <p>No appointments scheduled yet.</p>
+          </div>
           <p-table
+            *ngIf="appointments.length > 0"
             [value]="appointments"
             styleClass="p-datatable-sm"
             [rowHover]="true"
           >
             <ng-template pTemplate="header">
               <tr>
-                <th>Date</th>
+                <th>Date & Time</th>
                 <th>Doctor</th>
                 <th>Type</th>
                 <th>Status</th>
-                <th>Actions</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-apt>
               <tr>
-                <td>{{ apt.date | date }}</td>
-                <td>{{ apt.doctor }}</td>
+                <td>{{ apt.startDateTime | date: 'medium' }}</td>
+                <td>Dr. {{ apt.doctorName }}</td>
                 <td>{{ apt.type }}</td>
                 <td>
                   <p-tag
@@ -178,30 +193,45 @@
                     [severity]="getSeverity(apt.status)"
                   ></p-tag>
                 </td>
-                <td>
-                  <button
-                    pButton
-                    icon="pi pi-eye"
-                    class="p-button-text p-button-sm"
-                  ></button>
-                </td>
               </tr>
             </ng-template>
           </p-table>
         </p-tabPanel>
 
-        <p-tabPanel header="Prescriptions">
+        <p-tabPanel header="Consultation History">
+          <div *ngIf="encounters.length === 0" class="text-center p-5 text-500">
+            <i class="pi pi-file-medical text-4xl mb-3"></i>
+            <p>No consultation history yet.</p>
+          </div>
           <div
-            *ngFor="let rx of prescriptions"
-            class="mb-3 surface-ground p-3 border-round"
+            *ngFor="let encounter of encounters"
+            class="mb-4 surface-ground p-4 border-round"
           >
-            <div class="flex justify-content-between mb-2">
-              <span class="font-bold">Date: {{ rx.date | date }}</span>
-              <span class="text-600">Dr. {{ rx.doctor }}</span>
+            <div class="flex justify-content-between mb-3">
+              <div>
+                <span class="font-bold text-lg">{{
+                  encounter.startedAt | date: 'medium'
+                }}</span>
+                <p-tag
+                  [value]="encounter.status"
+                  [severity]="getSeverity(encounter.status)"
+                  styleClass="ml-2"
+                ></p-tag>
+              </div>
+              <span class="text-600">Dr. {{ encounter.doctorName }}</span>
             </div>
-            <ul class="pl-3 m-0">
-              <li *ngFor="let med of rx.medicines">{{ med }}</li>
-            </ul>
+
+            <div *ngIf="encounter.chiefComplaint" class="mb-2">
+              <strong>Chief Complaint:</strong> {{ encounter.chiefComplaint }}
+            </div>
+
+            <div *ngIf="encounter.diagnosis" class="mb-2">
+              <strong>Diagnosis:</strong> {{ encounter.diagnosis }}
+            </div>
+
+            <div *ngIf="encounter.notes" class="mb-2">
+              <strong>Notes:</strong> {{ encounter.notes }}
+            </div>
           </div>
         </p-tabPanel>
 

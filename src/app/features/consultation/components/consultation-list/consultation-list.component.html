@@ -36,7 +36,23 @@
 </ng-template>
 
 <ng-template #statusTemplate let-value>
-  <span class="text-orange-500 font-medium">{{ value }}</span>
+  <app-status-badge
+    [status]="
+      value === 'TRIAGE'
+        ? 'Waiting'
+        : value === 'IN_PROGRESS'
+          ? 'In Progress'
+          : value
+    "
+    [type]="
+      value === 'TRIAGE'
+        ? 'warning'
+        : value === 'IN_PROGRESS'
+          ? 'success'
+          : 'info'
+    "
+  >
+  </app-status-badge>
 </ng-template>
 
 <ng-template #actions let-item>

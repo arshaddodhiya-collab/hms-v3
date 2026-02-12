@@ -163,7 +163,10 @@
       pButton
       class="p-button-primary"
       (click)="saveVitals()"
-      pTooltip="Save vitals entry"
+      [disabled]="!isValid"
+      [pTooltip]="
+        !isValid ? 'Enter at least one vital sign' : 'Save vitals entry'
+      "
       tooltipPosition="left"
     >
       Save Vitals

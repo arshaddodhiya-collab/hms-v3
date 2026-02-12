@@ -1,45 +1,50 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { delay, tap } from 'rxjs/operators';
-import { AppointmentService } from '../../appointments/services/appointment.service';
-import { AppointmentStatus } from '../../../core/models/patient.model';
-
-export interface Vitals {
-  appointmentId: number;
-  temperature: number;
-  systolic: number;
-  diastolic: number;
-  pulse: number;
-  weight: number;
-  height: number;
-  spo2: number;
-  bmi: number;
-  recordedAt: Date;
-}
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import { EncounterResponse } from '../../../core/models/encounter.model';
+import {
+  VitalsRequest,
+  VitalsResponse,
+} from '../../../core/models/vitals.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TriageService {
-  // Mock Storage for Vitals
-  private vitalsMap = new Map<number, Vitals>();
+  private apiUrl = `${environment.apiUrl}/encounters`;
 
-  constructor(private appointmentService: AppointmentService) {}
+  constructor(private http: HttpClient) {}
 
-  saveVitals(vitals: Vitals): Observable<boolean> {
-    return of(true).pipe(
-      delay(500),
-      tap(() => {
-        this.vitalsMap.set(vitals.appointmentId, vitals);
-        // Auto-update appointment status to CONSULTATION_PENDING (Checked In)
-        this.appointmentService
-          .checkInAppointment(vitals.appointmentId)
-          .subscribe();
-      }),
+  // Get Triage Queue (Encounters with status TRIAGE)
+  getTriageQueue(): Observable<EncounterResponse[]> {
+    return this.http.get<EncounterResponse[]>(`${this.apiUrl}/queue/triage`);
+  }
+
+  // Get Encounter by Appointment ID
+  getEncounterByAppointmentId(
+    appointmentId: number,
+  ): Observable<EncounterResponse> {
+    return this.http.get<EncounterResponse>(
+      `${this.apiUrl}/by-appointment/${appointmentId}`,
     );
   }
 
-  getVitals(appointmentId: number): Observable<Vitals | undefined> {
-    return of(this.vitalsMap.get(appointmentId)).pipe(delay(300));
+  // Record Vitals
+  saveVitals(
+    encounterId: number,
+    vitals: VitalsRequest,
+  ): Observable<VitalsResponse> {
+    return this.http.post<VitalsResponse>(
+      `${this.apiUrl}/${encounterId}/vitals`,
+      vitals,
+    );
+  }
+
+  // Get Vitals for an Encounter
+  getVitals(encounterId: number): Observable<VitalsResponse> {
+    return this.http.get<VitalsResponse>(
+      `${this.apiUrl}/${encounterId}/vitals`,
+    );
   }
 }

@@ -105,4 +105,30 @@ export class AppointmentListComponent
   override onSave(_: AppointmentResponse | null) {
     // No-op
   }
+
+  onCheckIn(appointment: AppointmentResponse) {
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Processing',
+      detail: 'Checking in patient...',
+    });
+
+    this.appointmentService.checkInAppointment(appointment.id).subscribe({
+      next: (updated) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Checked In',
+          detail: `Patient ${updated.patientName} checked in.`,
+        });
+        this.refreshData();
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to check in appointment',
+        });
+      },
+    });
+  }
 }

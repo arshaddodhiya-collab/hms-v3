@@ -4,7 +4,7 @@
     <div class="field col-12 md:col-4">
       <app-input-text
         label="Medicine Name"
-        [(ngModel)]="newMed.name"
+        [(ngModel)]="newMed.medicineName"
         placeholder="Paracetamol"
       ></app-input-text>
     </div>
@@ -37,7 +37,7 @@
         label="Add"
         icon="pi pi-plus"
         (click)="addMedicine()"
-        [disabled]="!newMed.name"
+        [disabled]="!newMed.medicineName"
         class="p-button-outlined w-auto"
       ></button>
     </div>
@@ -70,7 +70,7 @@
     </ng-template>
     <ng-template pTemplate="body" let-med let-i="rowIndex">
       <tr>
-        <td>{{ med.name }}</td>
+        <td>{{ med.medicineName }}</td>
         <td>{{ med.dosage }}</td>
         <td>{{ med.frequency }}</td>
         <td>{{ med.duration }}</td>

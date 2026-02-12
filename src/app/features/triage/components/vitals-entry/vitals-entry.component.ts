@@ -10,6 +10,7 @@ import { TriageService } from '../../services/triage.service';
 })
 export class VitalsEntryComponent implements OnInit {
   appointmentId: string | null = null;
+  encounterId: number | null = null;
   vitals: any = {
     temperature: null,
     systolic: null,
@@ -28,11 +29,13 @@ export class VitalsEntryComponent implements OnInit {
     private router: Router,
     private messageService: MessageService,
     private triageService: TriageService,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    this.appointmentId = this.route.snapshot.paramMap.get('appointmentId');
-    if (!this.appointmentId) {
+    const encIdStr = this.route.snapshot.paramMap.get('encounterId');
+    if (encIdStr) {
+      this.encounterId = +encIdStr;
+    } else {
       this.cancel();
     }
   }
@@ -47,17 +50,35 @@ export class VitalsEntryComponent implements OnInit {
     }
   }
 
+  get isValid(): boolean {
+    return (
+      !!this.vitals.temperature ||
+      !!this.vitals.systolic ||
+      !!this.vitals.diastolic ||
+      !!this.vitals.pulse ||
+      !!this.vitals.spo2 ||
+      !!this.vitals.weight ||
+      !!this.vitals.height
+    );
+  }
+
   saveVitals() {
-    if (!this.appointmentId) return;
+    if (!this.encounterId || !this.isValid) return;
 
     this.loading = true;
-    const report = {
-      appointmentId: +this.appointmentId,
-      ...this.vitals,
-    };
-    report.recordedAt = new Date();
 
-    this.triageService.saveVitals(report).subscribe({
+    // Create VitalsRequest object
+    const request = {
+      temperature: this.vitals.temperature,
+      systolic: this.vitals.systolic,
+      diastolic: this.vitals.diastolic,
+      pulse: this.vitals.pulse,
+      spo2: this.vitals.spo2,
+      weight: this.vitals.weight,
+      height: this.vitals.height,
+    };
+
+    this.triageService.saveVitals(this.encounterId, request).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
@@ -66,8 +87,9 @@ export class VitalsEntryComponent implements OnInit {
         });
         this.router.navigate(['/triage']); // Go back to queue
       },
-      error: () => {
+      error: (err) => {
         this.loading = false;
+        console.error('Failed to save vitals', err);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',

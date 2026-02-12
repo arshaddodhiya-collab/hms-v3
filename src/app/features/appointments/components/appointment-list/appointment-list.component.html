@@ -21,11 +21,15 @@
   <app-status-badge
     [status]="value"
     [type]="
-      value === 'Confirmed'
+      value === 'CONFIRMED'
         ? 'success'
-        : value === 'Pending'
+        : value === 'CHECKED_IN'
           ? 'warning'
-          : 'error'
+          : value === 'COMPLETED'
+            ? 'success'
+            : value === 'CANCELLED'
+              ? 'error'
+              : 'info'
     "
   >
   </app-status-badge>
@@ -33,6 +37,24 @@
 
 <ng-template #actions let-appointment>
   <div class="flex justify-content-center">
+    <ng-container
+      *ngIf="
+        appointment.status === 'SCHEDULED' || appointment.status === 'CONFIRMED'
+      "
+    >
+      <button
+        *appHasPermission="permissions.CMP_APPOINTMENT_EDIT"
+        pButton
+        pRipple
+        icon="pi pi-check-circle"
+        aria-label="Check In"
+        class="p-button-rounded p-button-text p-button-success mr-2"
+        (click)="onCheckIn(appointment)"
+        pTooltip="Check In Patient"
+        tooltipPosition="top"
+      ></button>
+    </ng-container>
+
     <button
       pButton
       pRipple

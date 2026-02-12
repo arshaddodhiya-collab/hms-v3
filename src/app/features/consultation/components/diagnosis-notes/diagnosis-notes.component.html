@@ -5,7 +5,8 @@
     <textarea
       id="chiefComplaint"
       pInputTextarea
-      [(ngModel)]="chiefComplaint"
+      [ngModel]="chiefComplaint"
+      (ngModelChange)="chiefComplaintChange.emit($event)"
       rows="3"
       placeholder="Patient's main concern..."
     ></textarea>
@@ -16,7 +17,8 @@
     <textarea
       id="diagnosis"
       pInputTextarea
-      [(ngModel)]="diagnosis"
+      [ngModel]="diagnosis"
+      (ngModelChange)="diagnosisChange.emit($event)"
       rows="3"
       placeholder="Provisional or final diagnosis..."
     ></textarea>
@@ -27,7 +29,8 @@
     <textarea
       id="notes"
       pInputTextarea
-      [(ngModel)]="notes"
+      [ngModel]="notes"
+      (ngModelChange)="notesChange.emit($event)"
       rows="3"
       placeholder="Private notes..."
     ></textarea>

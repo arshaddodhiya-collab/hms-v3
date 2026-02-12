@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-diagnosis-notes',
@@ -7,8 +7,13 @@ import { Component, Input } from '@angular/core';
 })
 export class DiagnosisNotesComponent {
   @Input() diagnosis: string = '';
+  @Output() diagnosisChange = new EventEmitter<string>();
+
   @Input() chiefComplaint: string = '';
+  @Output() chiefComplaintChange = new EventEmitter<string>();
+
   @Input() notes: string = '';
+  @Output() notesChange = new EventEmitter<string>();
 
   constructor() {}
 }

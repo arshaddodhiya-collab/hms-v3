@@ -17,10 +17,11 @@
       styleClass="text-white"
     ></p-avatar>
     <div>
-      <div class="text-xl font-bold">{{ patient.name }}</div>
-      <div class="text-500">
-        <span>{{ patient.age }} Years</span> •
-        <span>{{ patient.gender }}</span> • <span>ID: {{ patient.id }}</span>
+      <div class="text-xl font-bold">{{ patientName || 'Loading...' }}</div>
+      <div class="text-500" *ngIf="currentEncounter">
+        <span>{{ currentEncounter.patientGender }}</span> •
+        <span>{{ currentEncounter.patientDob | date }}</span> •
+        <span>ID: {{ currentEncounter.patientId }}</span>
       </div>
     </div>
     <div class="ml-auto">
@@ -30,21 +31,39 @@
         icon="pi pi-check"
         class="p-button-success"
         (click)="finishConsultation()"
+        [loading]="loading"
       ></button>
     </div>
   </div>
 
-  <p-tabView>
+  <p-progressBar mode="indeterminate" *ngIf="loading"></p-progressBar>
+
+  <p-tabView *ngIf="currentEncounter">
     <p-tabPanel header="Vitals (Triage)" leftIcon="pi pi-heart">
       <!-- Reusing Vitals View from Triage Module -->
-      <app-vitals-view [appointmentId]="appointmentId"></app-vitals-view>
+      <!-- We need to pass encounterId or appointmentId. VitalsView expects appointmentId currently? -->
+      <!-- Let's check VitalsViewComponent. If it expects AppointmentId, we have it. -->
+      <app-vitals-view [appointmentId]="appointmentId!"></app-vitals-view>
     </p-tabPanel>
 
     <p-tabPanel header="Diagnosis & Notes" leftIcon="pi pi-book">
-      <app-diagnosis-notes></app-diagnosis-notes>
+      <app-diagnosis-notes
+        [(diagnosis)]="diagnosis"
+        [(chiefComplaint)]="chiefComplaint"
+        [(notes)]="notes"
+      ></app-diagnosis-notes>
+      <div class="flex justify-content-end mt-3">
+        <button
+          pButton
+          label="Save Notes"
+          icon="pi pi-save"
+          (click)="saveDiagnosis()"
+        ></button>
+      </div>
     </p-tabPanel>
 
     <p-tabPanel header="Prescription" leftIcon="pi pi-file-edit">
+      <!-- We might want to pass existing items if any. For now, empty or load from service -->
       <app-prescription (save)="onPrescriptionSave($event)"></app-prescription>
     </p-tabPanel>
 

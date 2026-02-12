@@ -18,7 +18,7 @@ export interface Patient {
 
 export interface MedicalHistory {
   id: number;
-  conditionName: string; // Backend calls it conditionName
+  condition: string; // Backend calls it condition
   diagnosedDate: string;
   status: 'ONGOING' | 'HEALED' | 'CHRONIC';
 }

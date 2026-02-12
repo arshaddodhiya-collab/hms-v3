@@ -10,7 +10,7 @@ export class PrescriptionComponent {
   @Output() save = new EventEmitter<any[]>();
 
   newMed = {
-    name: '',
+    medicineName: '',
     dosage: '',
     frequency: '',
     duration: '',
@@ -27,9 +27,14 @@ export class PrescriptionComponent {
   constructor() {}
 
   addMedicine() {
-    if (this.newMed.name && this.newMed.dosage) {
+    if (this.newMed.medicineName && this.newMed.dosage) {
       this.medicines.push({ ...this.newMed });
-      this.newMed = { name: '', dosage: '', frequency: '', duration: '' };
+      this.newMed = {
+        medicineName: '',
+        dosage: '',
+        frequency: '',
+        duration: '',
+      };
     }
   }
 

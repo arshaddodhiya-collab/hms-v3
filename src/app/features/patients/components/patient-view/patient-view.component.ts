@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PatientService } from '../../services/patient.service';
+import { EncounterService } from '../../../consultation/services/encounter.service';
+import { AppointmentService } from '../../../appointments/services/appointment.service';
 import { Patient, MedicalHistory } from '../../../../core/models/patient.model';
+import { EncounterResponse } from '../../../../core/models/encounter.model';
+import { AppointmentResponse } from '../../../appointments/models/appointment.model';
 
 @Component({
   selector: 'app-patient-view',
@@ -23,11 +27,11 @@ export class PatientViewComponent implements OnInit {
     spo2: '--',
   };
 
-  // Placeholder for Appointments
-  appointments: any[] = [];
+  // Appointments
+  appointments: AppointmentResponse[] = [];
 
-  // Placeholder for Prescriptions
-  prescriptions: any[] = [];
+  // Encounters with prescriptions
+  encounters: EncounterResponse[] = [];
 
   // Medical History from Patient Details
   medicalHistory: MedicalHistory[] = [];
@@ -35,6 +39,8 @@ export class PatientViewComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private patientService: PatientService,
+    private encounterService: EncounterService,
+    private appointmentService: AppointmentService,
   ) {}
 
   ngOnInit(): void {
@@ -52,13 +58,68 @@ export class PatientViewComponent implements OnInit {
         this.patient = data;
         this.medicalHistory = data.medicalHistory || [];
         this.loading = false;
-        // Trigger other data loads if services exist (e.g. appointmentService.getByPatientId(id))
+        // Load encounter history and appointments
+        this.loadEncounters(id);
+        this.loadAppointments(id);
       },
       error: (err) => {
         console.error('Error loading patient details', err);
         this.loading = false;
       },
     });
+  }
+
+  loadEncounters(patientId: number): void {
+    this.encounterService.getPatientEncounters(patientId).subscribe({
+      next: (encounters) => {
+        this.encounters = encounters;
+        // Extract latest vitals from most recent completed encounter
+        this.extractLatestVitals(encounters);
+      },
+      error: (err) => {
+        console.error('Error loading patient encounters', err);
+      },
+    });
+  }
+
+  loadAppointments(patientId: number): void {
+    this.appointmentService.getPatientAppointments(patientId).subscribe({
+      next: (appointments) => {
+        this.appointments = appointments;
+      },
+      error: (err) => {
+        console.error('Error loading patient appointments', err);
+      },
+    });
+  }
+
+  extractLatestVitals(encounters: EncounterResponse[]): void {
+    // Find the most recent encounter with vitals
+    const encountersWithVitals = encounters.filter((e) => e.vitals);
+
+    if (encountersWithVitals.length > 0) {
+      // Sort by startedAt descending (newest first)
+      const latest = encountersWithVitals.sort(
+        (a, b) =>
+          new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime(),
+      )[0];
+
+      if (latest.vitals) {
+        this.activeVitals = {
+          temperature: latest.vitals.temperature
+            ? `${latest.vitals.temperature}°C`
+            : '--',
+          bp:
+            latest.vitals.systolic && latest.vitals.diastolic
+              ? `${latest.vitals.systolic}/${latest.vitals.diastolic}`
+              : '--',
+          pulse: latest.vitals.pulse ? `${latest.vitals.pulse} bpm` : '--',
+          weight: latest.vitals.weight ? `${latest.vitals.weight} kg` : '--',
+          height: latest.vitals.height ? `${latest.vitals.height} cm` : '--',
+          spo2: latest.vitals.spo2 ? `${latest.vitals.spo2}%` : '--',
+        };
+      }
+    }
   }
 
   getSeverity(

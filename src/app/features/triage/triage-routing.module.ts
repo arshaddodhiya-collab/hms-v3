@@ -9,7 +9,7 @@ import { TriageQueueComponent } from './components/triage-queue/triage-queue.com
 
 const routes: Routes = [
   {
-    path: 'vitals/:appointmentId', // For recording vitals
+    path: 'vitals/:encounterId', // For recording vitals
     component: VitalsEntryComponent,
     canActivate: [PermissionGuard],
     data: { permission: 'CMP_VITALS_WRITE' },
