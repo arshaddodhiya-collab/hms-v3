@@ -19,4 +19,10 @@ export interface AppointmentResponse {
   status: string; // SCHEDULED, CHECKED_IN, CANCELLED, COMPLETED
   type: string;
   reason: string;
+  notes?: string;
+  cancelReason?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  hasEncounter?: boolean;
+  encounterStatus?: string;
 }

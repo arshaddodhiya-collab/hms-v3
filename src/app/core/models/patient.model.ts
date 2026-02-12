@@ -23,12 +23,19 @@ export interface MedicalHistory {
   status: 'ONGOING' | 'HEALED' | 'CHRONIC';
 }
 
-export enum VisitStatus {
+export enum AppointmentStatus {
   SCHEDULED = 'SCHEDULED',
-  TRIAGE_PENDING = 'TRIAGE_PENDING',
-  CONSULTATION_PENDING = 'CONSULTATION_PENDING',
+  CHECKED_IN = 'CHECKED_IN',
+  IN_PROGRESS = 'IN_PROGRESS',
   COMPLETED = 'COMPLETED',
   CANCELLED = 'CANCELLED',
+  NO_SHOW = 'NO_SHOW',
+}
+
+export enum EncounterStatus {
+  TRIAGE = 'TRIAGE',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
 }
 
 export interface Visit {
@@ -37,7 +44,7 @@ export interface Visit {
   patientId: number;
   patientName: string;
   appointmentTime: Date;
-  status: VisitStatus;
+  status: AppointmentStatus;
   doctorName?: string;
   department?: string;
   triageData?: any; // To be defined

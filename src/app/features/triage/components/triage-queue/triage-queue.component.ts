@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppointmentService } from '../../../appointments/services/appointment.service';
 import { AppointmentResponse } from '../../../appointments/models/appointment.model';
-import { VisitStatus } from '../../../../core/models/patient.model';
+import { AppointmentStatus } from '../../../../core/models/patient.model';
 
 @Component({
   selector: 'app-triage-queue',
@@ -29,13 +29,10 @@ export class TriageQueueComponent implements OnInit {
     this.loading = true;
     this.appointmentService.getAppointments().subscribe((appointments) => {
       this.queue = appointments.filter(
-        // Filter for checked-in appointments waiting for triage
-        // Assuming backend uses 'CHECKED_IN' or similar status.
-        // VisitStatus.TRIAGE_PENDING might effectively mean 'CHECKED_IN' in our new flow.
+        // Filter for scheduled or checked-in appointments waiting for triage
         (a) =>
-          a.status === 'CHECKED_IN' ||
-          a.status === VisitStatus.TRIAGE_PENDING ||
-          a.status === 'TRIAGE_PENDING',
+          a.status === AppointmentStatus.SCHEDULED ||
+          a.status === AppointmentStatus.CHECKED_IN,
       );
       this.loading = false;
     });

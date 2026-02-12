@@ -79,16 +79,42 @@ export class AppointmentService {
     );
   }
 
-  updateStatus(id: number, status: string): Observable<AppointmentResponse> {
-    // Temporary: Backend might not have a generic status update, so we might need to use a specific endpoint or create one.
-    // For now, let's assume a generic PATCH or PUT status endpoint exists or we use what's available.
-    // If backend doesn't support it, this will 404. But for build it's fine.
-    // Better: fallback to map known statuses to specific endpoints if possible.
-    // TriageService sends 'CONSULTATION_PENDING'.
-    // Maybe we interpret that as "complete triage".
-    // Let's just PUT to /id/status
-    return this.http.put<AppointmentResponse>(`${this.apiUrl}/${id}/status`, {
-      status,
-    });
+  startConsultation(id: number): Observable<AppointmentResponse> {
+    return this.http.put<AppointmentResponse>(`${this.apiUrl}/${id}/start`, {});
+  }
+
+  completeAppointment(id: number): Observable<AppointmentResponse> {
+    return this.http.put<AppointmentResponse>(
+      `${this.apiUrl}/${id}/complete`,
+      {},
+    );
+  }
+
+  markNoShow(id: number): Observable<AppointmentResponse> {
+    return this.http.put<AppointmentResponse>(
+      `${this.apiUrl}/${id}/no-show`,
+      {},
+    );
+  }
+
+  restoreAppointment(id: number): Observable<AppointmentResponse> {
+    return this.http.put<AppointmentResponse>(
+      `${this.apiUrl}/${id}/restore`,
+      {},
+    );
+  }
+
+  getPatientAppointments(
+    patientId: number,
+    status?: string,
+  ): Observable<AppointmentResponse[]> {
+    let params = new HttpParams();
+    if (status) {
+      params = params.set('status', status);
+    }
+    return this.http.get<AppointmentResponse[]>(
+      `${this.apiUrl}/patient/${patientId}`,
+      { params },
+    );
   }
 }

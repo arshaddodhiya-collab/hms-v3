@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 import { AppointmentService } from '../../appointments/services/appointment.service';
-import { VisitStatus } from '../../../core/models/patient.model';
+import { AppointmentStatus } from '../../../core/models/patient.model';
 
 export interface Vitals {
   appointmentId: number;
@@ -24,7 +24,7 @@ export class TriageService {
   // Mock Storage for Vitals
   private vitalsMap = new Map<number, Vitals>();
 
-  constructor(private appointmentService: AppointmentService) { }
+  constructor(private appointmentService: AppointmentService) {}
 
   saveVitals(vitals: Vitals): Observable<boolean> {
     return of(true).pipe(
@@ -33,7 +33,7 @@ export class TriageService {
         this.vitalsMap.set(vitals.appointmentId, vitals);
         // Auto-update appointment status to CONSULTATION_PENDING (Checked In)
         this.appointmentService
-          .updateStatus(vitals.appointmentId, VisitStatus.CONSULTATION_PENDING)
+          .checkInAppointment(vitals.appointmentId)
           .subscribe();
       }),
     );
