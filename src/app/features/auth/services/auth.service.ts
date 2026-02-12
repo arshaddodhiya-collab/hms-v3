@@ -32,7 +32,9 @@ export class AuthService {
     this.http
       .get<User>(`${this.apiUrl}/me`, { withCredentials: true })
       .pipe(
-        catchError(() => {
+        catchError((error) => {
+          // Silently handle errors during initial load
+          // Don't trigger error interceptor redirect for 401/500 on /me endpoint
           this.currentUserSubject.next(null);
           return of(null);
         }),

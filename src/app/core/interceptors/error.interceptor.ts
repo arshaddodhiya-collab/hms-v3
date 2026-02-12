@@ -10,12 +10,14 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { ErrorStateService } from '../services/error-state.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
   constructor(
     private router: Router,
     private messageService: MessageService,
+    private errorStateService: ErrorStateService,
   ) {}
 
   intercept(
@@ -25,6 +27,11 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         let errorMessage = 'An unknown error occurred!';
+
+        // Skip error handling for /auth/me endpoint (used during initial load)
+        if (error.url?.includes('/auth/me')) {
+          return throwError(() => error);
+        }
 
         if (error.error instanceof ErrorEvent) {
           // Client-side error
@@ -47,6 +54,16 @@ export class ErrorInterceptor implements HttpInterceptor {
           } else if (error.status === 404) {
             this.router.navigate(['/error/not-found']);
           } else if (error.status === 500) {
+            // Store error details before redirecting
+            this.errorStateService.setError({
+              message:
+                error.error?.message ||
+                error.message ||
+                'Internal Server Error',
+              status: error.status,
+              timestamp: new Date(),
+              url: error.url || undefined,
+            });
             this.router.navigate(['/error/server-error']);
           } else {
             // Other errors (400, etc)
