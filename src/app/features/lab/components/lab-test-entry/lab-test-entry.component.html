@@ -1,146 +1,216 @@
-<app-card *ngIf="request">
-  <div class="flex justify-content-between align-items-center mb-4">
-    <h2>Enter Test Results: {{ request.testName }}</h2>
-    <p-tag [value]="request.status" severity="info"></p-tag>
-  </div>
+<app-page-header
+  title="Enter Lab Results"
+  [subtitle]="request ? 'Test: ' + request.testName : 'Loading...'"
+  icon="flask"
+  [showBack]="true"
+  (onBack)="cancel()"
+></app-page-header>
 
-  <div class="grid mb-4">
-    <div class="col-12 md:col-6">
-      <label class="block font-bold mb-1">Patient</label>
-      <div>{{ request.patientName }} ({{ request.patientId }})</div>
+<div *ngIf="request; else loading">
+  <app-card>
+    <!-- Patient & Request Info -->
+    <div class="grid mb-5 border-bottom-1 surface-border pb-3">
+      <div class="col-12 md:col-3">
+        <label class="block text-500 font-medium mb-1">Patient</label>
+        <div class="text-900 font-medium text-lg">
+          {{ request.patientName }}
+        </div>
+      </div>
+      <div class="col-12 md:col-3">
+        <label class="block text-500 font-medium mb-1">Test Name</label>
+        <div class="text-900 font-medium text-lg">{{ request.testName }}</div>
+      </div>
+      <div class="col-12 md:col-3">
+        <label class="block text-500 font-medium mb-1">Request Date</label>
+        <div class="text-900 font-medium text-lg">
+          {{ request.createdAt | date: 'medium' }}
+        </div>
+      </div>
+      <div class="col-12 md:col-3">
+        <label class="block text-500 font-medium mb-1">Status</label>
+        <p-tag
+          [value]="request.status"
+          [severity]="request.status === 'COMPLETED' ? 'success' : 'warning'"
+        ></p-tag>
+      </div>
     </div>
-    <div class="col-12 md:col-6">
-      <label class="block font-bold mb-1">Date</label>
-      <div>{{ request.createdAt | date: 'medium' }}</div>
-    </div>
-    <div class="col-12 md:col-6 field mt-3">
-      <app-input-text
-        id="testCode"
-        label="Test Code"
-        [(ngModel)]="test.code"
-        placeholder="e.g. CBC"
-      ></app-input-text>
-    </div>
-  </div>
 
-  <form [formGroup]="labForm">
-    <p-table [value]="resultsControls" styleClass="p-datatable-gridlines mb-4">
-      <ng-template pTemplate="header">
-        <tr>
-          <th style="width: 25%">Parameter</th>
-          <th style="width: 20%">Value</th>
-          <th style="width: 15%">Unit</th>
-          <th style="width: 25%">Reference Range</th>
-          <th style="width: 10%">Abnormal</th>
-          <th style="width: 5%"></th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-control let-i="rowIndex">
-        <tr [formGroup]="control">
-          <td>
-            <input
-              pInputText
-              type="text"
-              formControlName="parameter"
-              aria-label="Parameter Name"
-              class="w-full"
-              [ngClass]="{
-                'ng-invalid ng-dirty':
+    <!-- Results Entry Form -->
+    <form [formGroup]="labForm">
+      <div class="flex justify-content-between align-items-center mb-3">
+        <h3 class="m-0">Test Results</h3>
+        <button
+          pButton
+          label="Add Parameter"
+          icon="pi pi-plus"
+          class="p-button-outlined p-button-sm"
+          (click)="addResultRow()"
+        ></button>
+      </div>
+
+      <p-table
+        [value]="resultsControls"
+        styleClass="p-datatable-gridlines mb-4"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 30%">
+              Parameter <span class="text-red-500">*</span>
+            </th>
+            <th style="width: 20%">
+              Value <span class="text-red-500">*</span>
+            </th>
+            <th style="width: 15%">Unit</th>
+            <th style="width: 25%">Reference Range</th>
+            <th style="width: 5%" class="text-center">Abnormal</th>
+            <th style="width: 5%"></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-control let-i="rowIndex">
+          <tr [formGroup]="control">
+            <!-- Parameter Name -->
+            <td>
+              <input
+                pInputText
+                formControlName="parameter"
+                placeholder="Parameter Name"
+                class="w-full"
+                [ngClass]="{
+                  'ng-invalid ng-dirty':
+                    control.get('parameter')?.invalid &&
+                    control.get('parameter')?.touched,
+                }"
+              />
+              <small
+                *ngIf="
                   control.get('parameter')?.invalid &&
-                  control.get('parameter')?.touched,
-              }"
-            />
-          </td>
-          <td>
-            <input
-              pInputText
-              type="text"
-              formControlName="value"
-              aria-label="Value"
-              class="w-full"
-              [ngClass]="{
-                'ng-invalid ng-dirty':
-                  control.get('value')?.invalid &&
-                  control.get('value')?.touched,
-              }"
-            />
-          </td>
-          <td>
-            <input
-              pInputText
-              type="text"
-              formControlName="unit"
-              aria-label="Unit"
-              class="w-full"
-            />
-          </td>
-          <td>
-            <input
-              pInputText
-              type="text"
-              formControlName="referenceRange"
-              aria-label="Reference Range"
-              class="w-full"
-            />
-          </td>
-          <td class="text-center">
-            <p-checkbox
-              formControlName="isAbnormal"
-              [binary]="true"
-              aria-label="Is Abnormal"
-            ></p-checkbox>
-          </td>
-          <td class="text-center">
-            <button
-              pButton
-              icon="pi pi-trash"
-              class="p-button-text p-button-danger"
-              aria-label="Remove Result"
-              (click)="removeResultRow(i)"
-            ></button>
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
+                  control.get('parameter')?.touched
+                "
+                class="p-error block"
+              >
+                Required
+              </small>
+            </td>
 
-    <div class="mb-4">
-      <button
-        pButton
-        label="Add Parameter"
-        icon="pi pi-plus"
-        class="p-button-outlined"
-        aria-label="Add Parameter"
-        (click)="addResultRow()"
-      ></button>
-    </div>
+            <!-- Result Value -->
+            <td>
+              <input
+                pInputText
+                formControlName="value"
+                placeholder="Result Value"
+                class="w-full"
+                [ngClass]="{
+                  'ng-invalid ng-dirty':
+                    control.get('value')?.invalid &&
+                    control.get('value')?.touched,
+                }"
+              />
+              <small
+                *ngIf="
+                  control.get('value')?.invalid && control.get('value')?.touched
+                "
+                class="p-error block"
+              >
+                Required
+              </small>
+            </td>
 
-    <div class="field mb-4">
-      <label for="notes" class="block font-bold mb-2">Technician Notes</label>
-      <textarea
-        id="notes"
-        pInputTextarea
-        formControlName="technicianNotes"
-        rows="3"
-        class="w-full"
-      ></textarea>
-    </div>
+            <!-- Unit -->
+            <td>
+              <input
+                pInputText
+                formControlName="unit"
+                placeholder="Unit"
+                class="w-full"
+              />
+            </td>
 
-    <div class="flex justify-content-end gap-2">
-      <button
-        pButton
-        label="Cancel"
-        class="p-button-secondary"
-        aria-label="Cancel"
-        (click)="cancel()"
-      ></button>
-      <button
-        pButton
-        label="Save & Complete"
-        icon="pi pi-check"
-        aria-label="Save and Complete"
-        (click)="saveResults()"
-        [disabled]="labForm.invalid"
-      ></button>
-    </div>
-  </form>
-</app-card>
+            <!-- Reference Range -->
+            <td>
+              <input
+                pInputText
+                formControlName="referenceRange"
+                placeholder="Range"
+                class="w-full"
+              />
+            </td>
+
+            <!-- Abnormal Checkbox -->
+            <td class="text-center">
+              <p-checkbox
+                formControlName="isAbnormal"
+                [binary]="true"
+              ></p-checkbox>
+            </td>
+
+            <!-- Remove Action -->
+            <td class="text-center">
+              <button
+                pButton
+                icon="pi pi-trash"
+                class="p-button-text p-button-danger p-button-sm"
+                (click)="removeResultRow(i)"
+                pTooltip="Remove Row"
+              ></button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6" class="text-center p-4">
+              <div class="text-500 mb-2">No results added yet.</div>
+              <button
+                pButton
+                label="Add First Result"
+                icon="pi pi-plus"
+                class="p-button-outlined p-button-sm"
+                (click)="addResultRow()"
+              ></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+      <!-- Technician Notes -->
+      <div class="field mb-5">
+        <label for="technicianNotes" class="font-bold block mb-2"
+          >Technician Notes</label
+        >
+        <textarea
+          id="technicianNotes"
+          pInputTextarea
+          formControlName="technicianNotes"
+          rows="3"
+          placeholder="Enter any observations or comments..."
+          class="w-full"
+        ></textarea>
+      </div>
+
+      <!-- Actions -->
+      <div
+        class="flex justify-content-end gap-2 border-top-1 surface-border pt-4"
+      >
+        <button
+          pButton
+          label="Cancel"
+          class="p-button-secondary p-button-outlined"
+          (click)="cancel()"
+        ></button>
+        <button
+          pButton
+          label="Save & Complete"
+          icon="pi pi-check"
+          (click)="saveResults()"
+          [loading]="saving"
+          [disabled]="labForm.invalid || resultsControls.length === 0"
+        ></button>
+      </div>
+    </form>
+  </app-card>
+</div>
+
+<ng-template #loading>
+  <div class="flex justify-content-center p-5">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+</ng-template>

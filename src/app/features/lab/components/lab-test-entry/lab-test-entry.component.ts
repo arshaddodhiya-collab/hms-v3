@@ -17,6 +17,7 @@ export class LabTestEntryComponent implements OnInit {
   request: LabRequest | undefined;
   test: any = {};
   labForm!: FormGroup;
+  saving = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -32,16 +33,55 @@ export class LabTestEntryComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('requestId');
     if (id) {
       this.requestId = id;
-      this.labService.getLabRequestById(+id).subscribe((data) => {
+      this.loadRequest(+id);
+    }
+  }
+
+  initForm() {
+    this.labForm = this.fb.group({
+      results: this.fb.array([]),
+      technicianNotes: [''],
+    });
+  }
+
+  loadRequest(id: number) {
+    this.labService.getLabRequestById(id).subscribe({
+      next: (data) => {
         this.request = data;
         if (!this.request) {
           this.router.navigate(['/lab']);
           return;
         }
 
+        // Prevent editing completed requests
+        if (
+          this.request.status === 'COMPLETED' ||
+          this.request.status === 'CANCELLED'
+        ) {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'ReadOnly',
+            detail: 'Result entry is not allowed for this status',
+          });
+          this.labForm.disable();
+        }
+
         if (this.request.results && this.request.results.length > 0) {
           this.request.results.forEach((result: LabResult) =>
             this.addResultRow(result),
+          );
+        } else if (
+          this.request.parameters &&
+          this.request.parameters.length > 0
+        ) {
+          this.request.parameters.forEach((param: any) =>
+            this.addResultRow({
+              parameterName: param.parameterName,
+              resultValue: '',
+              unit: param.unit,
+              referenceRange: param.referenceRange,
+              isAbnormal: false,
+            } as any),
           );
         } else {
           this.addResultRow();
@@ -52,14 +92,15 @@ export class LabTestEntryComponent implements OnInit {
             technicianNotes: this.request.technicianNotes,
           });
         }
-      });
-    }
-  }
-
-  initForm() {
-    this.labForm = this.fb.group({
-      results: this.fb.array([]),
-      technicianNotes: [''],
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load lab request',
+        });
+        this.router.navigate(['/lab']);
+      },
     });
   }
 
@@ -71,10 +112,25 @@ export class LabTestEntryComponent implements OnInit {
     const results = this.labForm.get('results') as FormArray;
     results.push(
       this.fb.group({
-        parameter: [data?.parameterName || '', Validators.required],
-        value: [data?.resultValue || '', Validators.required],
-        unit: [data?.unit || ''],
-        referenceRange: [data?.referenceRange || ''],
+        parameter: [
+          data?.parameterName || '',
+          [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s\(\)\-\.]+$/)],
+        ],
+        value: [
+          data?.resultValue || '',
+          [
+            Validators.required,
+            Validators.pattern(/^[a-zA-Z0-9\s\.\-\+\<\>\/\%]+$/),
+          ],
+        ],
+        unit: [
+          data?.unit || '',
+          [Validators.pattern(/^[a-zA-Z0-9\s\/\%\^\(\)]*$/)],
+        ],
+        referenceRange: [
+          data?.referenceRange || this.request?.referenceRange || '',
+          [Validators.pattern(/^[a-zA-Z0-9\s\.\-\+\<\>]*$/)],
+        ],
         isAbnormal: [data?.isAbnormal || false],
       }),
     );
@@ -86,27 +142,58 @@ export class LabTestEntryComponent implements OnInit {
   }
 
   saveResults(): void {
-    if (this.requestId && this.request && this.labForm.valid) {
-      const formValue = this.labForm.value;
-      const results = formValue.results.map((r: any) => ({
-        parameterName: r.parameter,
-        resultValue: r.value,
-        unit: r.unit,
-        referenceRange: r.referenceRange,
-        isAbnormal: r.isAbnormal,
-      }));
+    if (!this.requestId || !this.request) return;
 
-      this.labService.addResults(+this.requestId, results).subscribe(() => {
+    if (this.labForm.invalid) {
+      this.labForm.markAllAsTouched();
+      return;
+    }
+
+    // Duplicate Check
+    const formValue = this.labForm.value;
+    const parameters = formValue.results.map((r: any) =>
+      r.parameter.toLowerCase().trim(),
+    );
+    const hasDuplicates = parameters.some(
+      (item: string, index: number) => parameters.indexOf(item) !== index,
+    );
+
+    if (hasDuplicates) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Validation Error',
+        detail: 'Duplicate parameters are not allowed.',
+      });
+      return;
+    }
+
+    this.saving = true;
+    const results = formValue.results.map((r: any) => ({
+      parameterName: r.parameter,
+      resultValue: r.value,
+      unit: r.unit,
+      referenceRange: r.referenceRange,
+      isAbnormal: r.isAbnormal,
+    }));
+
+    this.labService.addResults(+this.requestId, results).subscribe({
+      next: () => {
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
-          detail: 'Results saved',
+          detail: 'Results saved and request marked as completed',
         });
-        this.router.navigate(['/lab']);
-      });
-    } else {
-      this.labForm.markAllAsTouched();
-    }
+        setTimeout(() => this.router.navigate(['/lab']), 1000);
+      },
+      error: (err) => {
+        this.saving = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to save results. ' + (err.error?.message || ''),
+        });
+      },
+    });
   }
 
   cancel(): void {

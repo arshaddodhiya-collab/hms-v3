@@ -25,7 +25,14 @@ export interface LabRequest {
   status: LabRequestStatus;
   technicianNotes?: string;
   createdAt: string;
+  referenceRange?: string;
   results?: LabResult[];
+  parameters?: {
+    id: number;
+    parameterName: string;
+    unit: string;
+    referenceRange: string;
+  }[];
 }
 
 export interface LabTest {
