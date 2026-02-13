@@ -1,17 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import {
-  LabService,
-  LabRequest,
-  LabTestResult,
-} from '../../services/lab.service';
+import { MessageService } from 'primeng/api';
+import { LabService } from '../../services/lab.service';
+import { LabRequest, LabResult } from '../../../../core/models/lab.models';
 import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-lab-test-entry',
   templateUrl: './lab-test-entry.component.html',
   styleUrls: ['./lab-test-entry.component.scss'],
+  providers: [MessageService],
 })
 export class LabTestEntryComponent implements OnInit {
   requestId: string | null = null;
@@ -25,31 +24,35 @@ export class LabTestEntryComponent implements OnInit {
     private labService: LabService,
     private location: Location,
     private fb: FormBuilder,
-  ) { }
+    private messageService: MessageService,
+  ) {}
 
   ngOnInit(): void {
     this.initForm();
-    this.requestId = this.route.snapshot.paramMap.get('requestId');
-    if (this.requestId) {
-      this.request = this.labService.getRequestById(this.requestId);
-      if (!this.request) {
-        this.router.navigate(['/lab']);
-        return;
-      }
+    const id = this.route.snapshot.paramMap.get('requestId');
+    if (id) {
+      this.requestId = id;
+      this.labService.getLabRequestById(+id).subscribe((data) => {
+        this.request = data;
+        if (!this.request) {
+          this.router.navigate(['/lab']);
+          return;
+        }
 
-      if (this.request.results && this.request.results.length > 0) {
-        this.request.results.forEach((result: LabTestResult) =>
-          this.addResultRow(result),
-        );
-      } else {
-        this.addResultRow();
-      }
+        if (this.request.results && this.request.results.length > 0) {
+          this.request.results.forEach((result: LabResult) =>
+            this.addResultRow(result),
+          );
+        } else {
+          this.addResultRow();
+        }
 
-      if (this.request.technicianNotes) {
-        this.labForm.patchValue({
-          technicianNotes: this.request.technicianNotes,
-        });
-      }
+        if (this.request.technicianNotes) {
+          this.labForm.patchValue({
+            technicianNotes: this.request.technicianNotes,
+          });
+        }
+      });
     }
   }
 
@@ -64,12 +67,12 @@ export class LabTestEntryComponent implements OnInit {
     return (this.labForm.get('results') as FormArray).controls;
   }
 
-  addResultRow(data?: LabTestResult): void {
+  addResultRow(data?: LabResult): void {
     const results = this.labForm.get('results') as FormArray;
     results.push(
       this.fb.group({
-        parameter: [data?.parameter || '', Validators.required],
-        value: [data?.value || '', Validators.required],
+        parameter: [data?.parameterName || '', Validators.required],
+        value: [data?.resultValue || '', Validators.required],
         unit: [data?.unit || ''],
         referenceRange: [data?.referenceRange || ''],
         isAbnormal: [data?.isAbnormal || false],
@@ -85,12 +88,22 @@ export class LabTestEntryComponent implements OnInit {
   saveResults(): void {
     if (this.requestId && this.request && this.labForm.valid) {
       const formValue = this.labForm.value;
-      this.labService.addResult(
-        this.requestId,
-        formValue.results,
-        formValue.technicianNotes,
-      );
-      this.router.navigate(['/lab']);
+      const results = formValue.results.map((r: any) => ({
+        parameterName: r.parameter,
+        resultValue: r.value,
+        unit: r.unit,
+        referenceRange: r.referenceRange,
+        isAbnormal: r.isAbnormal,
+      }));
+
+      this.labService.addResults(+this.requestId, results).subscribe(() => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Results saved',
+        });
+        this.router.navigate(['/lab']);
+      });
     } else {
       this.labForm.markAllAsTouched();
     }

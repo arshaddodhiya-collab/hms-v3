@@ -12,6 +12,7 @@
         [options]="patients"
         [(ngModel)]="selectedPatient"
         optionLabel="name"
+        optionValue="id"
         [filter]="true"
         filterBy="name"
         placeholder="Select a Patient"
@@ -30,6 +31,7 @@
         [options]="tests"
         [(ngModel)]="selectedTest"
         optionLabel="name"
+        optionValue="id"
         [filter]="true"
         filterBy="name"
         placeholder="Select a Test"
@@ -37,31 +39,6 @@
       ></app-dropdown>
       <small *ngIf="submitted && !selectedTest" class="p-error"
         >Test is required.</small
-      >
-    </div>
-  </div>
-
-  <div class="field grid">
-    <label class="col-12 md:col-2">Priority</label>
-    <div class="col-12 md:col-10">
-      <app-dropdown
-        [options]="priorities"
-        [(ngModel)]="priority"
-        placeholder="Select Priority"
-      ></app-dropdown>
-    </div>
-  </div>
-
-  <div class="field grid">
-    <label class="col-12 md:col-2">Doctor</label>
-    <div class="col-12 md:col-10">
-      <app-input-text
-        [(ngModel)]="doctorName"
-        placeholder="Referring Doctor"
-        [ngClass]="{ 'ng-invalid ng-dirty': submitted && !doctorName }"
-      ></app-input-text>
-      <small *ngIf="submitted && !doctorName" class="p-error"
-        >Doctor name is required.</small
       >
     </div>
   </div>

@@ -15,5 +15,6 @@ import { TestRequestComponent } from './components/test-request/test-request.com
     TestRequestComponent,
   ],
   imports: [CommonModule, LabRoutingModule, SharedModule],
+  exports: [LabRequestListComponent],
 })
 export class LabModule {}

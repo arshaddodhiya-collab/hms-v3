@@ -185,7 +185,7 @@
             <ng-template pTemplate="body" let-apt>
               <tr>
                 <td>{{ apt.startDateTime | date: 'medium' }}</td>
-                <td>Dr. {{ apt.doctorName }}</td>
+                <td>{{ apt.doctorName }}</td>
                 <td>{{ apt.type }}</td>
                 <td>
                   <p-tag
@@ -218,7 +218,7 @@
                   styleClass="ml-2"
                 ></p-tag>
               </div>
-              <span class="text-600">Dr. {{ encounter.doctorName }}</span>
+              <span class="text-600">{{ encounter.doctorName }}</span>
             </div>
 
             <div *ngIf="encounter.chiefComplaint" class="mb-2">

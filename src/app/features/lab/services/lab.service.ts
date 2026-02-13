@@ -1,161 +1,67 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { delay, tap, map } from 'rxjs/operators';
-
-export interface LabTest {
-  id: number;
-  name: string;
-  code: string;
-  price: number;
-}
-
-export interface LabTestResult {
-  parameter: string;
-  value: string;
-  unit: string;
-  referenceRange: string;
-  isAbnormal: boolean;
-}
-
-export interface LabRequest {
-  id: string | number;
-  patientId: string | number;
-  encounterId?: string; // Link to clinical encounter
-  patientName: string;
-  doctorName: string;
-  testName: string;
-  requestDate: Date;
-  status:
-    | 'Pending'
-    | 'In Progress'
-    | 'Completed'
-    | 'PENDING'
-    | 'IN_PROGRESS'
-    | 'COMPLETED';
-  priority?: 'ROUTINE' | 'URGENT' | 'EMERGENCY';
-  results?: LabTestResult[];
-  technicianNotes?: string;
-  completedDate?: Date;
-  result?: string; // Legacy
-}
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import {
+  LabRequest,
+  LabTest,
+  CreateLabRequest,
+  LabRequestStatus,
+  AddLabResultRequest,
+} from '../../../core/models/lab.models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LabService {
-  private mockTests: LabTest[] = [
-    { id: 1, name: 'Complete Blood Count', code: 'CBC', price: 50 },
-    { id: 2, name: 'Lipid Profile', code: 'LIPID', price: 80 },
-    { id: 3, name: 'Thyroid Function', code: 'TFT', price: 60 },
-    { id: 4, name: 'Blood Sugar Fasting', code: 'FBS', price: 30 },
-    { id: 5, name: 'Liver Function Test', code: 'LFT', price: 90 },
-  ];
+  private apiUrl = `${environment.apiUrl}`;
 
-  private mockRequests: LabRequest[] = [
-    {
-      id: '101',
-      patientId: 1,
-      encounterId: 'ENC-123',
-      patientName: 'John Doe',
-      doctorName: 'Dr. Smith',
-      testName: 'Complete Blood Count',
-      requestDate: new Date(),
-      status: 'Pending',
-      priority: 'ROUTINE',
-    },
-    {
-      id: '102',
-      patientId: 2,
-      encounterId: 'ENC-456',
-      patientName: 'Jane Smith',
-      doctorName: 'Dr. House',
-      testName: 'Lipid Profile',
-      requestDate: new Date(),
-      status: 'Completed',
-      priority: 'URGENT',
-      result: 'Total Cholesterol: 200 mg/dL',
-      results: [
-        {
-          parameter: 'Cholesterol',
-          value: '200',
-          unit: 'mg/dL',
-          referenceRange: '<200',
-          isAbnormal: false,
-        },
-      ],
-    },
-  ];
+  constructor(private http: HttpClient) {}
 
-  private requestsSubject = new BehaviorSubject<LabRequest[]>(
-    this.mockRequests,
-  );
-  public requests$ = this.requestsSubject.asObservable();
-
-  constructor() {}
-
-  getTests(): Observable<LabTest[]> {
-    return of(this.mockTests);
+  getAllLabTests(): Observable<LabTest[]> {
+    return this.http.get<LabTest[]>(`${this.apiUrl}/lab-tests`);
   }
 
-  getPendingRequests(): Observable<LabRequest[]> {
-    return of(
-      this.requestsSubject.value.filter(
-        (r) => r.status === 'Pending' || r.status === 'PENDING',
-      ),
+  createLabRequest(request: CreateLabRequest): Observable<LabRequest> {
+    return this.http.post<LabRequest>(`${this.apiUrl}/lab-requests`, request);
+  }
+
+  getLabQueue(
+    status?: LabRequestStatus[],
+    encounterId?: number,
+  ): Observable<LabRequest[]> {
+    let params = new HttpParams();
+    if (status && status.length > 0) {
+      status.forEach((s) => (params = params.append('status', s)));
+    }
+    if (encounterId) {
+      params = params.append('encounterId', encounterId);
+    }
+    return this.http.get<LabRequest[]>(`${this.apiUrl}/lab-requests`, {
+      params,
+    });
+  }
+
+  getLabRequestById(id: number): Observable<LabRequest> {
+    return this.http.get<LabRequest>(`${this.apiUrl}/lab-requests/${id}`);
+  }
+
+  updateStatus(id: number, status: LabRequestStatus): Observable<LabRequest> {
+    const params = new HttpParams().set('status', status);
+    return this.http.patch<LabRequest>(
+      `${this.apiUrl}/lab-requests/${id}/status`,
+      {},
+      { params },
     );
   }
 
-  getAllRequests(): Observable<LabRequest[]> {
-    return this.requests$.pipe(delay(500));
-  }
-
-  // Custom method to get requests for a specific encounter
-  getRequestsByEncounter(encounterId: string): Observable<LabRequest[]> {
-    return this.requests$.pipe(
-      map((reqs) => reqs.filter((r) => r.encounterId === encounterId)),
-    );
-  }
-
-  getRequestById(id: string | number): LabRequest | undefined {
-    // Loose equality check for string/number id mismatch
-    return this.requestsSubject.value.find((r) => r.id == id);
-  }
-
-  createRequest(request: LabRequest): Observable<boolean> {
-    return of(true).pipe(
-      delay(500),
-      tap(() => {
-        request.id = Math.floor(Math.random() * 10000).toString();
-        request.status = 'Pending';
-        request.requestDate = new Date();
-        const current = this.requestsSubject.value;
-        this.requestsSubject.next([...current, request]);
-      }),
-    );
-  }
-
-  addResult(
-    requestId: string | number,
-    results: LabTestResult[],
-    notes?: string,
-  ): Observable<boolean> {
-    return of(true).pipe(
-      delay(500),
-      tap(() => {
-        const current = this.requestsSubject.value;
-        const index = current.findIndex((r) => r.id == requestId);
-        if (index !== -1) {
-          const updated = [...current];
-          updated[index] = {
-            ...updated[index],
-            status: 'Completed',
-            results: results,
-            technicianNotes: notes,
-            completedDate: new Date(),
-          };
-          this.requestsSubject.next(updated);
-        }
-      }),
+  addResults(
+    id: number,
+    results: AddLabResultRequest[],
+  ): Observable<LabRequest> {
+    return this.http.post<LabRequest>(
+      `${this.apiUrl}/lab-requests/${id}/results`,
+      results,
     );
   }
 }
