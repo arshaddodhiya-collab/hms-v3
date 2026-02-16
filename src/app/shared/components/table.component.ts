@@ -34,6 +34,7 @@ import { from } from 'rxjs';
           [selectionMode]="selectionMode"
           [rowHover]="true"
           [tableStyle]="{ 'min-width': '60rem' }"
+          dataKey="id"
           #dt
         >
           <ng-template pTemplate="caption">

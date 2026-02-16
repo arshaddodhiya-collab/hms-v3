@@ -27,10 +27,17 @@ export class BedManagementComponent implements OnInit {
     });
   }
 
+  showAvailable = true;
+  showOccupied = true;
+
   groupBedsByWard() {
     const wardMap = new Map<string, Bed[]>();
 
     this.beds.forEach((bed) => {
+      // Filter Logic
+      if (bed.isOccupied && !this.showOccupied) return;
+      if (!bed.isOccupied && !this.showAvailable) return;
+
       // Handle potential null or structure mismatch
       const wardName = bed.ward?.name || 'Unknown Ward';
       if (!wardMap.has(wardName)) {
@@ -43,6 +50,14 @@ export class BedManagementComponent implements OnInit {
     wardMap.forEach((beds, name) => {
       this.wards.push({ name, beds });
     });
+  }
+
+  getAvailableCount(): number {
+    return this.beds.filter((b) => !b.isOccupied).length;
+  }
+
+  getOccupiedCount(): number {
+    return this.beds.filter((b) => b.isOccupied).length;
   }
 
   getBedStatusClass(bed: Bed): string {
