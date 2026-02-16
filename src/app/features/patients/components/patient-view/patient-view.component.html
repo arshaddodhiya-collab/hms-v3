@@ -3,7 +3,14 @@
   subtitle="View and manage patient information"
   icon="pi pi-user"
   [showBack]="true"
-></app-page-header>
+>
+  <button
+    pButton
+    icon="pi pi-refresh"
+    (click)="loadPatientDetails(patientId!)"
+    class="p-button-rounded p-button-text"
+  ></button>
+</app-page-header>
 
 <div class="grid">
   <!-- Left Column: Patient Profile Summary -->
@@ -108,16 +115,6 @@
           </div>
         </div>
       </div>
-      <div class="col-6 md:col-3">
-        <div
-          class="surface-card shadow-1 p-3 border-round border-left-3 border-purple-500"
-        >
-          <div class="text-500 font-medium mb-1">Weight</div>
-          <div class="text-900 font-bold text-xl">
-            {{ activeVitals.weight }}
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- Tabs -->
@@ -215,6 +212,18 @@
                 <p-tag
                   [value]="encounter.status"
                   [severity]="getSeverity(encounter.status)"
+                  styleClass="ml-2"
+                ></p-tag>
+                <p-tag
+                  *ngIf="encounter.admissionId"
+                  value="IPD"
+                  severity="warning"
+                  styleClass="ml-2"
+                ></p-tag>
+                <p-tag
+                  *ngIf="encounter.appointmentId"
+                  value="OPD"
+                  severity="info"
                   styleClass="ml-2"
                 ></p-tag>
               </div>

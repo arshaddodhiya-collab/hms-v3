@@ -95,7 +95,9 @@ export class PatientViewComponent implements OnInit {
 
   extractLatestVitals(encounters: EncounterResponse[]): void {
     // Find the most recent encounter with vitals
+    // console.log('All Encounters:', encounters);
     const encountersWithVitals = encounters.filter((e) => e.vitals);
+    // console.log('Encounters with Vitals:', encountersWithVitals);
 
     if (encountersWithVitals.length > 0) {
       // Sort by startedAt descending (newest first)
@@ -103,6 +105,7 @@ export class PatientViewComponent implements OnInit {
         (a, b) =>
           new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime(),
       )[0];
+      // console.log('Latest Encounter with Vitals:', latest);
 
       if (latest.vitals) {
         this.activeVitals = {

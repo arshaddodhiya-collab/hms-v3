@@ -22,7 +22,8 @@ export class ConsultationListComponent implements OnInit, AfterViewInit {
   @ViewChild('statusTemplate') statusTemplate!: TemplateRef<any>;
 
   permissions = PERMISSIONS;
-  consultationQueue: any[] = []; // Using any to mix Encounter with calculated fields
+  opdQueue: any[] = [];
+  ipdQueue: any[] = [];
   loading = false;
 
   cols: any[] = [
@@ -39,30 +40,41 @@ export class ConsultationListComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadQueue();
+    this.loadQueues();
   }
 
-  loadQueue() {
+  loadQueues() {
     this.loading = true;
     const currentUser = this.authService.getCurrentUser();
-    if (!currentUser) return; // Should handle not logged in
+    if (!currentUser) return;
 
-    this.encounterService.getDoctorQueue(currentUser.id).subscribe({
+    this.encounterService.getOpdDoctorQueue(currentUser.id).subscribe({
       next: (encounters) => {
-        this.consultationQueue = encounters.map((e) => ({
-          ...e,
-          age: this.calculateAge(e.patientDob),
-          gender: e.patientGender,
-          priority: 'Normal', // TODO: Implement priority logic
-          waitTime: e.startedAt, // Template can format relative time
-        }));
+        this.opdQueue = this.mapEncounters(encounters);
+      },
+      error: (err) => console.error('Failed to load OPD queue', err),
+    });
+
+    this.encounterService.getIpdDoctorQueue(currentUser.id).subscribe({
+      next: (encounters) => {
+        this.ipdQueue = this.mapEncounters(encounters);
         this.loading = false;
       },
       error: (err) => {
-        console.error('Failed to load consultation queue', err);
+        console.error('Failed to load IPD queue', err);
         this.loading = false;
       },
     });
+  }
+
+  mapEncounters(encounters: any[]): any[] {
+    return encounters.map((e) => ({
+      ...e,
+      age: this.calculateAge(e.patientDob),
+      gender: e.patientGender,
+      priority: 'Normal', // TODO: Implement priority logic
+      waitTime: e.startedAt,
+    }));
   }
 
   calculateAge(dobString?: string): number | string {

@@ -82,6 +82,18 @@ export class EncounterService {
     );
   }
 
+  getOpdDoctorQueue(doctorId: number): Observable<EncounterResponse[]> {
+    return this.http.get<EncounterResponse[]>(
+      `${this.apiUrl}/queue/opd/doctor/${doctorId}`,
+    );
+  }
+
+  getIpdDoctorQueue(doctorId: number): Observable<EncounterResponse[]> {
+    return this.http.get<EncounterResponse[]>(
+      `${this.apiUrl}/queue/ipd/doctor/${doctorId}`,
+    );
+  }
+
   // Get patient encounter history
   getPatientEncounters(patientId: number): Observable<EncounterResponse[]> {
     return this.http.get<EncounterResponse[]>(

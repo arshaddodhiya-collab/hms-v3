@@ -1,6 +1,7 @@
 export interface EncounterResponse {
   id: number;
-  appointmentId: number;
+  appointmentId?: number;
+  admissionId?: number;
   patientId: number;
   patientName: string;
   patientGender?: string;

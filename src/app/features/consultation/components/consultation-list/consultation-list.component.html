@@ -4,12 +4,16 @@
     icon="pi pi-user-md"
   ></app-page-header>
 
-  <app-table
-    [data]="consultationQueue"
-    [columns]="cols"
-    [actionsTemplate]="actions"
-  >
-  </app-table>
+  <p-tabView>
+    <p-tabPanel header="OPD (Appt)">
+      <app-table [data]="opdQueue" [columns]="cols" [actionsTemplate]="actions">
+      </app-table>
+    </p-tabPanel>
+    <p-tabPanel header="IPD (Rounds)">
+      <app-table [data]="ipdQueue" [columns]="cols" [actionsTemplate]="actions">
+      </app-table>
+    </p-tabPanel>
+  </p-tabView>
 </app-card>
 
 <!-- Reusing 'patientTemplate' name from TS, but let's use it for the composite Age/Gender mostly, or define distinct ones. -->
