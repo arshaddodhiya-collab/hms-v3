@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { Bed } from '../../../../core/models/patient.model';
+import { Component, EventEmitter, OnInit } from '@angular/core';
+import { forkJoin } from 'rxjs';
+import { Admission, Bed } from '../../../../core/models/patient.model';
 import { IpdService } from '../../services/ipd.service';
 
 @Component({
@@ -20,10 +21,27 @@ export class BedManagementComponent implements OnInit {
 
   refreshData() {
     this.loading = true;
-    this.ipdService.getBeds().subscribe((data) => {
-      this.beds = data;
+    forkJoin({
+      beds: this.ipdService.getBeds(),
+      admissions: this.ipdService.getAdmissions(),
+    }).subscribe(({ beds, admissions }) => {
+      this.beds = beds;
+      this.admissions = admissions;
+      this.mapAdmissionsToBeds();
       this.groupBedsByWard();
       this.loading = false;
+    });
+  }
+
+  admissions: Admission[] = [];
+  bedAdmissionMap = new Map<number, Admission>();
+
+  mapAdmissionsToBeds() {
+    this.bedAdmissionMap.clear();
+    this.admissions.forEach((a) => {
+      if (a.bed && a.bed.id) {
+        this.bedAdmissionMap.set(a.bed.id, a);
+      }
     });
   }
 
@@ -60,7 +78,39 @@ export class BedManagementComponent implements OnInit {
     return this.beds.filter((b) => b.isOccupied).length;
   }
 
+  getAdmissionForBed(bedId: number): Admission | undefined {
+    return this.bedAdmissionMap.get(bedId);
+  }
+
   getBedStatusClass(bed: Bed): string {
     return bed.isOccupied ? 'occupied' : 'available';
+  }
+
+  // Round Form Logic
+  showRoundForm = false;
+  selectedAdmissionId: number | null = null;
+  selectedPatientName = '';
+
+  openRoundForm(bed: Bed) {
+    const admission = this.getAdmissionForBed(bed.id);
+    if (!admission && bed.isOccupied) {
+      // Should ideally not happen if data is consistent, or maybe admission is not loaded yet?
+      // Since we forkJoin, it should be there unless inconsistencies in DB.
+      console.warn('Occupied bed with no linked local admission found:', bed);
+      return;
+    }
+
+    if (admission) {
+      this.selectedAdmissionId = admission.id;
+      this.selectedPatientName = admission.patientName; // Admission model has patientName from mapper?
+      // Check Admission model. It usually has patient object or patientName flattened.
+      // IpdMapper.toAdmissionResponse maps patientName.
+      // Let's verify Admission interface in frontend model.
+      this.showRoundForm = true;
+    }
+  }
+
+  onRoundSaved() {
+    this.refreshData();
   }
 }

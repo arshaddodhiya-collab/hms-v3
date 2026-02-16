@@ -50,4 +50,8 @@ export class IpdService {
       { params },
     );
   }
+  // Rounds
+  addRound(data: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/encounters/rounds`, data);
+  }
 }

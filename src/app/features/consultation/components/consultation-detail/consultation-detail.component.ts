@@ -21,13 +21,14 @@ import { MessageService } from 'primeng/api';
   providers: [MessageService],
 })
 export class ConsultationDetailComponent implements OnInit {
+  encounterId: number | null = null;
   appointmentId: number | null = null;
   currentEncounter: EncounterResponse | null = null;
   patientName: string = '';
 
   diagnosis: string = '';
   notes: string = '';
-  chiefComplaint: string = ''; // Added field
+  chiefComplaint: string = '';
 
   loading = false;
 
@@ -41,16 +42,38 @@ export class ConsultationDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('appointmentId');
-    if (idParam) {
-      this.appointmentId = +idParam;
-      this.initConsultation();
+    const encParam = this.route.snapshot.paramMap.get('encounterId');
+    const aptParam = this.route.snapshot.paramMap.get('appointmentId');
+
+    if (encParam) {
+      this.encounterId = +encParam;
+      this.initConsultationByEncounter();
+    } else if (aptParam) {
+      this.appointmentId = +aptParam;
+      this.initConsultationByAppointment();
     } else {
-      this.errorAndRedirect('Invalid Appointment ID');
+      this.errorAndRedirect('Invalid ID');
     }
   }
 
-  initConsultation() {
+  initConsultationByEncounter() {
+    this.loading = true;
+    if (!this.encounterId) return;
+
+    this.encounterService.getEncounterById(this.encounterId).subscribe({
+      next: (encounter) => {
+        this.currentEncounter = encounter;
+        this.patientName = encounter.patientName;
+        this.diagnosis = encounter.diagnosis || '';
+        this.notes = encounter.notes || '';
+        this.chiefComplaint = encounter.chiefComplaint || '';
+        this.loading = false;
+      },
+      error: (err) => this.errorAndRedirect('Failed to load encounter'),
+    });
+  }
+
+  initConsultationByAppointment() {
     this.loading = true;
     if (!this.appointmentId) return;
 

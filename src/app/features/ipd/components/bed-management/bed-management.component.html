@@ -163,6 +163,28 @@
               >
                 {{ bed.isOccupied ? 'Occupied' : 'Open' }}
               </span>
+
+              <!-- Patient Info & Actions -->
+              <div
+                *ngIf="
+                  bed.isOccupied && getAdmissionForBed(bed.id) as admission
+                "
+                class="mt-2 flex flex-column align-items-center gap-1 w-full"
+                (click)="$event.stopPropagation()"
+              >
+                <span
+                  class="text-sm font-semibold text-center text-gray-900 w-full white-space-nowrap overflow-hidden text-overflow-ellipsis"
+                  pTooltip="{{ admission.patientName }}"
+                  >{{ admission.patientName }}</span
+                >
+                <button
+                  pButton
+                  icon="pi pi-plus"
+                  label="Round"
+                  class="p-button-rounded p-button-danger p-button-outlined p-button-sm scale-90"
+                  (click)="openRoundForm(bed)"
+                ></button>
+              </div>
             </div>
           </div>
         </div>
@@ -170,3 +192,11 @@
     </app-card>
   </div>
 </div>
+
+<app-round-form
+  [display]="showRoundForm"
+  [admissionId]="selectedAdmissionId"
+  [patientName]="selectedPatientName"
+  (displayChange)="showRoundForm = $event"
+  (saved)="onRoundSaved()"
+></app-round-form>

@@ -13,10 +13,16 @@ const routes: Routes = [
     data: { permission: 'MOD_CONSULTATION' },
   },
   {
-    path: ':appointmentId',
+    path: ':encounterId',
     component: ConsultationDetailComponent,
     canActivate: [PermissionGuard],
-    data: { permission: 'CMP_CONSULTATION_WRITE' }, // Or READ depending on role, usually Doctor writes
+    data: { permission: 'CMP_CONSULTATION_WRITE' },
+  },
+  {
+    path: 'by-appointment/:appointmentId',
+    component: ConsultationDetailComponent,
+    canActivate: [PermissionGuard],
+    data: { permission: 'CMP_CONSULTATION_WRITE' },
   },
 ];
 

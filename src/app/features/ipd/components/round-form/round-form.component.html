@@ -1,0 +1,104 @@
+<p-dialog
+  [(visible)]="display"
+  [modal]="true"
+  [style]="{ width: '600px', maxWidth: '95vw' }"
+  header="Add Clinical Round: {{ patientName }}"
+  (onHide)="onHide()"
+>
+  <form
+    [formGroup]="roundForm"
+    (ngSubmit)="save()"
+    class="p-fluid flex flex-column gap-3"
+  >
+    <!-- Clinical Notes -->
+    <div class="field">
+      <label for="notes" class="block font-bold mb-2"
+        >Progress Notes <span class="text-red-500">*</span></label
+      >
+      <textarea
+        id="notes"
+        rows="5"
+        pInputTextarea
+        formControlName="notes"
+        class="w-full"
+        placeholder="Enter patient status, complaints, etc."
+      ></textarea>
+    </div>
+
+    <p-divider align="left">
+      <div class="inline-flex align-items-center">
+        <i class="pi pi-heart mr-2"></i>
+        <b>Vitals (Optional)</b>
+      </div>
+    </p-divider>
+
+    <!-- Vitals Grid -->
+    <div class="grid">
+      <div class="field col-12 md:col-6">
+        <label for="temp" class="block font-bold mb-2">Temperature (°C)</label>
+        <p-inputNumber
+          id="temp"
+          formControlName="temperature"
+          [minFractionDigits]="1"
+          [maxFractionDigits]="1"
+          suffix=" °C"
+          class="w-full"
+        ></p-inputNumber>
+      </div>
+      <div class="field col-12 md:col-6">
+        <label for="pulse" class="block font-bold mb-2">Pulse (bpm)</label>
+        <p-inputNumber
+          id="pulse"
+          formControlName="pulse"
+          suffix=" bpm"
+          class="w-full"
+        ></p-inputNumber>
+      </div>
+      <div class="field col-12 md:col-6">
+        <label for="bp_sys" class="block font-bold mb-2">BP Systolic</label>
+        <p-inputNumber
+          id="bp_sys"
+          formControlName="systolic"
+          suffix=" mmHg"
+          class="w-full"
+        ></p-inputNumber>
+      </div>
+      <div class="field col-12 md:col-6">
+        <label for="bp_dia" class="block font-bold mb-2">BP Diastolic</label>
+        <p-inputNumber
+          id="bp_dia"
+          formControlName="diastolic"
+          suffix=" mmHg"
+          class="w-full"
+        ></p-inputNumber>
+      </div>
+      <div class="field col-12 md:col-6">
+        <label for="spo2" class="block font-bold mb-2">SpO2 (%)</label>
+        <p-inputNumber
+          id="spo2"
+          formControlName="spo2"
+          suffix=" %"
+          [max]="100"
+          class="w-full"
+        ></p-inputNumber>
+      </div>
+    </div>
+
+    <!-- Footer Buttons -->
+    <div class="flex justify-content-end gap-2 mt-3">
+      <p-button
+        label="Cancel"
+        icon="pi pi-times"
+        styleClass="p-button-text"
+        (onClick)="onHide()"
+      ></p-button>
+      <p-button
+        label="Save Round"
+        icon="pi pi-check"
+        type="submit"
+        [loading]="loading"
+        [disabled]="roundForm.invalid"
+      ></p-button>
+    </div>
+  </form>
+</p-dialog>
