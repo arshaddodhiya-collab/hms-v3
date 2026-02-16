@@ -12,7 +12,7 @@ export class BedManagementComponent implements OnInit {
   wards: { name: string; beds: Bed[] }[] = [];
   loading = false;
 
-  constructor(private ipdService: IpdService) { }
+  constructor(private ipdService: IpdService) {}
 
   ngOnInit(): void {
     this.refreshData();
@@ -31,10 +31,12 @@ export class BedManagementComponent implements OnInit {
     const wardMap = new Map<string, Bed[]>();
 
     this.beds.forEach((bed) => {
-      if (!wardMap.has(bed.ward)) {
-        wardMap.set(bed.ward, []);
+      // Handle potential null or structure mismatch
+      const wardName = bed.ward?.name || 'Unknown Ward';
+      if (!wardMap.has(wardName)) {
+        wardMap.set(wardName, []);
       }
-      wardMap.get(bed.ward)?.push(bed);
+      wardMap.get(wardName)?.push(bed);
     });
 
     this.wards = [];

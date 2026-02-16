@@ -60,16 +60,17 @@
   <div class="field grid">
     <label class="col-12 md:col-2">Doctor</label>
     <div class="col-12 md:col-10">
-      <input
-        pInputText
-        [(ngModel)]="admission.doctorName"
-        placeholder="Attending Doctor"
-        [ngClass]="{
-          'ng-invalid ng-dirty': submitted && !admission.doctorName,
-        }"
-      />
-      <small *ngIf="submitted && !admission.doctorName" class="p-error"
-        >Doctor name is required.</small
+      <app-dropdown
+        [options]="doctors"
+        [(ngModel)]="selectedDoctor"
+        optionLabel="fullName"
+        [optionValue]="null"
+        [filter]="true"
+        filterBy="fullName"
+        placeholder="Select Attending Doctor"
+      ></app-dropdown>
+      <small *ngIf="submitted && !selectedDoctor" class="p-error"
+        >Doctor is required.</small
       >
     </div>
   </div>
@@ -79,10 +80,13 @@
     <div class="col-12 md:col-10">
       <textarea
         pInputTextarea
-        [(ngModel)]="admission.diagnosis"
+        [(ngModel)]="diagnosis"
         rows="3"
         placeholder="Initial Diagnosis"
       ></textarea>
+      <small *ngIf="submitted && !diagnosis" class="p-error"
+        >Diagnosis is required.</small
+      >
     </div>
   </div>
 

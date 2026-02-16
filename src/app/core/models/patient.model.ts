@@ -58,24 +58,25 @@ export enum AdmissionStatus {
 }
 
 export interface Bed {
-  id: number | string;
-  ward: string;
+  id: number;
+  ward: { id: number; name: string };
   number: string;
   isOccupied: boolean;
-  type: string; // e.g., 'ICU', 'General'
+  type: string;
   patientName?: string;
 }
 
 export interface Admission {
-  // IPD Admission
   id: number;
   patientId: number;
   patientName: string;
   admissionDate: Date;
   dischargeDate?: Date;
   status: AdmissionStatus;
-  ward: string;
-  bedNumber: string;
+  bed: Bed; // Nested bed object from backend
+  doctorId: number;
   doctorName: string;
   diagnosis?: string;
+  dischargeSummary?: string;
+  advice?: string;
 }

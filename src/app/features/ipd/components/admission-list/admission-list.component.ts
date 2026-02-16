@@ -14,7 +14,7 @@ export class AdmissionListComponent implements OnInit {
   cols: any[] = [
     { field: 'id', header: 'ID' },
     { field: 'patientName', header: 'Patient Name' },
-    { field: 'ward', header: 'Ward' },
+    { field: 'wardName', header: 'Ward' },
     { field: 'bedNumber', header: 'Bed' },
     { field: 'doctorName', header: 'Doctor' },
     { field: 'status', header: 'Status' },
@@ -23,7 +23,7 @@ export class AdmissionListComponent implements OnInit {
   data: Admission[] = [];
   loading = false;
 
-  constructor(private ipdService: IpdService) { }
+  constructor(private ipdService: IpdService) {}
 
   ngOnInit(): void {
     this.refreshData();
@@ -32,7 +32,11 @@ export class AdmissionListComponent implements OnInit {
   refreshData() {
     this.loading = true;
     this.ipdService.getAdmissions().subscribe((data) => {
-      this.data = data;
+      this.data = data.map((a) => ({
+        ...a,
+        wardName: a.bed?.ward?.name || 'N/A',
+        bedNumber: a.bed?.number || 'N/A',
+      }));
       this.loading = false;
     });
   }
