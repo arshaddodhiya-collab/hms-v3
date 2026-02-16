@@ -6,7 +6,7 @@ import {
   AfterViewInit,
   Input,
 } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { LabService } from '../../services/lab.service';
 import { LabRequest } from '../../../../core/models/lab.models';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
@@ -32,6 +32,7 @@ export class LabRequestListComponent implements OnInit, AfterViewInit {
   }>;
 
   requests: LabRequest[] = [];
+  loading = false; // Added loading state
   permissions = PERMISSIONS;
 
   @Input() encounterId: number | undefined;
@@ -48,13 +49,32 @@ export class LabRequestListComponent implements OnInit, AfterViewInit {
   constructor(
     private labService: LabService,
     private router: Router,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
+    // Check if encounterId is passed via query params (if not already set via Input)
+    if (!this.encounterId) {
+      this.route.queryParams.subscribe((params) => {
+        if (params['encounterId']) {
+          this.encounterId = +params['encounterId'];
+          this.loadRequests();
+        } else {
+          this.loadRequests();
+        }
+      });
+    } else {
+      this.loadRequests();
+    }
+  }
+
+  loadRequests() {
+    this.loading = true; // Add loading state if needed
     this.labService
       .getLabQueue(undefined, this.encounterId)
       .subscribe((data) => {
         this.requests = data;
+        this.loading = false;
       });
   }
 

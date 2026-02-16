@@ -196,4 +196,11 @@ export class ConsultationDetailComponent implements OnInit {
     });
     setTimeout(() => this.router.navigate(['/consultation']), 1000);
   }
+
+  viewLabRequests() {
+    if (!this.currentEncounter) return;
+    this.router.navigate(['/lab'], {
+      queryParams: { encounterId: this.currentEncounter.id },
+    });
+  }
 }

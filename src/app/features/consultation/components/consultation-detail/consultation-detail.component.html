@@ -67,11 +67,14 @@
       <app-prescription (save)="onPrescriptionSave($event)"></app-prescription>
     </p-tabPanel>
 
-    <p-tabPanel header="Lab Reports" leftIcon="pi pi-file">
+    <p-tabPanel header="Lab Requests" leftIcon="pi pi-file">
       <div *ngIf="currentEncounter">
-        <app-lab-request-list
-          [encounterId]="currentEncounter.id"
-        ></app-lab-request-list>
+        <button
+          pButton
+          label="View Lab Requests"
+          icon="pi pi-file"
+          (click)="viewLabRequests()"
+        ></button>
       </div>
       <div class="mt-3">
         <button
@@ -79,7 +82,10 @@
           label="Order New Test"
           icon="pi pi-plus"
           [routerLink]="['/lab/request']"
-          [queryParams]="{ encounterId: currentEncounter.id }"
+          [queryParams]="{
+            encounterId: currentEncounter.id,
+            patientId: currentEncounter.patientId,
+          }"
         ></button>
       </div>
     </p-tabPanel>
