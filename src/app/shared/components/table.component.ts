@@ -4,8 +4,12 @@ import {
   Input,
   Output,
   TemplateRef,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { TableColumn } from '../models/table.model';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-table',
@@ -232,4 +236,23 @@ export class TableComponent<T = any> {
   @Input() selection: T | T[] | null = null;
   @Output() selectionChange = new EventEmitter<T | T[]>();
   @Input() selectionMode: 'single' | 'multiple' | null = null;
+
+  ngOnInit() {
+    this.updateGlobalFilterFields();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['columns']) {
+      this.updateGlobalFilterFields();
+    }
+  }
+
+  private updateGlobalFilterFields() {
+    // If globalFilterFields is empty or not provided, try to populate it from columns
+    if (!this.globalFilterFields || this.globalFilterFields.length === 0) {
+      if (this.columns && this.columns.length > 0) {
+        this.globalFilterFields = this.columns.map((col) => col.field);
+      }
+    }
+  }
 }
