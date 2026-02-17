@@ -107,7 +107,8 @@
     <div
       *ngIf="
         invoice.status === InvoiceStatus.ISSUED ||
-        invoice.status === InvoiceStatus.PARTIALLY_PAID
+        invoice.status === InvoiceStatus.PARTIALLY_PAID ||
+        invoice.status === InvoiceStatus.DRAFT
       "
       class="surface-ground p-4 border-round mb-4 print-hidden"
     >
