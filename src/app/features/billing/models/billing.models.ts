@@ -15,7 +15,7 @@ export enum PaymentMethod {
 
 export interface InvoiceItemResponse {
   id: number;
-  itemDescription: string;
+  description: string;
   unitPrice: number;
   quantity: number;
   totalPrice: number;

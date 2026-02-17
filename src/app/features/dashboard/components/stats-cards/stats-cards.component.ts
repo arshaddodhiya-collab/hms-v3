@@ -54,7 +54,7 @@ export class StatsCardsComponent implements OnInit {
           },
           {
             label: 'Revenue (Today)',
-            value: '$' + data.todaysRevenue,
+            value: '₹' + data.todaysRevenue,
             icon: 'pi pi-dollar',
             color: 'green',
             permission: PERMISSIONS.MOD_BILLING,
