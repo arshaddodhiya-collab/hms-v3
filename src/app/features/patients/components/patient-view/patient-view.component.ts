@@ -72,6 +72,22 @@ export class PatientViewComponent implements OnInit {
   loadEncounters(patientId: number): void {
     this.encounterService.getPatientEncounters(patientId).subscribe({
       next: (encounters) => {
+        encounters.forEach((e) => {
+          if (e.rounds) {
+            e.rounds.sort(
+              (a, b) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime(),
+            );
+          }
+          if (e.vitalsHistory) {
+            e.vitalsHistory.sort(
+              (a, b) =>
+                new Date(b.recordedAt).getTime() -
+                new Date(a.recordedAt).getTime(),
+            );
+          }
+        });
         this.encounters = encounters;
         // Extract latest vitals from most recent completed encounter
         this.extractLatestVitals(encounters);

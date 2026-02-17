@@ -15,6 +15,18 @@ export interface EncounterResponse {
   startedAt: string;
   completedAt?: string;
   vitals?: Vitals;
+  rounds?: RoundResponse[];
+  vitalsHistory?: Vitals[];
+}
+
+export interface RoundResponse {
+  id: number;
+  encounterId: number;
+  doctorId: number;
+  doctorName: string;
+  notes: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Vitals {
