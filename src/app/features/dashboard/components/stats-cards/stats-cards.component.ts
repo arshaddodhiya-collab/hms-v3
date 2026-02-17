@@ -1,7 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import {
+  DashboardService,
+  DashboardDTO,
+} from '../../services/dashboard.service';
 
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 import { MockAuthService } from '../../../auth/services/mock-auth.service';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-stats-cards',
@@ -11,55 +16,71 @@ import { MockAuthService } from '../../../auth/services/mock-auth.service';
 export class StatsCardsComponent implements OnInit {
   stats: any[] = [];
 
-  constructor(private authService: MockAuthService) { }
+  constructor(
+    private authService: AuthService,
+    private dashboardService: DashboardService,
+  ) {}
 
   ngOnInit() {
     this.loadStats();
   }
 
   loadStats() {
-    const role = this.authService.getUserRole();
-    const allStats = [
-      {
-        label: 'Total Patients',
-        value: '1,250',
-        icon: 'pi pi-users',
-        color: 'green',
-        permission: PERMISSIONS.MOD_PATIENTS,
-      },
-      {
-        label: "Today's Appointments",
-        value: '45',
-        icon: 'pi pi-calendar',
-        color: 'orange',
-        permission: PERMISSIONS.MOD_APPOINTMENTS,
-      },
-      {
-        label: 'Pending Labs',
-        value: '12',
-        icon: 'pi pi-flask',
-        color: 'purple',
-        permission: PERMISSIONS.MOD_LAB,
-      },
-      {
-        label: 'Revenue (Today)',
-        value: '$12,500',
-        icon: 'pi pi-dollar',
-        color: 'green',
-        permission: PERMISSIONS.MOD_BILLING,
-      },
-      {
-        label: 'Critical Care',
-        value: '8',
-        icon: 'pi pi-heart',
-        color: 'red',
-        permission: PERMISSIONS.MOD_TRIAGE,
-      },
-    ];
+    console.log('StatsCards: Loading stats...');
+    this.dashboardService.getStats().subscribe(
+      (data: DashboardDTO) => {
+        console.log('StatsCards: Received data', data);
+        const allStats = [
+          {
+            label: 'Total Patients',
+            value: data.totalPatients,
+            icon: 'pi pi-users',
+            color: 'green',
+            permission: PERMISSIONS.MOD_PATIENTS,
+          },
+          {
+            label: "Today's Appointments",
+            value: data.expectedAppointmentsToday,
+            icon: 'pi pi-calendar',
+            color: 'orange',
+            permission: PERMISSIONS.MOD_APPOINTMENTS,
+          },
+          {
+            label: 'Pending Labs',
+            value: data.pendingLabRequests,
+            icon: 'pi pi-flask',
+            color: 'purple',
+            permission: PERMISSIONS.MOD_LAB,
+          },
+          {
+            label: 'Revenue (Today)',
+            value: '$' + data.todaysRevenue,
+            icon: 'pi pi-dollar',
+            color: 'green',
+            permission: PERMISSIONS.MOD_BILLING,
+          },
+          {
+            label: 'Critical / Admitted',
+            value: data.criticalPatientsCount,
+            icon: 'pi pi-heart',
+            color: 'red',
+            permission: PERMISSIONS.MOD_TRIAGE,
+          },
+        ];
 
-    // Filter stats based on permissions
-    this.stats = allStats.filter((stat) =>
-      this.authService.hasPermission(stat.permission),
+        // Filter stats based on permissions
+        this.stats = allStats.filter((stat) => {
+          const hasPerm = this.authService.hasPermission(stat.permission);
+          console.log(
+            `StatsCards: Checking permission ${stat.permission}: ${hasPerm}`,
+          );
+          return hasPerm;
+        });
+        console.log('StatsCards: Filtered stats', this.stats);
+      },
+      (error) => {
+        console.error('StatsCards: Error loading stats', error);
+      },
     );
   }
 }

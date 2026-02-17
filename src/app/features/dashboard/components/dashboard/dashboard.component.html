@@ -1,104 +1,153 @@
-<div class="p-4 bg-gray-50 min-h-screen">
-  <!-- Header Section -->
-  <div class="flex justify-content-between align-items-center mb-5">
-    <div>
-      <h1 class="text-3xl font-bold text-900 m-0">Dashboard</h1>
-      <p class="text-500 mt-2">
-        Welcome back,
-        <span class="font-bold text-700 capitalize">{{ username }}</span>
-        <span class="text-400 mx-2">|</span>
-        <span
-          class="inline-block px-2 py-1 border-round text-sm font-medium"
-          style="
-            background-color: var(--hms-primary-light);
-            color: var(--hms-primary);
-          "
-          >{{ userRole | titlecase }}</span
-        >
-      </p>
+<div
+  class="min-h-screen p-5"
+  style="background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%)"
+>
+  <!-- ================= HEADER ================= -->
+  <div
+    class="border-round-2xl p-5 mb-5"
+    style="
+      background: linear-gradient(135deg, var(--hms-primary-light), #ffffff);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    "
+  >
+    <div class="flex justify-content-between align-items-center">
+      <div>
+        <h1 class="text-3xl font-bold text-900 m-0">Dashboard</h1>
+
+        <p class="text-600 mt-2 flex align-items-center">
+          Welcome back,
+          <span class="font-semibold text-900 capitalize ml-1">
+            {{ username }}
+          </span>
+
+          <span class="mx-3 text-400">|</span>
+
+          <span
+            class="px-3 py-1 border-round-2xl text-sm font-medium"
+            style="
+              background: rgba(59, 130, 246, 0.1);
+              color: var(--hms-primary);
+            "
+          >
+            {{ userRole | titlecase }}
+          </span>
+        </p>
+      </div>
+
+      <!-- <button
+        pButton
+        pRipple
+        icon="pi pi-power-off"
+        label="Logout"
+        class="p-button-danger p-button-text"
+        style="border-radius: 2rem"
+        (click)="onLogout()"
+        pTooltip="Sign out"
+      ></button> -->
     </div>
-    <button
-      pButton
-      pRipple
-      label="Logout"
-      icon="pi pi-power-off"
-      class="p-button-danger p-button-text hover:bg-red-50"
-      (click)="onLogout()"
-      pTooltip="Sign out of the system"
-      tooltipPosition="bottom"
-    ></button>
   </div>
 
-  <!-- Dynamic Stats -->
+  <!-- ================= STATS ================= -->
   <div class="mb-5">
     <app-stats-cards></app-stats-cards>
   </div>
 
-  <!-- Two Column Layout for Activity and Charts (Chart placeholder) -->
+  <!-- ================= MAIN GRID ================= -->
   <div class="grid">
+    <!-- LEFT SECTION -->
     <div class="col-12 xl:col-8">
-      <!-- <div class="surface-card shadow-2 border-round p-4 h-full"> -->
-      <!-- <h5 class="text-xl font-bold text-900 mb-4">Today's Activity</h5> -->
-      <!-- Doctor's Specific Widget -->
-      <div class="mb-5" *ngIf="userRole === 'Doctor'">
-        <app-card>
-          <div class="flex justify-content-between align-items-center mb-3">
-            <h5 class="text-xl font-bold m-0 text-900">
+      <!-- Doctor Widget -->
+      <div *ngIf="userRole === 'Doctor'" class="mb-5">
+        <app-card
+          styleClass="border-round-2xl overflow-hidden"
+          style="
+            background: #ffffff;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+          "
+        >
+          <div
+            class="flex justify-content-between align-items-center px-4 py-3 border-bottom-1 surface-border"
+          >
+            <h5 class="text-xl font-semibold m-0 text-900">
               My Upcoming Appointments
             </h5>
+
             <button
               pButton
               label="View All"
+              icon="pi pi-arrow-right"
               class="p-button-text"
               routerLink="/appointments"
             ></button>
           </div>
+
           <p-table
             [value]="myAppointments"
+            styleClass="p-datatable-sm"
             [tableStyle]="{ 'min-width': '100%' }"
           >
             <ng-template pTemplate="header">
-              <tr>
-                <th>Patient</th>
-                <th>Time</th>
-                <th>Status</th>
-                <th>Action</th>
+              <tr class="text-600 text-sm">
+                <th class="px-4 py-3">Patient</th>
+                <th class="px-4 py-3">Time</th>
+                <th class="px-4 py-3">Status</th>
+                <th class="px-4 py-3 text-center">Action</th>
               </tr>
             </ng-template>
+
             <ng-template pTemplate="body" let-appt>
-              <tr>
-                <td class="font-bold">{{ appt.patientName }}</td>
-                <td>{{ appt.date | date: 'shortTime' }}</td>
-                <td>
+              <tr
+                class="transition-all transition-duration-200"
+                style="cursor: pointer"
+              >
+                <td class="px-4 py-3 font-semibold text-900">
+                  {{ appt.patientName }}
+                </td>
+
+                <td class="px-4 py-3 text-600">
+                  {{ appt.date | date: 'shortTime' }}
+                </td>
+
+                <td class="px-4 py-3">
                   <app-status-badge [status]="appt.status"></app-status-badge>
                 </td>
-                <td>
+
+                <td class="px-4 py-3 text-center">
                   <button
                     pButton
                     icon="pi pi-play"
                     class="p-button-rounded p-button-success p-button-text"
+                    style="width: 2.5rem; height: 2.5rem"
                     pTooltip="Start Consultation"
                     routerLink="/consultation/by-appointment/{{ appt.id }}"
                   ></button>
                 </td>
               </tr>
             </ng-template>
+
             <ng-template pTemplate="emptymessage">
               <tr>
-                <td colspan="4">No upcoming appointments.</td>
+                <td colspan="4" class="text-center py-5 text-500">
+                  No upcoming appointments.
+                </td>
               </tr>
             </ng-template>
           </p-table>
         </app-card>
       </div>
 
+      <!-- Non Doctor -->
       <app-today-activity *ngIf="userRole !== 'Doctor'"></app-today-activity>
-      <!-- </div> -->
     </div>
+
+    <!-- RIGHT SECTION -->
     <div class="col-12 xl:col-4">
-      <div class="surface-card shadow-2 border-round p-4 h-full">
+      <div
+        class="border-round-2xl p-4 h-full"
+        style="background: #ffffff; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06)"
+      >
         <div class="flex align-items-center justify-content-between mb-4">
-          <h5 class="text-xl font-bold text-900 m-0">Quick Actions</h5>
+          <h5 class="text-xl font-semibold text-900 m-0">Quick Actions</h5>
           <i class="pi pi-bolt text-yellow-500 text-xl"></i>
         </div>
 
@@ -109,29 +158,28 @@
             *appHasPermission="permissions.CMP_PATIENT_ADD"
             label="New Patient"
             icon="pi pi-user-plus"
-            class="p-button-outlined p-button-secondary w-full text-left justify-content-between"
-            pTooltip="Register a new patient"
-            tooltipPosition="left"
+            class="p-button-outlined w-full justify-content-between"
+            style="border-radius: 1rem"
           ></button>
+
           <button
             pButton
             pRipple
             *appHasPermission="permissions.MOD_APPOINTMENTS"
             label="Book Appointment"
             icon="pi pi-calendar-plus"
-            class="p-button-outlined p-button-secondary w-full text-left justify-content-between"
-            pTooltip="Schedule a new appointment"
-            tooltipPosition="left"
+            class="p-button-outlined w-full justify-content-between"
+            style="border-radius: 1rem"
           ></button>
+
           <button
             pButton
             pRipple
             *appHasPermission="permissions.MOD_LAB"
             label="View Reports"
             icon="pi pi-file"
-            class="p-button-outlined p-button-secondary w-full text-left justify-content-between"
-            pTooltip="View laboratory reports"
-            tooltipPosition="left"
+            class="p-button-outlined w-full justify-content-between"
+            style="border-radius: 1rem"
           ></button>
         </div>
       </div>

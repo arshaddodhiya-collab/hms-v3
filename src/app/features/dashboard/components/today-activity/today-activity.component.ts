@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { MockAuthService } from '../../../auth/services/mock-auth.service';
+import {
+  DashboardService,
+  ActivityDTO,
+} from '../../services/dashboard.service';
+import { AuthService } from '../../../auth/services/auth.service';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 
 @Component({
@@ -11,7 +15,10 @@ export class TodayActivityComponent implements OnInit {
   activities: any[] = [];
   cols: any[] = [];
 
-  constructor(private authService: MockAuthService) { }
+  constructor(
+    private authService: AuthService,
+    private dashboardService: DashboardService,
+  ) {}
 
   ngOnInit() {
     this.setupTable();
@@ -27,42 +34,41 @@ export class TodayActivityComponent implements OnInit {
   }
 
   loadActivities() {
-    // Mocking different activities based on role permission
-    const allActivities = [
-      {
-        time: '09:00 AM',
-        description: 'Dr. Smith started consultation',
-        status: 'In Progress',
-        permission: PERMISSIONS.MOD_CONSULTATION,
-      },
-      {
-        time: '09:15 AM',
-        description: 'Patient John Doe registered',
-        status: 'Completed',
-        permission: PERMISSIONS.CMP_PATIENT_ADD,
-      },
-      {
-        time: '09:30 AM',
-        description: 'Lab Result: Blood Test (Jane)',
-        status: 'Pending',
-        permission: PERMISSIONS.MOD_LAB,
-      },
-      {
-        time: '10:00 AM',
-        description: 'Invoice #1023 Generated',
-        status: 'Paid',
-        permission: PERMISSIONS.MOD_BILLING,
-      },
-      {
-        time: '10:15 AM',
-        description: 'Emergency: Bed 4 Vitals',
-        status: 'Critical',
-        permission: PERMISSIONS.MOD_TRIAGE,
-      },
-    ];
+    this.dashboardService.getRecentActivity().subscribe(
+      (data: ActivityDTO[]) => {
+        // Map API data to UI format
+        const allActivities = data.map((act) => ({
+          time: new Date(act.timestamp).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+          description: act.description,
+          status: act.status,
+          permission: this.getPermissionForRole(act.userRoleRequiringAccess),
+        }));
 
-    this.activities = allActivities.filter((act) =>
-      this.authService.hasPermission(act.permission),
+        this.activities = allActivities.filter((act) =>
+          this.authService.hasPermission(act.permission),
+        );
+      },
+      (error) => {
+        console.error('TodayActivity: Error loading activities', error);
+      },
     );
+  }
+
+  getPermissionForRole(role: string): string {
+    switch (role) {
+      case 'DOCTOR':
+        return PERMISSIONS.MOD_CONSULTATION;
+      case 'NURSE':
+        return PERMISSIONS.MOD_LAB;
+      case 'RECEPTIONIST':
+        return PERMISSIONS.CMP_PATIENT_ADD;
+      case 'ADMIN':
+        return PERMISSIONS.MOD_BILLING;
+      default:
+        return PERMISSIONS.MOD_DASHBOARD;
+    }
   }
 }
