@@ -27,6 +27,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { DividerModule } from 'primeng/divider';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { PanelModule } from 'primeng/panel';
 
 import { PageHeaderComponent } from './components/page-header.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog.component';
@@ -87,6 +89,8 @@ import { InputTextComponent } from './components/input-text.component';
     DividerModule,
     ProgressSpinnerModule,
     ProgressBarModule,
+    AutoCompleteModule,
+    PanelModule,
   ],
   exports: [
     CommonModule,
@@ -131,6 +135,8 @@ import { InputTextComponent } from './components/input-text.component';
     DividerModule,
     ProgressSpinnerModule,
     ProgressBarModule,
+    AutoCompleteModule,
+    PanelModule,
   ],
 })
 export class SharedModule {}

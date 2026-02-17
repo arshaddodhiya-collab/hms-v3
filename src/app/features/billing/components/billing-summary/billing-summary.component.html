@@ -25,7 +25,13 @@
   <app-status-badge
     [status]="value"
     [type]="
-      value === 'PAID' ? 'success' : value === 'PENDING' ? 'warning' : 'error'
+      value === InvoiceStatus.PAID
+        ? 'success'
+        : value === InvoiceStatus.ISSUED
+          ? 'info'
+          : value === InvoiceStatus.PARTIALLY_PAID
+            ? 'warning'
+            : 'error'
     "
   >
   </app-status-badge>
@@ -34,7 +40,10 @@
 <ng-template #actions let-invoice>
   <ng-container *appHasPermission="permissions.CMP_PAYMENT_RECEIPT">
     <button
-      *ngIf="invoice.status === 'PAID'"
+      *ngIf="
+        invoice.status === InvoiceStatus.PAID ||
+        invoice.status === InvoiceStatus.PARTIALLY_PAID
+      "
       pButton
       icon="pi pi-print"
       class="p-button-rounded p-button-secondary p-button-text"
@@ -45,7 +54,11 @@
   </ng-container>
   <ng-container *appHasPermission="permissions.CMP_INVOICE_GENERATE">
     <button
-      *ngIf="invoice.status === 'PENDING'"
+      *ngIf="
+        invoice.status === InvoiceStatus.ISSUED ||
+        invoice.status === InvoiceStatus.PARTIALLY_PAID ||
+        invoice.status === InvoiceStatus.DRAFT
+      "
       pButton
       icon="pi pi-check-circle"
       class="p-button-rounded p-button-success p-button-text"
