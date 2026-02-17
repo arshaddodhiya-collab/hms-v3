@@ -43,7 +43,10 @@
       <!-- Reusing Vitals View from Triage Module -->
       <!-- We need to pass encounterId or appointmentId. VitalsView expects appointmentId currently? -->
       <!-- Let's check VitalsViewComponent. If it expects AppointmentId, we have it. -->
-      <app-vitals-view [appointmentId]="appointmentId!"></app-vitals-view>
+      <app-vitals-view
+        [appointmentId]="appointmentId!"
+        [vitals]="currentEncounter.vitals!"
+      ></app-vitals-view>
     </p-tabPanel>
 
     <p-tabPanel header="Diagnosis & Notes" leftIcon="pi pi-book">

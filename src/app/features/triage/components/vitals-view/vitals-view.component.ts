@@ -12,7 +12,7 @@ import { VitalsResponse } from '../../../../core/models/vitals.model';
 export class VitalsViewComponent implements OnInit {
   @Input() appointmentId: string | number | null = null;
   @Input() encounterId: number | null = null;
-  vitals: VitalsResponse | null = null;
+  @Input() vitals: VitalsResponse | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -21,6 +21,10 @@ export class VitalsViewComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (this.vitals) {
+      return;
+    }
+
     // Priority: Input encounterId > Input appointmentId > Route appointmentId
     if (this.encounterId) {
       this.loadVitals(this.encounterId);
@@ -36,7 +40,12 @@ export class VitalsViewComponent implements OnInit {
         .getEncounterByAppointmentId(+this.appointmentId)
         .subscribe({
           next: (encounter) => {
-            this.loadVitals(encounter.id);
+            // Check if vitals are included in encounter response
+            if (encounter.vitals) {
+              this.vitals = encounter.vitals as unknown as VitalsResponse;
+            } else {
+              this.loadVitals(encounter.id);
+            }
           },
           error: () => {
             // No encounter yet or error

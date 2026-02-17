@@ -10,7 +10,7 @@ export interface VitalsResponse {
   height?: number;
   bmi?: number;
   recordedAt: string;
-  recordedBy: number; // User Id
+  recordedBy?: string; // User Name
 }
 
 export interface VitalsRequest {

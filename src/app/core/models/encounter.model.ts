@@ -1,3 +1,5 @@
+import { VitalsResponse } from './vitals.model';
+
 export interface EncounterResponse {
   id: number;
   appointmentId?: number;
@@ -13,10 +15,11 @@ export interface EncounterResponse {
   diagnosis?: string;
   notes?: string;
   startedAt: string;
-  completedAt?: string;
-  vitals?: Vitals;
+  visitedAt?: string;
+
+  vitals?: VitalsResponse; // Current/Latest Vitals
+  vitalsHistory?: VitalsResponse[];
   rounds?: RoundResponse[];
-  vitalsHistory?: Vitals[];
 }
 
 export interface RoundResponse {
@@ -27,21 +30,6 @@ export interface RoundResponse {
   notes: string;
   createdAt: string;
   updatedAt: string;
-}
-
-export interface Vitals {
-  id: number;
-  encounterId: number;
-  temperature: number;
-  systolic: number;
-  diastolic: number;
-  pulse: number;
-  spo2: number;
-  weight: number;
-  height: number;
-  bmi: number;
-  recordedAt: string;
-  recordedBy?: string;
 }
 
 export interface EncounterCreateRequest {

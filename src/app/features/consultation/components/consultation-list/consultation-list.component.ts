@@ -23,7 +23,7 @@ export class ConsultationListComponent implements OnInit, AfterViewInit {
 
   permissions = PERMISSIONS;
   opdQueue: any[] = [];
-  ipdQueue: any[] = [];
+
   loading = false;
 
   cols: any[] = [
@@ -53,17 +53,6 @@ export class ConsultationListComponent implements OnInit, AfterViewInit {
         this.opdQueue = this.mapEncounters(encounters);
       },
       error: (err) => console.error('Failed to load OPD queue', err),
-    });
-
-    this.encounterService.getIpdDoctorQueue(currentUser.id).subscribe({
-      next: (encounters) => {
-        this.ipdQueue = this.mapEncounters(encounters);
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Failed to load IPD queue', err);
-        this.loading = false;
-      },
     });
   }
 

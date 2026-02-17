@@ -88,12 +88,6 @@ export class EncounterService {
     );
   }
 
-  getIpdDoctorQueue(doctorId: number): Observable<EncounterResponse[]> {
-    return this.http.get<EncounterResponse[]>(
-      `${this.apiUrl}/queue/ipd/doctor/${doctorId}`,
-    );
-  }
-
   // Get patient encounter history
   getPatientEncounters(patientId: number): Observable<EncounterResponse[]> {
     return this.http.get<EncounterResponse[]>(

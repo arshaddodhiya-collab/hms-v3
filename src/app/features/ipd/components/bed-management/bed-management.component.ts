@@ -94,18 +94,13 @@ export class BedManagementComponent implements OnInit {
   openRoundForm(bed: Bed) {
     const admission = this.getAdmissionForBed(bed.id);
     if (!admission && bed.isOccupied) {
-      // Should ideally not happen if data is consistent, or maybe admission is not loaded yet?
-      // Since we forkJoin, it should be there unless inconsistencies in DB.
       console.warn('Occupied bed with no linked local admission found:', bed);
       return;
     }
 
     if (admission) {
       this.selectedAdmissionId = admission.id;
-      this.selectedPatientName = admission.patientName; // Admission model has patientName from mapper?
-      // Check Admission model. It usually has patient object or patientName flattened.
-      // IpdMapper.toAdmissionResponse maps patientName.
-      // Let's verify Admission interface in frontend model.
+      this.selectedPatientName = admission.patientName;
       this.showRoundForm = true;
     }
   }

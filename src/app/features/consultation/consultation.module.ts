@@ -8,12 +8,15 @@ import { ConsultationDetailComponent } from './components/consultation-detail/co
 import { DiagnosisNotesComponent } from './components/diagnosis-notes/diagnosis-notes.component';
 import { PrescriptionComponent } from './components/prescription/prescription.component';
 
+import { ConsultationHistoryComponent } from './components/consultation-history/consultation-history.component';
+
 @NgModule({
   declarations: [
     ConsultationListComponent,
     ConsultationDetailComponent,
     DiagnosisNotesComponent,
     PrescriptionComponent,
+    ConsultationHistoryComponent,
   ],
   imports: [
     SharedModule,
@@ -21,5 +24,6 @@ import { PrescriptionComponent } from './components/prescription/prescription.co
     ConsultationRoutingModule,
     LabModule,
   ],
+  exports: [ConsultationHistoryComponent],
 })
 export class ConsultationModule {}

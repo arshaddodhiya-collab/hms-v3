@@ -154,14 +154,19 @@ export class PatientViewComponent implements OnInit {
     switch (status) {
       case 'Completed':
       case 'HEALED':
+      case 'COMPLETED':
         return 'success';
       case 'Scheduled':
       case 'CHRONIC':
+      case 'CHECKED_IN':
         return 'info';
       case 'Cancelled':
+      case 'CANCELLED':
+      case 'NO_SHOW':
         return 'danger';
       case 'Ongoing':
       case 'ONGOING':
+      case 'IN_PROGRESS':
         return 'warning';
       default:
         return 'info';

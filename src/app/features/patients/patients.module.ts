@@ -8,14 +8,23 @@ import { PatientViewComponent } from './components/patient-view/patient-view.com
 import { PatientEditComponent } from './components/patient-edit/patient-edit.component';
 import { ConfirmationService } from 'primeng/api';
 
+import { MedicalHistoryComponent } from './components/medical-history/medical-history.component';
+import { ConsultationModule } from '../../features/consultation/consultation.module';
+
 @NgModule({
   declarations: [
     PatientListComponent,
     PatientRegisterComponent,
     PatientViewComponent,
     PatientEditComponent,
+    MedicalHistoryComponent,
   ],
-  imports: [CommonModule, SharedModule, PatientsRoutingModule],
+  imports: [
+    CommonModule,
+    SharedModule,
+    PatientsRoutingModule,
+    ConsultationModule,
+  ],
   providers: [ConfirmationService],
 })
 export class PatientsModule {}
