@@ -20,7 +20,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private appointmentService: AppointmentService,
-  ) { }
+  ) {}
 
   ngOnInit() {
     const user = this.authService.getCurrentUser();
@@ -29,16 +29,21 @@ export class DashboardComponent implements OnInit {
       this.username = user.username;
 
       if (this.userRole === 'Doctor') {
-        this.loadDoctorAppointments();
+        this.loadDoctorAppointments(user.id);
       }
     }
   }
 
-  loadDoctorAppointments() {
-    this.appointmentService.getAppointments().subscribe((appts) => {
-      // Mock filter: In real app, filter by this.user.id
-      this.myAppointments = appts.slice(0, 5); // Just show top 5 for widget
-    });
+  loadDoctorAppointments(doctorId: number) {
+    this.appointmentService
+      .getUpcomingAppointmentsForDoctor(doctorId)
+      .subscribe(
+        (
+          appts: import('../../../appointments/models/appointment.model').AppointmentResponse[],
+        ) => {
+          this.myAppointments = appts.slice(0, 5); // Just show top 5 for widget
+        },
+      );
   }
 
   onLogout() {

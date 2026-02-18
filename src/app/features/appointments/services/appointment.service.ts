@@ -117,4 +117,12 @@ export class AppointmentService {
       { params },
     );
   }
+
+  getUpcomingAppointmentsForDoctor(
+    doctorId: number,
+  ): Observable<AppointmentResponse[]> {
+    return this.http.get<AppointmentResponse[]>(
+      `${this.apiUrl}/doctor/${doctorId}/upcoming`,
+    );
+  }
 }
