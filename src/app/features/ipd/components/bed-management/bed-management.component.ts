@@ -77,6 +77,10 @@ export class BedManagementComponent implements OnInit {
   getOccupiedCount(): number {
     return this.beds.filter((b) => b.isOccupied).length;
   }
+  getOccupancyRate(): number {
+    if (this.beds.length === 0) return 0;
+    return Math.round((this.getOccupiedCount() / this.beds.length) * 100);
+  }
 
   getAdmissionForBed(bedId: number): Admission | undefined {
     return this.bedAdmissionMap.get(bedId);
