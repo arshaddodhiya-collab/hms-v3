@@ -60,4 +60,23 @@ export class AdminService {
   updateUser(id: number, user: User): Observable<User> {
     return this.http.put<User>(`${this.apiUrl}/users/${id}`, user);
   }
+
+  // Roles & Permissions
+  getRoles(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/roles`);
+  }
+
+  getAllPermissions(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/roles/permissions`);
+  }
+
+  updateRolePermissions(
+    roleId: number,
+    permissionIds: number[],
+  ): Observable<any> {
+    return this.http.put(
+      `${this.apiUrl}/roles/${roleId}/permissions`,
+      permissionIds,
+    );
+  }
 }

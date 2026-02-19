@@ -12,7 +12,7 @@ import { AuthService } from './features/auth/services/auth.service';
 export class AppComponent implements OnInit {
   isLoggedIn = false;
   isMobile = false;
-  sidebarVisible = false;
+  sidebarVisible = true;
   isAuthRoute = false;
 
   constructor(
@@ -34,11 +34,7 @@ export class AppComponent implements OnInit {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {
-        this.isAuthRoute =
-          event.url.includes('/auth') || event.url.includes('/error');
-        if (this.isMobile) {
-          this.sidebarVisible = false; // Close on route change on mobile
-        }
+        this.checkAuthRoute(event.urlAfterRedirects || event.url);
       });
   }
 
@@ -46,6 +42,21 @@ export class AppComponent implements OnInit {
     this.authService.currentUser$.subscribe((user) => {
       this.isLoggedIn = !!user;
     });
+    // Initial check in case navigation event was missed or hasn't fired yet
+    this.checkAuthRoute(this.router.url);
+  }
+
+  private checkAuthRoute(url: string) {
+    this.isAuthRoute = url.includes('/auth') || url.includes('/error');
+    if (this.isAuthRoute) {
+      this.sidebarVisible = false;
+    } else if (!this.isMobile) {
+      this.sidebarVisible = true;
+    }
+
+    if (this.isMobile) {
+      this.sidebarVisible = false; // Close on route change on mobile
+    }
   }
 
   get showLayout(): boolean {

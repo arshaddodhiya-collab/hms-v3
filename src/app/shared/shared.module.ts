@@ -29,6 +29,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { PanelModule } from 'primeng/panel';
+import { AccordionModule } from 'primeng/accordion';
+import { ListboxModule } from 'primeng/listbox';
 
 import { PageHeaderComponent } from './components/page-header.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog.component';
@@ -91,6 +93,8 @@ import { InputTextComponent } from './components/input-text.component';
     ProgressBarModule,
     AutoCompleteModule,
     PanelModule,
+    AccordionModule,
+    ListboxModule,
   ],
   exports: [
     CommonModule,
@@ -137,6 +141,8 @@ import { InputTextComponent } from './components/input-text.component';
     ProgressBarModule,
     AutoCompleteModule,
     PanelModule,
+    AccordionModule,
+    ListboxModule,
   ],
 })
 export class SharedModule {}

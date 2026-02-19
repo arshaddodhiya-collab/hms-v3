@@ -1,11 +1,93 @@
-<app-card>
-  <h2>Role Permissions</h2>
-  <p class="text-600 mb-4">
-    Manage permissions for each role. (Feature in progress)
-  </p>
+<app-page-header
+  title="Role Permissions"
+  subtitle="Manage access control for users"
+  icon="pi pi-lock"
+></app-page-header>
 
-  <div class="p-4 surface-100 border-round text-center text-500">
-    <i class="pi pi-lock text-4xl mb-3"></i>
-    <div>Advanced permission matrix coming soon.</div>
+<div class="grid">
+  <!-- Roles List -->
+  <div class="col-12 md:col-4">
+    <div class="card h-full">
+      <h5>Roles</h5>
+      <p-listbox
+        [options]="roles"
+        [(ngModel)]="selectedRole"
+        optionLabel="name"
+        [style]="{ width: '100%', border: 'none' }"
+        [listStyle]="{ 'max-height': '600px' }"
+        (onChange)="onRoleSelect($event)"
+      >
+        <ng-template let-role pTemplate="item">
+          <div class="flex align-items-center justify-content-between w-full">
+            <div>
+              <div class="font-bold">{{ role.name }}</div>
+              <div class="text-sm text-500">{{ role.description }}</div>
+            </div>
+            <i class="pi pi-chevron-right text-400"></i>
+          </div>
+        </ng-template>
+      </p-listbox>
+    </div>
   </div>
-</app-card>
+
+  <!-- Permissions Config -->
+  <div class="col-12 md:col-8">
+    <div class="card h-full relative" *ngIf="selectedRole; else noRoleSelected">
+      <div class="flex justify-content-between align-items-center mb-4">
+        <div>
+          <h5 class="m-0">Permissions for {{ selectedRole.name }}</h5>
+          <div class="text-500 text-sm mt-1">
+            {{ selectedPermissionIds.size }} permissions selected
+          </div>
+        </div>
+        <button
+          pButton
+          label="Save Changes"
+          icon="pi pi-save"
+          (click)="save()"
+          [loading]="saving"
+        ></button>
+      </div>
+
+      <p-accordion [multiple]="true">
+        <p-accordionTab
+          *ngFor="let group of permissionGroups"
+          [header]="group.module"
+          [selected]="true"
+        >
+          <div class="grid">
+            <div
+              class="col-12 md:col-6 lg:col-4"
+              *ngFor="let perm of group.permissions"
+            >
+              <div class="field-checkbox mb-0">
+                <p-checkbox
+                  [binary]="true"
+                  [inputId]="'perm_' + perm.id"
+                  [ngModel]="isPermissionSelected(perm.id)"
+                  (onChange)="togglePermission(perm.id)"
+                ></p-checkbox>
+                <label [for]="'perm_' + perm.id" class="ml-2 cursor-pointer">
+                  {{ perm.code }}
+                </label>
+              </div>
+            </div>
+          </div>
+        </p-accordionTab>
+      </p-accordion>
+    </div>
+
+    <ng-template #noRoleSelected>
+      <div
+        class="card h-full flex flex-column align-items-center justify-content-center text-500"
+        style="min-height: 400px"
+      >
+        <i class="pi pi-shield text-6xl mb-4 text-300"></i>
+        <div class="text-xl font-medium">
+          Select a role to configure permissions
+        </div>
+        <div class="mt-2">Choose a role from the list on the left</div>
+      </div>
+    </ng-template>
+  </div>
+</div>
