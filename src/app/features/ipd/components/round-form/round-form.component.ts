@@ -1,12 +1,20 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IpdService } from '../../services/ipd.service';
 import { MessageService } from 'primeng/api';
+import { IpdFacade } from '../../facades/ipd.facade';
 
 @Component({
   selector: 'app-round-form',
   templateUrl: './round-form.component.html',
   styleUrls: ['./round-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoundFormComponent implements OnInit {
   @Input() display = false;
@@ -16,11 +24,10 @@ export class RoundFormComponent implements OnInit {
   @Output() saved = new EventEmitter<void>();
 
   roundForm: FormGroup;
-  loading = false;
 
   constructor(
     private fb: FormBuilder,
-    private ipdService: IpdService,
+    public facade: IpdFacade,
     private messageService: MessageService,
   ) {
     this.roundForm = this.fb.group({
@@ -53,32 +60,15 @@ export class RoundFormComponent implements OnInit {
       return;
     }
 
-    this.loading = true;
     const formValue = this.roundForm.value;
     const payload = {
       admissionId: this.admissionId,
       ...formValue,
     };
 
-    this.ipdService.addRound(payload).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Round added successfully.',
-        });
-        this.loading = false;
-        this.saved.emit();
-        this.onHide();
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to add round.',
-        });
-        this.loading = false;
-      },
+    this.facade.addRound(payload, () => {
+      this.saved.emit();
+      this.onHide();
     });
   }
 }

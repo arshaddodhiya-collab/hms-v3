@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BillingService } from '../../services/billing.service';
 import { Location } from '@angular/common';
 import {
   PaymentRequest,
@@ -9,12 +8,15 @@ import {
   InvoiceStatus,
 } from '../../models/billing.models';
 import { MessageService } from 'primeng/api';
+import { BillingFacade } from '../../facades/billing.facade';
+import { BillingService } from '../../services/billing.service';
 
 @Component({
   selector: 'app-payment-receipt',
   templateUrl: './payment-receipt.component.html',
   styleUrls: ['./payment-receipt.component.scss'],
   providers: [MessageService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaymentReceiptComponent implements OnInit {
   id: string | null = null;
@@ -27,6 +29,7 @@ export class PaymentReceiptComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    public facade: BillingFacade,
     private billingService: BillingService,
     private location: Location,
     private messageService: MessageService,
@@ -59,25 +62,11 @@ export class PaymentReceiptComponent implements OnInit {
       invoiceId: this.invoice.id,
       amount: this.paymentAmount,
       paymentMethod: this.paymentMethod,
-      transactionReference: 'REF-' + Date.now(), // Mock ref for now
+      transactionReference: 'REF-' + Date.now(),
     };
 
-    this.billingService.processPayment(request).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Payment Successful',
-          detail: 'Payment recorded',
-        });
-        this.loadInvoice(this.invoice!.id);
-      },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Payment Failed',
-          detail: 'Could not process payment',
-        });
-      },
+    this.facade.processPayment(request, () => {
+      this.loadInvoice(this.invoice!.id);
     });
   }
 

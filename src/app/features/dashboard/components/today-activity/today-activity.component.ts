@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import {
   DashboardService,
   ActivityDTO,
@@ -10,6 +15,7 @@ import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
   selector: 'app-today-activity',
   templateUrl: './today-activity.component.html',
   styleUrls: ['./today-activity.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TodayActivityComponent implements OnInit {
   activities: any[] = [];
@@ -18,6 +24,7 @@ export class TodayActivityComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private dashboardService: DashboardService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -36,7 +43,6 @@ export class TodayActivityComponent implements OnInit {
   loadActivities() {
     this.dashboardService.getRecentActivity().subscribe(
       (data: ActivityDTO[]) => {
-        // Map API data to UI format
         const allActivities = data.map((act) => ({
           time: new Date(act.timestamp).toLocaleTimeString([], {
             hour: '2-digit',
@@ -50,6 +56,7 @@ export class TodayActivityComponent implements OnInit {
         this.activities = allActivities.filter((act) =>
           this.authService.hasPermission(act.permission),
         );
+        this.cdr.markForCheck();
       },
       (error) => {
         console.error('TodayActivity: Error loading activities', error);

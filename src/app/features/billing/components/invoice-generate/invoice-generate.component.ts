@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { BillingService } from '../../services/billing.service';
 import { InvoiceRequest } from '../../models/billing.models';
 import { PatientService } from '../../../patients/services/patient.service';
 import {
@@ -10,12 +9,13 @@ import {
   ChargeCatalogResponse,
 } from '../../services/charge-catalog.service';
 import { MessageService } from 'primeng/api';
+import { BillingFacade } from '../../facades/billing.facade';
 
 @Component({
   selector: 'app-invoice-generate',
   templateUrl: './invoice-generate.component.html',
-  //   styleUrls: ['./invoice-generate.component.scss'],
   providers: [MessageService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvoiceGenerateComponent implements OnInit {
   invoiceForm: FormGroup;
@@ -25,7 +25,7 @@ export class InvoiceGenerateComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private billingService: BillingService,
+    public facade: BillingFacade,
     private patientService: PatientService,
     private chargeCatalogService: ChargeCatalogService,
     private router: Router,
@@ -52,7 +52,6 @@ export class InvoiceGenerateComponent implements OnInit {
         this.chargeItems = data;
       },
       error: (err) => {
-        console.error('Failed to load charge catalog', err);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -72,8 +71,6 @@ export class InvoiceGenerateComponent implements OnInit {
       },
       error: (err) => {
         this.isLoadingPatients = false;
-        console.error('Patient search failed', err);
-        // 401 will be handled by interceptor, but we can show a message
         if (err.status !== 401) {
           this.messageService.add({
             severity: 'error',
@@ -86,11 +83,7 @@ export class InvoiceGenerateComponent implements OnInit {
   }
 
   onPatientSelect(event: any) {
-    const patient = event.value; // PrimeNG 15+ usually emits {originalEvent, value} for some events, but autocomplete might emit just value or event.
-    // Based on previous interaction, event itself might be the patient object if coming directly from flow,
-    // but let's be safe and check if it has properties or if it's nested.
-    // Actually standard p-autoComplete (onSelect) emits the selected item.
-
+    const patient = event;
     if (patient) {
       this.invoiceForm.patchValue({
         patientName: patient.name || patient.firstName + ' ' + patient.lastName,
@@ -116,7 +109,6 @@ export class InvoiceGenerateComponent implements OnInit {
 
   removeItem(index: number): void {
     this.items.removeAt(index);
-    // Recalculate invoice total handled by template pipe or getter
   }
 
   onItemSelect(event: any, index: number) {
@@ -138,7 +130,6 @@ export class InvoiceGenerateComponent implements OnInit {
     itemGroup.patchValue({ total: price * qty }, { emitEvent: false });
   }
 
-  // Helper for template to get total
   get invoiceTotal(): number {
     return this.items.controls.reduce((acc, curr) => {
       const price = curr.get('unitPrice')?.value || 0;
@@ -161,8 +152,7 @@ export class InvoiceGenerateComponent implements OnInit {
     const formVal = this.invoiceForm.value;
     const request: InvoiceRequest = {
       patientId: formVal.patientId,
-      status: 'ISSUED', // Or DRAFT based on UI switch, default to ISSUED for now or let user choose?
-      // User prompt imply generating invoice, usually means issuing.
+      status: 'ISSUED',
       items: formVal.items.map((item: any) => ({
         description: item.description,
         unitPrice: item.unitPrice,
@@ -170,23 +160,8 @@ export class InvoiceGenerateComponent implements OnInit {
       })),
     };
 
-    this.billingService.createInvoice(request).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Invoice created',
-        });
-        setTimeout(() => this.router.navigate(['/billing']), 1000);
-      },
-      error: (err) => {
-        console.error('Backend invoice creation failed', err);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to create invoice',
-        });
-      },
+    this.facade.createInvoice(request, () => {
+      setTimeout(() => this.router.navigate(['/billing']), 1000);
     });
   }
 

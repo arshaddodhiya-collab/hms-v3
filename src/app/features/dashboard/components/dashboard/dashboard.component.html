@@ -17,7 +17,7 @@
         <p class="text-600 mt-2 flex align-items-center">
           Welcome back,
           <span class="font-semibold text-900 capitalize ml-1">
-            {{ username }}
+            {{ facade.username() }}
           </span>
 
           <span class="mx-3 text-400">|</span>
@@ -29,7 +29,7 @@
               color: var(--hms-primary);
             "
           >
-            {{ userRole | titlecase }}
+            {{ facade.userRole() | titlecase }}
           </span>
         </p>
       </div>
@@ -57,7 +57,7 @@
     <!-- LEFT SECTION -->
     <div class="col-12 xl:col-8">
       <!-- Doctor Widget -->
-      <div *ngIf="userRole === 'Doctor'" class="mb-5">
+      <div *ngIf="facade.userRole() === 'Doctor'" class="mb-5">
         <app-card
           styleClass="border-round-2xl overflow-hidden"
           style="
@@ -82,7 +82,7 @@
           </div>
 
           <p-table
-            [value]="myAppointments"
+            [value]="facade.myAppointments()"
             styleClass="p-datatable-sm"
             [tableStyle]="{ 'min-width': '100%' }"
           >
@@ -137,7 +137,9 @@
       </div>
 
       <!-- Non Doctor -->
-      <app-today-activity *ngIf="userRole !== 'Doctor'"></app-today-activity>
+      <app-today-activity
+        *ngIf="facade.userRole() !== 'Doctor'"
+      ></app-today-activity>
     </div>
 
     <!-- RIGHT SECTION -->

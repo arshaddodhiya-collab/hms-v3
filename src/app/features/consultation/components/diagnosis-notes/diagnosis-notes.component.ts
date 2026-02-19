@@ -1,9 +1,16 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 @Component({
   selector: 'app-diagnosis-notes',
   templateUrl: './diagnosis-notes.component.html',
   styleUrls: ['./diagnosis-notes.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DiagnosisNotesComponent {
   @Input() diagnosis: string = '';

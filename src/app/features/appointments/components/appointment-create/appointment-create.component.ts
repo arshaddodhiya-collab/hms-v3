@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { AppointmentService } from '../../services/appointment.service';
 import { PatientService } from '../../../patients/services/patient.service';
 import { UserService } from '../../../../core/services/user.service';
 import { AppointmentRequest } from '../../models/appointment.model';
+import { AppointmentFacade } from '../../facades/appointment.facade';
 
 @Component({
   selector: 'app-appointment-create',
   templateUrl: './appointment-create.component.html',
   styleUrls: ['./appointment-create.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppointmentCreateComponent implements OnInit {
   appointmentForm!: FormGroup;
@@ -21,7 +22,7 @@ export class AppointmentCreateComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private messageService: MessageService,
-    private appointmentService: AppointmentService,
+    public facade: AppointmentFacade,
     private patientService: PatientService,
     private userService: UserService,
   ) {}
@@ -45,7 +46,6 @@ export class AppointmentCreateComponent implements OnInit {
   loadPatients() {
     this.patientService.getPatients().subscribe({
       next: (data) => {
-        // Handle pagination response if needed
         this.patients = data.content || data;
       },
       error: () =>
@@ -78,29 +78,15 @@ export class AppointmentCreateComponent implements OnInit {
         patientId: formValue.patientId,
         doctorId: formValue.doctorId,
         startDateTime: dateTime.toISOString(),
-        endDateTime: new Date(dateTime.getTime() + 30 * 60000).toISOString(), // Default 30 mins
+        endDateTime: new Date(dateTime.getTime() + 30 * 60000).toISOString(),
         type: formValue.type,
         reason: formValue.reason,
       };
 
-      this.appointmentService.createAppointment(request).subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Appointment Booked Successfully',
-          });
-          setTimeout(() => {
-            this.router.navigate(['/appointments']);
-          }, 1000);
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.error?.message || 'Failed to book appointment',
-          });
-        },
+      this.facade.createAppointment(request, () => {
+        setTimeout(() => {
+          this.router.navigate(['/appointments']);
+        }, 1000);
       });
     } else {
       this.appointmentForm.markAllAsTouched();

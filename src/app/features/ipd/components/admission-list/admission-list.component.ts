@@ -1,14 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  Admission,
-  AdmissionStatus,
-} from '../../../../core/models/patient.model';
-import { IpdService } from '../../services/ipd.service';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { IpdFacade } from '../../facades/ipd.facade';
 
 @Component({
   selector: 'app-admission-list',
   templateUrl: './admission-list.component.html',
   styleUrl: './admission-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdmissionListComponent implements OnInit {
   cols: any[] = [
@@ -20,24 +17,9 @@ export class AdmissionListComponent implements OnInit {
     { field: 'status', header: 'Status' },
   ];
 
-  data: Admission[] = [];
-  loading = false;
-
-  constructor(private ipdService: IpdService) {}
+  constructor(public facade: IpdFacade) {}
 
   ngOnInit(): void {
-    this.refreshData();
-  }
-
-  refreshData() {
-    this.loading = true;
-    this.ipdService.getAdmissions().subscribe((data) => {
-      this.data = data.map((a) => ({
-        ...a,
-        wardName: a.bed?.ward?.name || 'N/A',
-        bedNumber: a.bed?.number || 'N/A',
-      }));
-      this.loading = false;
-    });
+    this.facade.loadAdmissions();
   }
 }

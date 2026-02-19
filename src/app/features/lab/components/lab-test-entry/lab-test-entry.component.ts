@@ -1,27 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { LabService } from '../../services/lab.service';
 import { LabRequest, LabResult } from '../../../../core/models/lab.models';
 import { Location } from '@angular/common';
+import { LabFacade } from '../../facades/lab.facade';
+import { LabService } from '../../services/lab.service';
 
 @Component({
   selector: 'app-lab-test-entry',
   templateUrl: './lab-test-entry.component.html',
   styleUrls: ['./lab-test-entry.component.scss'],
   providers: [MessageService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LabTestEntryComponent implements OnInit {
   requestId: string | null = null;
   request: LabRequest | undefined;
   test: any = {};
   labForm!: FormGroup;
-  saving = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    public facade: LabFacade,
     private labService: LabService,
     private location: Location,
     private fb: FormBuilder,
@@ -53,7 +55,6 @@ export class LabTestEntryComponent implements OnInit {
           return;
         }
 
-        // Prevent editing completed requests
         if (
           this.request.status === 'COMPLETED' ||
           this.request.status === 'CANCELLED'
@@ -149,7 +150,6 @@ export class LabTestEntryComponent implements OnInit {
       return;
     }
 
-    // Duplicate Check
     const formValue = this.labForm.value;
     const parameters = formValue.results.map((r: any) =>
       r.parameter.toLowerCase().trim(),
@@ -167,7 +167,6 @@ export class LabTestEntryComponent implements OnInit {
       return;
     }
 
-    this.saving = true;
     const results = formValue.results.map((r: any) => ({
       parameterName: r.parameter,
       resultValue: r.value,
@@ -176,23 +175,8 @@ export class LabTestEntryComponent implements OnInit {
       isAbnormal: r.isAbnormal,
     }));
 
-    this.labService.addResults(+this.requestId, results).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Results saved and request marked as completed',
-        });
-        setTimeout(() => this.router.navigate(['/lab']), 1000);
-      },
-      error: (err) => {
-        this.saving = false;
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to save results. ' + (err.error?.message || ''),
-        });
-      },
+    this.facade.addResults(+this.requestId, results, () => {
+      setTimeout(() => this.router.navigate(['/lab']), 1000);
     });
   }
 

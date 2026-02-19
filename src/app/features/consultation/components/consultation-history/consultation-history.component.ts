@@ -1,10 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { EncounterResponse } from '../../../../core/models/encounter.model';
 
 @Component({
   selector: 'app-consultation-history',
   templateUrl: './consultation-history.component.html',
   styleUrls: ['./consultation-history.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConsultationHistoryComponent {
   @Input() encounters: EncounterResponse[] = [];

@@ -7,13 +7,18 @@
       label="New Appointment"
       icon="pi pi-plus"
       class="p-button-primary"
-      (click)="openNew('New Appointment')"
+      (click)="openNew()"
       pTooltip="Schedule a new appointment"
       tooltipPosition="bottom"
     ></button>
   </app-page-header>
 
-  <app-table [data]="data" [columns]="cols" [actionsTemplate]="actions">
+  <app-table
+    [data]="facade.appointments()"
+    [columns]="cols"
+    [actionsTemplate]="actions"
+    [loading]="facade.loading()"
+  >
   </app-table>
 </app-card>
 
@@ -72,7 +77,7 @@
       icon="pi pi-pencil"
       aria-label="Edit Appointment"
       class="p-button-rounded p-button-text p-button-warning"
-      (click)="editItem(appointment, 'Edit Appointment')"
+      (click)="editItem(appointment)"
       pTooltip="Edit Appointment"
       tooltipPosition="top"
     ></button>

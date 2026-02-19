@@ -6,7 +6,12 @@
 
   <p-tabView>
     <p-tabPanel header="OPD (Appt)">
-      <app-table [data]="opdQueue" [columns]="cols" [actionsTemplate]="actions">
+      <app-table
+        [data]="facade.doctorQueue()"
+        [columns]="cols"
+        [actionsTemplate]="actions"
+        [loading]="facade.loading()"
+      >
       </app-table>
     </p-tabPanel>
   </p-tabView>

@@ -16,7 +16,6 @@ import { RoundFormComponent } from './components/round-form/round-form.component
     AdmissionListComponent,
     BedManagementComponent,
     AdmissionFormComponent,
-    AdmissionFormComponent,
     DischargeSummaryComponent,
     RoundFormComponent,
   ],

@@ -1,43 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
-import { EncounterService } from '../../services/encounter.service';
-import { AppointmentService } from '../../../appointments/services/appointment.service';
-import { AuthService } from '../../../auth/services/auth.service';
-import {
-  EncounterResponse,
-  EncounterCreateRequest,
-} from '../../../../core/models/encounter.model';
-import {
-  PrescriptionItem,
-  PrescriptionRequest,
-} from '../../../../core/models/prescription.model';
 import { MessageService } from 'primeng/api';
+import { EncounterResponse } from '../../../../core/models/encounter.model';
+import { PrescriptionItem } from '../../../../core/models/prescription.model';
+import { ConsultationFacade } from '../../facades/consultation.facade';
 
 @Component({
   selector: 'app-consultation-detail',
   templateUrl: './consultation-detail.component.html',
   styleUrls: ['./consultation-detail.component.scss'],
   providers: [MessageService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConsultationDetailComponent implements OnInit {
   encounterId: number | null = null;
   appointmentId: number | null = null;
-  currentEncounter: EncounterResponse | null = null;
   patientName: string = '';
 
   diagnosis: string = '';
   notes: string = '';
   chiefComplaint: string = '';
 
-  loading = false;
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private encounterService: EncounterService,
-    private appointmentService: AppointmentService,
-    private authService: AuthService,
+    public facade: ConsultationFacade,
     private messageService: MessageService,
   ) {}
 
@@ -47,171 +34,77 @@ export class ConsultationDetailComponent implements OnInit {
 
     if (encParam) {
       this.encounterId = +encParam;
-      this.initConsultationByEncounter();
+      this.facade.loadEncounterById(this.encounterId);
+      // Watch for encounter to populate form fields
+      const checkEncounter = () => {
+        const enc = this.facade.encounter();
+        if (enc) {
+          this.patientName = enc.patientName;
+          this.diagnosis = enc.diagnosis || '';
+          this.notes = enc.notes || '';
+          this.chiefComplaint = enc.chiefComplaint || '';
+        }
+      };
+      setTimeout(checkEncounter, 1000);
     } else if (aptParam) {
       this.appointmentId = +aptParam;
-      this.initConsultationByAppointment();
+      this.facade.startEncounterFromAppointment(
+        this.appointmentId,
+        (encounter) => {
+          this.patientName = encounter.patientName;
+          this.diagnosis = encounter.diagnosis || '';
+          this.notes = encounter.notes || '';
+          this.chiefComplaint = encounter.chiefComplaint || '';
+        },
+        (msg) => this.errorAndRedirect(msg),
+      );
     } else {
       this.errorAndRedirect('Invalid ID');
     }
   }
 
-  initConsultationByEncounter() {
-    this.loading = true;
-    if (!this.encounterId) return;
-
-    this.encounterService.getEncounterById(this.encounterId).subscribe({
-      next: (encounter) => {
-        this.currentEncounter = encounter;
-        this.patientName = encounter.patientName;
-        this.diagnosis = encounter.diagnosis || '';
-        this.notes = encounter.notes || '';
-        this.chiefComplaint = encounter.chiefComplaint || '';
-        this.loading = false;
-      },
-      error: (err) => this.errorAndRedirect('Failed to load encounter'),
-    });
-  }
-
-  initConsultationByAppointment() {
-    this.loading = true;
-    if (!this.appointmentId) return;
-
-    // 1. Get Appointment Details
-    this.appointmentService.getAppointmentById(this.appointmentId).subscribe({
-      next: (appt) => {
-        this.patientName = appt.patientName;
-        // 2. Start/Resume Encounter
-        const currentUser = this.authService.getCurrentUser();
-        if (!currentUser) {
-          this.errorAndRedirect('User not logged in');
-          return;
-        }
-
-        const request: EncounterCreateRequest = {
-          appointmentId: this.appointmentId!,
-          patientId: appt.patientId,
-          doctorId: currentUser.id,
-        };
-
-        this.encounterService.startEncounter(request).subscribe({
-          next: (encounter) => {
-            this.currentEncounter = encounter;
-            this.diagnosis = encounter.diagnosis || '';
-            this.notes = encounter.notes || '';
-            this.chiefComplaint = encounter.chiefComplaint || '';
-            this.loading = false;
-          },
-          error: (err) => this.errorAndRedirect('Failed to start encounter'),
-        });
-      },
-      error: (err) => this.errorAndRedirect('Failed to load appointment'),
-    });
+  get currentEncounter(): EncounterResponse | null {
+    return this.facade.encounter();
   }
 
   onPrescriptionSave(items: PrescriptionItem[]) {
-    if (!this.currentEncounter) return;
-
-    const request: PrescriptionRequest = {
-      items: items,
-      note: 'Prescribed during consultation', // Optional note
-    };
-
-    this.encounterService
-      .savePrescription(this.currentEncounter.id, request)
-      .subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Saved',
-            detail: 'Prescription saved successfully',
-          });
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to save prescription',
-          });
-        },
-      });
+    const enc = this.facade.encounter();
+    if (!enc) return;
+    this.facade.savePrescription(enc.id, items);
   }
 
   saveDiagnosis() {
-    if (!this.currentEncounter) return;
+    const enc = this.facade.encounter();
+    if (!enc) return;
 
-    this.encounterService
-      .updateClinicalNotes(this.currentEncounter.id, {
-        chiefComplaint: this.chiefComplaint,
-        diagnosis: this.diagnosis,
-        notes: this.notes,
-      })
-      .subscribe({
-        next: (updated) => {
-          this.currentEncounter = updated; // Update state
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Saved',
-            detail: 'Diagnosis saved',
-          });
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to save diagnosis',
-          });
-        },
-      });
+    this.facade.updateClinicalNotes(enc.id, {
+      chiefComplaint: this.chiefComplaint,
+      diagnosis: this.diagnosis,
+      notes: this.notes,
+    });
   }
 
   finishConsultation() {
-    if (!this.currentEncounter) return;
+    const enc = this.facade.encounter();
+    if (!enc) return;
 
-    this.loading = true;
-
-    // Chain: Save Notes -> Complete Encounter
-    this.encounterService
-      .updateClinicalNotes(this.currentEncounter.id, {
+    this.facade.finishConsultation(
+      enc.id,
+      {
         chiefComplaint: this.chiefComplaint,
         diagnosis: this.diagnosis,
         notes: this.notes,
-      })
-      .pipe(
-        switchMap((updated) => {
-          this.currentEncounter = updated;
-          return this.encounterService.completeEncounter(
-            this.currentEncounter.id,
-          );
-        }),
-      )
-      .subscribe({
-        next: () => {
-          this.loading = false;
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Completed',
-            detail: 'Consultation finished',
-          });
-          setTimeout(() => {
-            this.router.navigate(['/consultation']);
-          }, 500);
-        },
-        error: (err) => {
-          this.loading = false;
-          console.error('Failed to finish consultation', err);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to complete consultation',
-          });
-        },
-      });
+      },
+      () => {
+        setTimeout(() => {
+          this.router.navigate(['/consultation']);
+        }, 500);
+      },
+    );
   }
 
   errorAndRedirect(msg: string) {
     console.error(msg);
-    this.loading = false;
     this.messageService.add({
       severity: 'error',
       summary: 'Error',
@@ -221,9 +114,10 @@ export class ConsultationDetailComponent implements OnInit {
   }
 
   viewLabRequests() {
-    if (!this.currentEncounter) return;
+    const enc = this.facade.encounter();
+    if (!enc) return;
     this.router.navigate(['/lab'], {
-      queryParams: { encounterId: this.currentEncounter.id },
+      queryParams: { encounterId: enc.id },
     });
   }
 }

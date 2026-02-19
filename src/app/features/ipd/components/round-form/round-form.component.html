@@ -108,7 +108,7 @@
         label="Save Round"
         icon="pi pi-check"
         type="submit"
-        [loading]="loading"
+        [loading]="facade.saving()"
         [disabled]="roundForm.invalid"
       ></p-button>
     </div>

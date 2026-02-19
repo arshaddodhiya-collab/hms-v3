@@ -4,23 +4,24 @@ import {
   ViewChild,
   TemplateRef,
   AfterViewInit,
+  ChangeDetectionStrategy,
 } from '@angular/core';
-import { BillingService } from '../../services/billing.service';
-import { InvoiceResponse, InvoiceStatus } from '../../models/billing.models';
 import { Router } from '@angular/router';
+import { InvoiceStatus } from '../../models/billing.models';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
+import { BillingFacade } from '../../facades/billing.facade';
 
 @Component({
   selector: 'app-billing-summary',
   templateUrl: './billing-summary.component.html',
   styleUrls: ['./billing-summary.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BillingSummaryComponent implements OnInit, AfterViewInit {
   @ViewChild('statusTemplate') statusTemplate!: TemplateRef<any>;
   @ViewChild('dateTemplate') dateTemplate!: TemplateRef<any>;
   @ViewChild('amountTemplate') amountTemplate!: TemplateRef<any>;
 
-  invoices: InvoiceResponse[] = [];
   permissions = PERMISSIONS;
   InvoiceStatus = InvoiceStatus;
 
@@ -33,14 +34,12 @@ export class BillingSummaryComponent implements OnInit, AfterViewInit {
   ];
 
   constructor(
-    private billingService: BillingService,
+    public facade: BillingFacade,
     private router: Router,
   ) {}
 
   ngOnInit(): void {
-    this.billingService.getAllInvoices().subscribe((data) => {
-      this.invoices = data;
-    });
+    this.facade.loadInvoices();
   }
 
   ngAfterViewInit() {

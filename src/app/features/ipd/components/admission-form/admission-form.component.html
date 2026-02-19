@@ -9,7 +9,7 @@
     <label class="col-12 md:col-2">Patient</label>
     <div class="col-12 md:col-10">
       <app-dropdown
-        [options]="patients"
+        [options]="facade.patients()"
         [(ngModel)]="selectedPatient"
         optionLabel="name"
         [optionValue]="null"
@@ -28,7 +28,7 @@
     <label class="col-12 md:col-2">Ward</label>
     <div class="col-12 md:col-10">
       <app-dropdown
-        [options]="wards"
+        [options]="facade.wards()"
         [(ngModel)]="selectedWard"
         placeholder="Select Ward"
         (onChange)="onWardChange()"
@@ -43,7 +43,7 @@
     <label class="col-12 md:col-2">Bed</label>
     <div class="col-12 md:col-10">
       <app-dropdown
-        [options]="availableBeds"
+        [options]="facade.availableBeds()"
         [(ngModel)]="selectedBed"
         optionLabel="number"
         [optionValue]="null"
@@ -61,7 +61,7 @@
     <label class="col-12 md:col-2">Doctor</label>
     <div class="col-12 md:col-10">
       <app-dropdown
-        [options]="doctors"
+        [options]="facade.doctors()"
         [(ngModel)]="selectedDoctor"
         optionLabel="fullName"
         [optionValue]="null"
@@ -102,7 +102,7 @@
       label="Admit Patient"
       icon="pi pi-check"
       (click)="save()"
-      [loading]="loading"
+      [loading]="facade.saving()"
     ></button>
   </div>
 </app-card>

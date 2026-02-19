@@ -36,7 +36,7 @@
               class="font-bold text-3xl text-900"
               style="letter-spacing: -0.5px"
             >
-              {{ beds.length }}
+              {{ facade.beds().length }}
             </div>
           </div>
           <div
@@ -89,7 +89,7 @@
               class="font-bold text-3xl text-900"
               style="letter-spacing: -0.5px"
             >
-              {{ getAvailableCount() }}
+              {{ facade.availableCount() }}
             </div>
           </div>
           <div
@@ -137,7 +137,7 @@
               class="font-bold text-3xl text-900"
               style="letter-spacing: -0.5px"
             >
-              {{ getOccupiedCount() }}
+              {{ facade.occupiedCount() }}
             </div>
           </div>
           <div
@@ -189,10 +189,10 @@
               class="font-bold text-3xl text-900"
               style="letter-spacing: -0.5px"
             >
-              {{ getOccupancyRate() }}%
+              {{ facade.occupancyRate() }}%
             </div>
-            <small class="text-600" *ngIf="beds.length > 0"
-              >of {{ beds.length }} total beds</small
+            <small class="text-600" *ngIf="facade.beds().length > 0"
+              >of {{ facade.beds().length }} total beds</small
             >
           </div>
           <div
@@ -218,40 +218,33 @@
     </div>
   </div>
 
-  <!-- Legend -->
   <!-- Legend / Filter -->
   <div class="flex gap-4 align-items-center justify-content-end text-sm">
     <div class="flex align-items-center gap-2">
       <p-checkbox
-        [(ngModel)]="showAvailable"
+        [ngModel]="facade.showAvailable()"
         [binary]="true"
-        (onChange)="groupBedsByWard()"
+        (onChange)="facade.toggleAvailable($event.checked)"
         inputId="cbAvailable"
       ></p-checkbox>
       <label
         for="cbAvailable"
         class="flex align-items-center gap-2 cursor-pointer"
       >
-        <!-- <span
-          class="w-1rem h-1rem border-round bg-green-50 border-1 border-green-200 block"
-        ></span> -->
         <span class="text-gray-600">Available</span>
       </label>
     </div>
     <div class="flex align-items-center gap-2">
       <p-checkbox
-        [(ngModel)]="showOccupied"
+        [ngModel]="facade.showOccupied()"
         [binary]="true"
-        (onChange)="groupBedsByWard()"
+        (onChange)="facade.toggleOccupied($event.checked)"
         inputId="cbOccupied"
       ></p-checkbox>
       <label
         for="cbOccupied"
         class="flex align-items-center gap-2 cursor-pointer"
       >
-        <!-- <span
-          class="w-1rem h-1rem border-round bg-red-50 border-1 border-red-200 block"
-        ></span> -->
         <span class="text-gray-600">Occupied</span>
       </label>
     </div>
@@ -259,7 +252,7 @@
 
   <!-- Wards & Beds -->
   <div class="flex flex-column gap-4">
-    <app-card *ngFor="let ward of wards" class="block">
+    <app-card *ngFor="let ward of facade.filteredWards()" class="block">
       <div
         class="flex align-items-center justify-content-between mb-3 border-bottom-1 border-gray-100 pb-2"
       >
@@ -330,7 +323,8 @@
               <!-- Patient Info & Actions -->
               <div
                 *ngIf="
-                  bed.isOccupied && getAdmissionForBed(bed.id) as admission
+                  bed.isOccupied &&
+                  facade.getAdmissionForBed(bed.id) as admission
                 "
                 class="mt-2 flex flex-column align-items-center gap-1 w-full"
                 (click)="$event.stopPropagation()"

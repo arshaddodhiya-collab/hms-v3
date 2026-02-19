@@ -1,17 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import {
   DashboardService,
   DashboardDTO,
 } from '../../services/dashboard.service';
 
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
-import { MockAuthService } from '../../../auth/services/mock-auth.service';
 import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-stats-cards',
   templateUrl: './stats-cards.component.html',
   styleUrls: ['./stats-cards.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatsCardsComponent implements OnInit {
   stats: any[] = [];
@@ -19,6 +24,7 @@ export class StatsCardsComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private dashboardService: DashboardService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -26,10 +32,8 @@ export class StatsCardsComponent implements OnInit {
   }
 
   loadStats() {
-    console.log('StatsCards: Loading stats...');
     this.dashboardService.getStats().subscribe(
       (data: DashboardDTO) => {
-        console.log('StatsCards: Received data', data);
         const allStats = [
           {
             label: 'Total Patients',
@@ -68,15 +72,10 @@ export class StatsCardsComponent implements OnInit {
           },
         ];
 
-        // Filter stats based on permissions
-        this.stats = allStats.filter((stat) => {
-          const hasPerm = this.authService.hasPermission(stat.permission);
-          console.log(
-            `StatsCards: Checking permission ${stat.permission}: ${hasPerm}`,
-          );
-          return hasPerm;
-        });
-        console.log('StatsCards: Filtered stats', this.stats);
+        this.stats = allStats.filter((stat) =>
+          this.authService.hasPermission(stat.permission),
+        );
+        this.cdr.markForCheck();
       },
       (error) => {
         console.error('StatsCards: Error loading stats', error);

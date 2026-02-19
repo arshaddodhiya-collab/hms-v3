@@ -201,7 +201,7 @@
           label="Save & Complete"
           icon="pi pi-check"
           (click)="saveResults()"
-          [loading]="saving"
+          [loading]="facade.saving()"
           [disabled]="labForm.invalid || resultsControls.length === 0"
         ></button>
       </div>

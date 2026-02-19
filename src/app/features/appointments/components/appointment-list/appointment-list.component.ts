@@ -6,24 +6,21 @@ import {
   ViewChild,
   TemplateRef,
   AfterViewInit,
+  ChangeDetectionStrategy,
 } from '@angular/core';
-import { Router } from '@angular/router'; // Added Router
+import { Router } from '@angular/router';
 import { TableColumn } from '../../../../shared/models/table.model';
-import { MessageService } from 'primeng/api';
-import { BaseCrudComponent } from '../../../../shared/components/base-crud.component';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
-import { AppointmentService } from '../../services/appointment.service';
 import { AppointmentResponse } from '../../models/appointment.model';
+import { AppointmentFacade } from '../../facades/appointment.facade';
 
 @Component({
   selector: 'app-appointment-list',
   templateUrl: './appointment-list.component.html',
   styleUrls: ['./appointment-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppointmentListComponent
-  extends BaseCrudComponent<AppointmentResponse>
-  implements OnInit, AfterViewInit
-{
+export class AppointmentListComponent implements OnInit, AfterViewInit {
   @ViewChild('statusTemplate') statusTemplate!: TemplateRef<{
     $implicit: unknown;
     row: AppointmentResponse;
@@ -31,7 +28,6 @@ export class AppointmentListComponent
 
   permissions = PERMISSIONS;
 
-  submitted: boolean = false;
   statuses: any[] = [
     { label: 'Scheduled', value: 'SCHEDULED' },
     { label: 'Confirmed', value: 'CONFIRMED' },
@@ -50,34 +46,12 @@ export class AppointmentListComponent
   ];
 
   constructor(
-    @Inject(LOCALE_ID) private locale: string,
-    private messageService: MessageService,
-    private appointmentService: AppointmentService,
+    public facade: AppointmentFacade,
     private router: Router,
-  ) {
-    super();
-  }
+  ) {}
 
-  override ngOnInit(): void {
-    this.refreshData();
-  }
-
-  override refreshData() {
-    this.loading = true;
-    this.appointmentService.getAppointments().subscribe({
-      next: (data) => {
-        this.data = data;
-        this.loading = false;
-      },
-      error: () => {
-        this.loading = false;
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Could not load appointments',
-        });
-      },
-    });
+  ngOnInit(): void {
+    this.facade.loadAll();
   }
 
   ngAfterViewInit() {
@@ -87,48 +61,15 @@ export class AppointmentListComponent
     }
   }
 
-  override openNew(header: string = 'New Appointment') {
+  openNew() {
     this.router.navigate(['appointments/create']);
   }
 
-  override editItem(
-    appointment: AppointmentResponse,
-    header: string = 'Edit Appointment',
-  ) {
+  editItem(appointment: AppointmentResponse) {
     this.router.navigate(['appointments/edit', appointment.id]);
   }
 
-  override hideDialog() {
-    this.displayDialog = false;
-  }
-
-  override onSave(_: AppointmentResponse | null) {
-    // No-op
-  }
-
   onCheckIn(appointment: AppointmentResponse) {
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Processing',
-      detail: 'Checking in patient...',
-    });
-
-    this.appointmentService.checkInAppointment(appointment.id).subscribe({
-      next: (updated) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Checked In',
-          detail: `Patient ${updated.patientName} checked in.`,
-        });
-        this.refreshData();
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to check in appointment',
-        });
-      },
-    });
+    this.facade.checkIn(appointment.id);
   }
 }

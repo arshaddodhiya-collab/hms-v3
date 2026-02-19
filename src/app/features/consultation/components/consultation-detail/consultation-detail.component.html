@@ -31,12 +31,12 @@
         icon="pi pi-check"
         class="p-button-success"
         (click)="finishConsultation()"
-        [loading]="loading"
+        [loading]="facade.saving()"
       ></button>
     </div>
   </div>
 
-  <p-progressBar mode="indeterminate" *ngIf="loading"></p-progressBar>
+  <p-progressBar mode="indeterminate" *ngIf="facade.loading()"></p-progressBar>
 
   <p-tabView *ngIf="currentEncounter">
     <p-tabPanel header="Vitals (Triage)" leftIcon="pi pi-heart">

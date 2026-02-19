@@ -9,7 +9,12 @@
     ></button>
   </app-page-header>
 
-  <app-table [data]="invoices" [columns]="cols" [actionsTemplate]="actions">
+  <app-table
+    [data]="facade.invoices()"
+    [columns]="cols"
+    [actionsTemplate]="actions"
+    [loading]="facade.loading()"
+  >
   </app-table>
 </app-card>
 

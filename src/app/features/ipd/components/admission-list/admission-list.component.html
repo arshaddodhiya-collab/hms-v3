@@ -14,12 +14,12 @@
     ></button>
   </div>
   <app-table
-    [data]="data"
+    [data]="facade.admissionList()"
     [columns]="cols"
     [rows]="10"
     [paginator]="true"
     [showSearch]="true"
-    [loading]="loading"
+    [loading]="facade.loading()"
     [actionsTemplate]="actions"
     styleClass="p-datatable-sm"
   ></app-table>

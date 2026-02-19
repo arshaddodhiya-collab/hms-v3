@@ -11,10 +11,11 @@
   </div>
 
   <app-table
-    [data]="requests"
+    [data]="facade.labQueue()"
     [columns]="cols"
     [globalFilterFields]="['patientName', 'testName', 'id']"
     [actionsTemplate]="actions"
+    [loading]="facade.loading()"
   >
   </app-table>
 </app-card>

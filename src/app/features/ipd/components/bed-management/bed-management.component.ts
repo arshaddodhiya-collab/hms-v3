@@ -1,107 +1,31 @@
-import { Component, EventEmitter, OnInit } from '@angular/core';
-import { forkJoin } from 'rxjs';
-import { Admission, Bed } from '../../../../core/models/patient.model';
-import { IpdService } from '../../services/ipd.service';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Bed, Admission } from '../../../../core/models/patient.model';
+import { IpdFacade } from '../../facades/ipd.facade';
 
 @Component({
   selector: 'app-bed-management',
   templateUrl: './bed-management.component.html',
   styleUrl: './bed-management.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BedManagementComponent implements OnInit {
-  beds: Bed[] = [];
-  wards: { name: string; beds: Bed[] }[] = [];
-  loading = false;
-
-  constructor(private ipdService: IpdService) {}
-
-  ngOnInit(): void {
-    this.refreshData();
-  }
-
-  refreshData() {
-    this.loading = true;
-    forkJoin({
-      beds: this.ipdService.getBeds(),
-      admissions: this.ipdService.getAdmissions(),
-    }).subscribe(({ beds, admissions }) => {
-      this.beds = beds;
-      this.admissions = admissions;
-      this.mapAdmissionsToBeds();
-      this.groupBedsByWard();
-      this.loading = false;
-    });
-  }
-
-  admissions: Admission[] = [];
-  bedAdmissionMap = new Map<number, Admission>();
-
-  mapAdmissionsToBeds() {
-    this.bedAdmissionMap.clear();
-    this.admissions.forEach((a) => {
-      if (a.bed && a.bed.id) {
-        this.bedAdmissionMap.set(a.bed.id, a);
-      }
-    });
-  }
-
-  showAvailable = true;
-  showOccupied = true;
-
-  groupBedsByWard() {
-    const wardMap = new Map<string, Bed[]>();
-
-    this.beds.forEach((bed) => {
-      // Filter Logic
-      if (bed.isOccupied && !this.showOccupied) return;
-      if (!bed.isOccupied && !this.showAvailable) return;
-
-      // Handle potential null or structure mismatch
-      const wardName = bed.ward?.name || 'Unknown Ward';
-      if (!wardMap.has(wardName)) {
-        wardMap.set(wardName, []);
-      }
-      wardMap.get(wardName)?.push(bed);
-    });
-
-    this.wards = [];
-    wardMap.forEach((beds, name) => {
-      this.wards.push({ name, beds });
-    });
-  }
-
-  getAvailableCount(): number {
-    return this.beds.filter((b) => !b.isOccupied).length;
-  }
-
-  getOccupiedCount(): number {
-    return this.beds.filter((b) => b.isOccupied).length;
-  }
-  getOccupancyRate(): number {
-    if (this.beds.length === 0) return 0;
-    return Math.round((this.getOccupiedCount() / this.beds.length) * 100);
-  }
-
-  getAdmissionForBed(bedId: number): Admission | undefined {
-    return this.bedAdmissionMap.get(bedId);
-  }
-
-  getBedStatusClass(bed: Bed): string {
-    return bed.isOccupied ? 'occupied' : 'available';
-  }
-
-  // Round Form Logic
+  // Round Form UI state (template-only concern)
   showRoundForm = false;
   selectedAdmissionId: number | null = null;
   selectedPatientName = '';
 
+  constructor(public facade: IpdFacade) {}
+
+  ngOnInit(): void {
+    this.facade.loadBedData();
+  }
+
   openRoundForm(bed: Bed) {
-    const admission = this.getAdmissionForBed(bed.id);
+    const admission = this.facade.getAdmissionForBed(bed.id);
     if (!admission && bed.isOccupied) {
-      console.warn('Occupied bed with no linked local admission found:', bed);
+      console.warn('Occupied bed with no linked admission:', bed);
       return;
     }
-
     if (admission) {
       this.selectedAdmissionId = admission.id;
       this.selectedPatientName = admission.patientName;
@@ -110,6 +34,6 @@ export class BedManagementComponent implements OnInit {
   }
 
   onRoundSaved() {
-    this.refreshData();
+    this.facade.loadBedData();
   }
 }

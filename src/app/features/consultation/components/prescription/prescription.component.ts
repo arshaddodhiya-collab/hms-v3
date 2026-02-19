@@ -1,10 +1,17 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-prescription',
   templateUrl: './prescription.component.html',
   styleUrls: ['./prescription.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrescriptionComponent {
   @Input() medicines: any[] = [];

@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LabService } from '../../services/lab.service';
 import { LabRequest } from '../../../../core/models/lab.models';
 import { Location } from '@angular/common';
+import { LabFacade } from '../../facades/lab.facade';
+import { LabService } from '../../services/lab.service';
 
 @Component({
   selector: 'app-lab-report-view',
   templateUrl: './lab-report-view.component.html',
   styleUrls: ['./lab-report-view.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LabReportViewComponent implements OnInit {
   requestId: string | null = null;
@@ -16,6 +18,7 @@ export class LabReportViewComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    public facade: LabFacade,
     private labService: LabService,
     private location: Location,
   ) {}

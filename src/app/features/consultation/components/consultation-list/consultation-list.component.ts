@@ -4,16 +4,17 @@ import {
   ViewChild,
   TemplateRef,
   AfterViewInit,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
-import { EncounterService } from '../../services/encounter.service';
 import { AuthService } from '../../../auth/services/auth.service';
-import { EncounterResponse } from '../../../../core/models/encounter.model';
+import { ConsultationFacade } from '../../facades/consultation.facade';
 
 @Component({
   selector: 'app-consultation-list',
   templateUrl: './consultation-list.component.html',
   styleUrls: ['./consultation-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConsultationListComponent implements OnInit, AfterViewInit {
   @ViewChild('patientNameTemplate') patientNameTemplate!: TemplateRef<any>;
@@ -24,18 +25,16 @@ export class ConsultationListComponent implements OnInit, AfterViewInit {
   permissions = PERMISSIONS;
   opdQueue: any[] = [];
 
-  loading = false;
-
   cols: any[] = [
     { field: 'patientName', header: 'Patient' },
     { field: 'age', header: 'Age/Gender' },
     { field: 'priority', header: 'Priority' },
-    { field: 'startedAt', header: 'Wait Time' }, // Using startedAt as proxy for wait start
+    { field: 'startedAt', header: 'Wait Time' },
     { field: 'status', header: 'Status' },
   ];
 
   constructor(
-    private encounterService: EncounterService,
+    public facade: ConsultationFacade,
     private authService: AuthService,
   ) {}
 
@@ -44,24 +43,19 @@ export class ConsultationListComponent implements OnInit, AfterViewInit {
   }
 
   loadQueues() {
-    this.loading = true;
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser) return;
 
-    this.encounterService.getOpdDoctorQueue(currentUser.id).subscribe({
-      next: (encounters) => {
-        this.opdQueue = this.mapEncounters(encounters);
-      },
-      error: (err) => console.error('Failed to load OPD queue', err),
-    });
+    this.facade.loadDoctorQueue(currentUser.id);
   }
 
+  // Map encounters to include computed age
   mapEncounters(encounters: any[]): any[] {
     return encounters.map((e) => ({
       ...e,
       age: this.calculateAge(e.patientDob),
       gender: e.patientGender,
-      priority: 'Normal', // TODO: Implement priority logic
+      priority: 'Normal',
       waitTime: e.startedAt,
     }));
   }

@@ -18,42 +18,34 @@
   ></button>
 </app-page-header>
 
-<div class="grid">
+<div class="grid" *ngIf="facade.selectedAppointment() as appointment">
   <!-- Left Column: Context (Patient & Doctor) -->
   <div class="col-12 md:col-3">
     <app-card header="Patient" styleClass="mb-3">
-      <ng-container *ngIf="appointment">
-        <div class="flex align-items-center gap-3 mb-2">
-          <p-avatar
-            icon="pi pi-user"
-            size="large"
-            shape="circle"
-            styleClass="bg-primary-100 text-primary"
-          ></p-avatar>
-          <div>
-            <div class="font-bold text-900">{{ appointment.patientName }}</div>
-            <div class="text-500 text-sm">
-              Patient ID: #P-{{ appointment.patientId }}
-            </div>
+      <div class="flex align-items-center gap-3 mb-2">
+        <p-avatar
+          icon="pi pi-user"
+          size="large"
+          shape="circle"
+          styleClass="bg-primary-100 text-primary"
+        ></p-avatar>
+        <div>
+          <div class="font-bold text-900">{{ appointment.patientName }}</div>
+          <div class="text-500 text-sm">
+            Patient ID: #P-{{ appointment.patientId }}
           </div>
         </div>
-        <button
-          pButton
-          label="View Profile"
-          class="p-button-text p-button-sm w-full"
-          routerLink="/patients/{{ appointment.patientId }}"
-        ></button>
-      </ng-container>
-      <div
-        *ngIf="!appointment"
-        class="flex align-items-center justify-content-center p-3"
-      >
-        <i class="pi pi-spin pi-spinner text-2xl text-500"></i>
       </div>
+      <button
+        pButton
+        label="View Profile"
+        class="p-button-text p-button-sm w-full"
+        routerLink="/patients/{{ appointment.patientId }}"
+      ></button>
     </app-card>
 
     <app-card header="Doctor">
-      <div class="flex align-items-center gap-3 mb-2" *ngIf="appointment">
+      <div class="flex align-items-center gap-3 mb-2">
         <p-avatar
           icon="pi pi-briefcase"
           size="large"
@@ -74,7 +66,7 @@
   </div>
 
   <!-- Center Column: Appointment Details -->
-  <div class="col-12 md:col-6" *ngIf="appointment">
+  <div class="col-12 md:col-6">
     <app-card header="Appointment Info" subheader="General Information">
       <div class="grid">
         <div class="col-6 mb-3">
@@ -114,33 +106,14 @@
         <h4 class="text-900 font-medium mb-2">Reason for Visit</h4>
         <p class="m-0 line-height-3 text-700">{{ appointment.reason }}</p>
       </div>
-
-      <!-- <div>
-        <h4 class="text-900 font-medium mb-2">Clinical Notes</h4>
-        <div class="surface-ground p-3 border-round text-700 line-height-3">
-          {{ appointment.notes }}
-        </div>
-      </div> -->
     </app-card>
   </div>
+</div>
 
-  <!-- Right Column: Timeline -->
-  <!-- <div class="col-12 md:col-3">
-    <app-card header="Status History">
-      <p-timeline [value]="events" align="left">
-        <ng-template pTemplate="marker" let-event>
-          <span
-            class="flex w-2rem h-2rem align-items-center justify-content-center text-white border-circle z-1 shadow-1"
-            [style.backgroundColor]="event.color"
-          >
-            <i [class]="event.icon"></i>
-          </span>
-        </ng-template>
-        <ng-template pTemplate="content" let-event>
-          <div class="text-sm font-bold text-900 mb-1">{{ event.status }}</div>
-          <div class="text-xs text-500">{{ event.date | date: 'short' }}</div>
-        </ng-template>
-      </p-timeline>
-    </app-card>
-  </div> -->
+<!-- Loading State -->
+<div
+  *ngIf="!facade.selectedAppointment() && facade.loading()"
+  class="flex align-items-center justify-content-center p-5"
+>
+  <i class="pi pi-spin pi-spinner text-4xl text-500"></i>
 </div>

@@ -28,7 +28,7 @@
     <label class="col-12 md:col-2">Test Name</label>
     <div class="col-12 md:col-10">
       <app-dropdown
-        [options]="tests"
+        [options]="facade.labTests()"
         [(ngModel)]="selectedTest"
         optionLabel="name"
         optionValue="id"
@@ -69,7 +69,7 @@
       icon="pi pi-check"
       aria-label="Request Test"
       (click)="save()"
-      [loading]="loading"
+      [loading]="facade.saving()"
     ></button>
   </div>
 </app-card>
