@@ -3,26 +3,42 @@
   <div class="p-fluid grid formgrid mb-4">
     <div class="field col-12 md:col-4">
       <app-input-text
-        label="Medicine Name"
+        label="Medicine Name *"
         [(ngModel)]="newMed.medicineName"
         placeholder="Paracetamol"
+        [ngClass]="{
+          'ng-invalid ng-dirty': submitted && !newMed.medicineName.trim(),
+        }"
       ></app-input-text>
+      <small class="p-error" *ngIf="submitted && !newMed.medicineName.trim()"
+        >Medicine name is required.</small
+      >
     </div>
     <div class="field col-12 md:col-3">
       <app-input-text
-        label="Dosage"
+        label="Dosage *"
         [(ngModel)]="newMed.dosage"
         placeholder="500mg"
+        [ngClass]="{
+          'ng-invalid ng-dirty': submitted && !newMed.dosage.trim(),
+        }"
       ></app-input-text>
+      <small class="p-error" *ngIf="submitted && !newMed.dosage.trim()"
+        >Dosage is required.</small
+      >
     </div>
     <div class="field col-12 md:col-3">
-      <label>Frequency</label>
+      <label>Frequency <span class="text-red-500">*</span></label>
       <app-dropdown
         [options]="frequencies"
         [(ngModel)]="newMed.frequency"
         placeholder="Select"
         appendTo="body"
+        [ngClass]="{ 'ng-invalid ng-dirty': submitted && !newMed.frequency }"
       ></app-dropdown>
+      <small class="p-error" *ngIf="submitted && !newMed.frequency"
+        >Frequency is required.</small
+      >
     </div>
     <div class="field col-12 md:col-2">
       <app-input-text
@@ -37,7 +53,6 @@
         label="Add"
         icon="pi pi-plus"
         (click)="addMedicine()"
-        [disabled]="!newMed.medicineName"
         class="p-button-outlined w-auto"
       ></button>
     </div>

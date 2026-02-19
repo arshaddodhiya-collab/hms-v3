@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { TriageService } from '../../services/triage.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-vitals-entry',
@@ -11,17 +12,7 @@ import { TriageService } from '../../services/triage.service';
 export class VitalsEntryComponent implements OnInit {
   appointmentId: string | null = null;
   encounterId: number | null = null;
-  vitals: any = {
-    temperature: null,
-    systolic: null,
-    diastolic: null,
-    pulse: null,
-    spo2: null,
-    weight: null,
-    height: null,
-    bmi: null,
-  };
-
+  vitalsForm: FormGroup;
   loading = false;
 
   constructor(
@@ -29,7 +20,18 @@ export class VitalsEntryComponent implements OnInit {
     private router: Router,
     private messageService: MessageService,
     private triageService: TriageService,
-  ) {}
+    private fb: FormBuilder,
+  ) {
+    this.vitalsForm = this.fb.group({
+      temperature: [null, [Validators.min(30), Validators.max(45)]],
+      systolic: [null, [Validators.min(50), Validators.max(300)]],
+      diastolic: [null, [Validators.min(20), Validators.max(200)]],
+      pulse: [null, [Validators.min(20), Validators.max(300)]],
+      spo2: [null, [Validators.min(0), Validators.max(100)]],
+      weight: [null, [Validators.min(0.5), Validators.max(500)]],
+      height: [null, [Validators.min(30), Validators.max(300)]],
+    });
+  }
 
   ngOnInit(): void {
     const encIdStr = this.route.snapshot.paramMap.get('encounterId');
@@ -40,42 +42,54 @@ export class VitalsEntryComponent implements OnInit {
     }
   }
 
-  calculateBMI() {
-    if (this.vitals.weight && this.vitals.height) {
-      const heightInMeters = this.vitals.height / 100;
-      this.vitals.bmi = (
-        this.vitals.weight /
-        (heightInMeters * heightInMeters)
-      ).toFixed(1);
+  get bmi(): string | null {
+    const weight = this.vitalsForm.get('weight')?.value;
+    const height = this.vitalsForm.get('height')?.value;
+    if (weight && height) {
+      const heightInMeters = height / 100;
+      return (weight / (heightInMeters * heightInMeters)).toFixed(1);
     }
+    return null;
   }
 
-  get isValid(): boolean {
-    return (
-      !!this.vitals.temperature ||
-      !!this.vitals.systolic ||
-      !!this.vitals.diastolic ||
-      !!this.vitals.pulse ||
-      !!this.vitals.spo2 ||
-      !!this.vitals.weight ||
-      !!this.vitals.height
-    );
+  /** At least one vital must be filled in */
+  get hasAtLeastOneVital(): boolean {
+    const v = this.vitalsForm.value;
+    return Object.values(v).some((val) => val !== null && val !== '');
   }
 
   saveVitals() {
-    if (!this.encounterId || !this.isValid) return;
+    this.vitalsForm.markAllAsTouched();
+
+    if (this.vitalsForm.invalid) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Validation Error',
+        detail: 'Please correct the highlighted fields.',
+      });
+      return;
+    }
+
+    if (!this.encounterId || !this.hasAtLeastOneVital) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'Please enter at least one vital sign.',
+      });
+      return;
+    }
 
     this.loading = true;
-
-    // Create VitalsRequest object
+    const { temperature, systolic, diastolic, pulse, spo2, weight, height } =
+      this.vitalsForm.value;
     const request = {
-      temperature: this.vitals.temperature,
-      systolic: this.vitals.systolic,
-      diastolic: this.vitals.diastolic,
-      pulse: this.vitals.pulse,
-      spo2: this.vitals.spo2,
-      weight: this.vitals.weight,
-      height: this.vitals.height,
+      temperature,
+      systolic,
+      diastolic,
+      pulse,
+      spo2,
+      weight,
+      height,
     };
 
     this.triageService.saveVitals(this.encounterId, request).subscribe({
@@ -85,7 +99,7 @@ export class VitalsEntryComponent implements OnInit {
           summary: 'Success',
           detail: 'Vitals Recorded',
         });
-        this.router.navigate(['/triage']); // Go back to queue
+        this.router.navigate(['/triage']);
       },
       error: (err) => {
         this.loading = false;
@@ -100,6 +114,6 @@ export class VitalsEntryComponent implements OnInit {
   }
 
   cancel() {
-    this.router.navigate(['/triage']); // Back to queue
+    this.router.navigate(['/triage']);
   }
 }

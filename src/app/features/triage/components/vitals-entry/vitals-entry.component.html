@@ -14,162 +14,234 @@
     </button>
   </div>
 
-  <div class="p-fluid grid formgrid">
-    <div class="col-12 md:col-6 field">
-      <label class="font-medium text-900" for="temperature"
-        >Temperature (°C)</label
-      >
-      <div class="p-inputgroup">
-        <span class="p-inputgroup-addon bg-orange-50 text-orange-500"
-          ><i class="pi pi-sun"></i
-        ></span>
-        <input
-          id="temperature"
-          pInputText
-          type="number"
-          [(ngModel)]="vitals.temperature"
-          placeholder="36.5"
-        />
+  <form [formGroup]="vitalsForm" (ngSubmit)="saveVitals()">
+    <div class="p-fluid grid formgrid">
+      <div class="col-12 md:col-6 field">
+        <label class="font-medium text-900" for="temperature"
+          >Temperature (°C)</label
+        >
+        <div class="p-inputgroup">
+          <span class="p-inputgroup-addon bg-orange-50 text-orange-500"
+            ><i class="pi pi-sun"></i
+          ></span>
+          <input
+            id="temperature"
+            pInputText
+            type="number"
+            formControlName="temperature"
+            placeholder="36.5"
+            [ngClass]="{
+              'ng-invalid ng-dirty':
+                vitalsForm.get('temperature')?.invalid &&
+                vitalsForm.get('temperature')?.touched,
+            }"
+          />
+        </div>
+        <app-validation-message
+          [control]="vitalsForm.get('temperature')!"
+          name="Temperature"
+        ></app-validation-message>
       </div>
-    </div>
-    <div class="col-12 md:col-6 field">
-      <label class="font-medium text-900" for="spo2">SpO₂ (%)</label>
-      <div class="p-inputgroup">
-        <span class="p-inputgroup-addon bg-cyan-50 text-cyan-500"
-          ><i class="pi pi-caret-up"></i
-        ></span>
+
+      <div class="col-12 md:col-6 field">
+        <label class="font-medium text-900" for="spo2">SpO₂ (%)</label>
+        <div class="p-inputgroup">
+          <span class="p-inputgroup-addon bg-cyan-50 text-cyan-500"
+            ><i class="pi pi-caret-up"></i
+          ></span>
+          <input
+            id="spo2"
+            pInputText
+            type="number"
+            formControlName="spo2"
+            placeholder="98"
+            [ngClass]="{
+              'ng-invalid ng-dirty':
+                vitalsForm.get('spo2')?.invalid &&
+                vitalsForm.get('spo2')?.touched,
+            }"
+          />
+        </div>
+        <app-validation-message
+          [control]="vitalsForm.get('spo2')!"
+          name="SpO₂"
+        ></app-validation-message>
+      </div>
+
+      <div class="col-12 md:col-6 field">
+        <label class="font-medium text-900" for="systolic"
+          >Systolic BP (mmHg)</label
+        >
+        <div class="p-inputgroup">
+          <span
+            class="p-inputgroup-addon"
+            style="
+              background: var(--hms-primary-light);
+              color: var(--hms-primary);
+            "
+          >
+            <i class="pi pi-heart"></i>
+          </span>
+          <input
+            id="systolic"
+            pInputText
+            type="number"
+            formControlName="systolic"
+            placeholder="120"
+            [ngClass]="{
+              'ng-invalid ng-dirty':
+                vitalsForm.get('systolic')?.invalid &&
+                vitalsForm.get('systolic')?.touched,
+            }"
+          />
+        </div>
+        <app-validation-message
+          [control]="vitalsForm.get('systolic')!"
+          name="Systolic BP"
+        ></app-validation-message>
+      </div>
+
+      <div class="col-12 md:col-6 field">
+        <label class="font-medium text-900" for="diastolic"
+          >Diastolic BP (mmHg)</label
+        >
+        <div class="p-inputgroup">
+          <span
+            class="p-inputgroup-addon"
+            style="
+              background: var(--hms-primary-light);
+              color: var(--hms-primary);
+            "
+          >
+            <i class="pi pi-heart"></i>
+          </span>
+          <input
+            id="diastolic"
+            pInputText
+            type="number"
+            formControlName="diastolic"
+            placeholder="80"
+            [ngClass]="{
+              'ng-invalid ng-dirty':
+                vitalsForm.get('diastolic')?.invalid &&
+                vitalsForm.get('diastolic')?.touched,
+            }"
+          />
+        </div>
+        <app-validation-message
+          [control]="vitalsForm.get('diastolic')!"
+          name="Diastolic BP"
+        ></app-validation-message>
+      </div>
+
+      <div class="col-12 md:col-6 field">
+        <label class="font-medium text-900" for="pulse">Pulse (bpm)</label>
+        <div class="p-inputgroup">
+          <span class="p-inputgroup-addon bg-purple-50 text-purple-500"
+            ><i class="pi pi-clock"></i
+          ></span>
+          <input
+            id="pulse"
+            pInputText
+            type="number"
+            formControlName="pulse"
+            placeholder="72"
+            [ngClass]="{
+              'ng-invalid ng-dirty':
+                vitalsForm.get('pulse')?.invalid &&
+                vitalsForm.get('pulse')?.touched,
+            }"
+          />
+        </div>
+        <app-validation-message
+          [control]="vitalsForm.get('pulse')!"
+          name="Pulse"
+        ></app-validation-message>
+      </div>
+
+      <div class="col-12 md:col-6 field"></div>
+      <div class="col-12"><div class="p-divider"></div></div>
+
+      <div class="col-12 md:col-4 field">
+        <label class="font-medium text-900" for="weight">Weight (kg)</label>
         <input
-          id="spo2"
+          id="weight"
           pInputText
           type="number"
-          [(ngModel)]="vitals.spo2"
-          placeholder="98"
+          formControlName="weight"
+          placeholder="70"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              vitalsForm.get('weight')?.invalid &&
+              vitalsForm.get('weight')?.touched,
+          }"
+        />
+        <app-validation-message
+          [control]="vitalsForm.get('weight')!"
+          name="Weight"
+        ></app-validation-message>
+      </div>
+
+      <div class="col-12 md:col-4 field">
+        <label class="font-medium text-900" for="height">Height (cm)</label>
+        <input
+          id="height"
+          pInputText
+          type="number"
+          formControlName="height"
+          placeholder="175"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              vitalsForm.get('height')?.invalid &&
+              vitalsForm.get('height')?.touched,
+          }"
+        />
+        <app-validation-message
+          [control]="vitalsForm.get('height')!"
+          name="Height"
+        ></app-validation-message>
+      </div>
+
+      <div class="col-12 md:col-4 field">
+        <label class="font-medium text-900" for="bmi">BMI</label>
+        <input
+          id="bmi"
+          pInputText
+          type="number"
+          [value]="bmi"
+          [disabled]="true"
+          class="bg-gray-100 font-bold text-900 opacity-100"
         />
       </div>
     </div>
 
-    <div class="col-12 md:col-6 field">
-      <label class="font-medium text-900" for="systolic"
-        >Systolic BP (mmHg)</label
-      >
-      <div class="p-inputgroup">
-        <span
-          class="p-inputgroup-addon"
-          style="
-            background: var(--hms-primary-light);
-            color: var(--hms-primary);
-          "
-          ><i class="pi pi-heart"></i
-        ></span>
-        <input
-          id="systolic"
-          pInputText
-          type="number"
-          [(ngModel)]="vitals.systolic"
-          placeholder="120"
-        />
-      </div>
-    </div>
-    <div class="col-12 md:col-6 field">
-      <label class="font-medium text-900" for="diastolic"
-        >Diastolic BP (mmHg)</label
-      >
-      <div class="p-inputgroup">
-        <span
-          class="p-inputgroup-addon"
-          style="
-            background: var(--hms-primary-light);
-            color: var(--hms-primary);
-          "
-          ><i class="pi pi-heart"></i
-        ></span>
-        <input
-          id="diastolic"
-          pInputText
-          type="number"
-          [(ngModel)]="vitals.diastolic"
-          placeholder="80"
-        />
-      </div>
-    </div>
-
-    <div class="col-12 md:col-6 field">
-      <label class="font-medium text-900" for="pulse">Pulse (bpm)</label>
-      <div class="p-inputgroup">
-        <span class="p-inputgroup-addon bg-purple-50 text-purple-500"
-          ><i class="pi pi-clock"></i
-        ></span>
-        <input
-          id="pulse"
-          pInputText
-          type="number"
-          [(ngModel)]="vitals.pulse"
-          placeholder="72"
-        />
-      </div>
-    </div>
-
-    <div class="col-12 md:col-6 field"></div>
-    <div class="col-12"><div class="p-divider"></div></div>
-
-    <div class="col-12 md:col-4 field">
-      <label class="font-medium text-900" for="weight">Weight (kg)</label>
-      <input
-        id="weight"
-        pInputText
-        type="number"
-        [(ngModel)]="vitals.weight"
-        (change)="calculateBMI()"
-        placeholder="70"
-      />
-    </div>
-    <div class="col-12 md:col-4 field">
-      <label class="font-medium text-900" for="height">Height (cm)</label>
-      <input
-        id="height"
-        pInputText
-        type="number"
-        [(ngModel)]="vitals.height"
-        (change)="calculateBMI()"
-        placeholder="175"
-      />
-    </div>
-    <div class="col-12 md:col-4 field">
-      <label class="font-medium text-900" for="bmi">BMI</label>
-      <input
-        id="bmi"
-        pInputText
-        type="number"
-        [(ngModel)]="vitals.bmi"
-        [disabled]="true"
-        class="bg-gray-100 font-bold text-900 opacity-100"
-      />
-    </div>
-  </div>
-
-  <div
-    class="flex justify-content-end gap-2 mt-4 border-top-1 surface-border pt-4"
-  >
-    <button
-      pButton
-      class="p-button-secondary p-button-text"
-      (click)="cancel()"
-      pTooltip="Discard changes"
-      tooltipPosition="left"
+    <div
+      class="flex justify-content-end gap-2 mt-4 border-top-1 surface-border pt-4"
     >
-      Cancel
-    </button>
-    <button
-      pButton
-      class="p-button-primary"
-      (click)="saveVitals()"
-      [disabled]="!isValid"
-      [pTooltip]="
-        !isValid ? 'Enter at least one vital sign' : 'Save vitals entry'
-      "
-      tooltipPosition="left"
-    >
-      Save Vitals
-    </button>
-  </div>
+      <button
+        pButton
+        type="button"
+        class="p-button-secondary p-button-text"
+        (click)="cancel()"
+        pTooltip="Discard changes"
+        tooltipPosition="left"
+      >
+        Cancel
+      </button>
+      <button
+        pButton
+        type="submit"
+        class="p-button-primary"
+        [disabled]="vitalsForm.invalid || !hasAtLeastOneVital"
+        [pTooltip]="
+          !hasAtLeastOneVital
+            ? 'Enter at least one vital sign'
+            : 'Save vitals entry'
+        "
+        tooltipPosition="left"
+      >
+        Save Vitals
+      </button>
+    </div>
+  </form>
 </div>

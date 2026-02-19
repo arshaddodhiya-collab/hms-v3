@@ -21,8 +21,20 @@
         pInputTextarea
         formControlName="notes"
         class="w-full"
+        [ngClass]="{
+          'ng-invalid ng-dirty':
+            roundForm.get('notes')?.invalid && roundForm.get('notes')?.touched,
+        }"
         placeholder="Enter patient status, complaints, etc."
       ></textarea>
+      <small
+        class="p-error"
+        *ngIf="
+          roundForm.get('notes')?.invalid && roundForm.get('notes')?.touched
+        "
+      >
+        Progress notes are required.
+      </small>
     </div>
 
     <p-divider align="left">

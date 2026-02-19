@@ -56,17 +56,25 @@ export class PatientRegisterComponent implements OnInit, OnChanges {
 
   initForm() {
     this.patientForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
-      dob: [null, [Validators.required]],
-      gender: [null, Validators.required],
-      phone: [
+      firstName: [
         '',
         [
           Validators.required,
-          Validators.pattern(/^\+?(\d[\d-. ]+)?(\([\d-. ]+\))?[\d-. ]+\d$/),
+          Validators.minLength(2),
+          Validators.maxLength(100),
         ],
       ],
+      lastName: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(100),
+        ],
+      ],
+      dob: [null, [Validators.required]],
+      gender: [null, Validators.required],
+      phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       email: ['', [Validators.required, Validators.email]],
     });
   }
