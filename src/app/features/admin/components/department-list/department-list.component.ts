@@ -35,7 +35,7 @@ export class DepartmentListComponent
   }
 
   override refreshData() {
-    this.adminService.getDepartments().subscribe((data) => {
+    this.adminService.getDepartments().subscribe((data: Department[]) => {
       this.data = data;
     });
   }

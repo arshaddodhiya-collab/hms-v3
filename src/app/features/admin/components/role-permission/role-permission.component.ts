@@ -30,7 +30,7 @@ export class RolePermissionComponent implements OnInit {
   loadData() {
     this.loading = true;
     this.adminService.getRoles().subscribe({
-      next: (roles) => {
+      next: (roles: any[]) => {
         this.roles = roles;
         this.loading = false;
       },
@@ -45,7 +45,7 @@ export class RolePermissionComponent implements OnInit {
     });
 
     this.adminService.getAllPermissions().subscribe({
-      next: (perms) => {
+      next: (perms: any[]) => {
         this.permissions = perms;
         this.groupPermissions();
       },
@@ -108,7 +108,7 @@ export class RolePermissionComponent implements OnInit {
     this.adminService
       .updateRolePermissions(this.selectedRole.id, permissionIds)
       .subscribe({
-        next: (updatedRole) => {
+        next: (updatedRole: any) => {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',

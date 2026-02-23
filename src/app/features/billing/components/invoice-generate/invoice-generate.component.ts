@@ -51,7 +51,7 @@ export class InvoiceGenerateComponent implements OnInit {
       next: (data) => {
         this.chargeItems = data;
       },
-      error: (err) => {
+      error: (err: any) => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',

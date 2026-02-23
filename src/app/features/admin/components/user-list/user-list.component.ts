@@ -51,7 +51,7 @@ export class UserListComponent
   }
 
   override refreshData() {
-    this.adminService.getUsers().subscribe((data) => {
+    this.adminService.getUsers().subscribe((data: User[]) => {
       this.data = data;
     });
   }

@@ -47,7 +47,7 @@ export class UserCreateComponent implements OnChanges, OnInit {
   }
 
   ngOnInit(): void {
-    this.adminService.getDepartments().subscribe((depts) => {
+    this.adminService.getDepartments().subscribe((depts: Department[]) => {
       this.departments = depts;
     });
   }

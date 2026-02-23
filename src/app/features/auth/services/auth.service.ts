@@ -33,13 +33,15 @@ export class AuthService {
       .get<User>(`${this.path}/me`)
       .pipe(
         catchError((error) => {
-          // Silently handle errors during initial load
-          // Don't trigger error interceptor redirect for 401/500 on /me endpoint
+          console.error('Failed to load current user', error);
           this.currentUserSubject.next(null);
+          // Instead of burying it completely, return an empty observable
+          // or rethrow. For /me, if they aren't logged in, of(null) is fine
+          // to clear state, but we should at least log it.
           return of(null);
         }),
       )
-      .subscribe((user) => {
+      .subscribe((user: User | null) => {
         if (user) {
           this.currentUserSubject.next(user);
         }

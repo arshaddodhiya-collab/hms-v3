@@ -3,6 +3,7 @@ import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Patient } from '../../../core/models/patient.model';
+import { Page } from '../../../core/models/page.model';
 import { ApiService } from '../../../core/services/api.service';
 
 @Injectable({
@@ -17,7 +18,7 @@ export class PatientService {
     query?: string,
     page: number = 0,
     size: number = 10,
-  ): Observable<any> {
+  ): Observable<Page<Patient>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
@@ -26,7 +27,7 @@ export class PatientService {
       params = params.set('query', query);
     }
 
-    return this.apiService.get<any>(this.path, params);
+    return this.apiService.get<Page<Patient>>(this.path, params);
   }
 
   getPatientById(id: number): Observable<Patient> {
