@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap, catchError, of } from 'rxjs';
+import { ApiService } from '../../../core/services/api.service';
+import { BehaviorSubject, catchError, Observable, of, tap } from 'rxjs';
 import { Router } from '@angular/router';
-import { environment } from '../../../../environments/environment';
 
 export interface User {
   id: number;
@@ -15,14 +14,14 @@ export interface User {
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = `${environment.apiUrl}/auth`;
+  private path = 'auth';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
   private loadingSubject = new BehaviorSubject<boolean>(false);
   public loading$ = this.loadingSubject.asObservable();
 
   constructor(
-    private http: HttpClient,
+    private apiService: ApiService,
     private router: Router,
   ) {
     this.loadCurrentUser();
@@ -30,8 +29,8 @@ export class AuthService {
 
   // Load user from backend (verifies cookie)
   loadCurrentUser(): void {
-    this.http
-      .get<User>(`${this.apiUrl}/me`, { withCredentials: true })
+    this.apiService
+      .get<User>(`${this.path}/me`)
       .pipe(
         catchError((error) => {
           // Silently handle errors during initial load
@@ -49,29 +48,23 @@ export class AuthService {
 
   login(credentials: any): Observable<User> {
     this.loadingSubject.next(true);
-    return this.http
-      .post<User>(`${this.apiUrl}/login`, credentials, {
-        withCredentials: true,
-      })
-      .pipe(
-        tap((user) => {
-          this.currentUserSubject.next(user);
-          this.loadingSubject.next(false);
-        }),
-        catchError((error) => {
-          this.loadingSubject.next(false);
-          throw error;
-        }),
-      );
+    return this.apiService.post<User>(`${this.path}/login`, credentials).pipe(
+      tap((user) => {
+        this.currentUserSubject.next(user);
+        this.loadingSubject.next(false);
+      }),
+      catchError((error) => {
+        this.loadingSubject.next(false);
+        throw error;
+      }),
+    );
   }
 
   logout(): void {
-    this.http
-      .post(`${this.apiUrl}/logout`, {}, { withCredentials: true })
-      .subscribe(() => {
-        this.currentUserSubject.next(null);
-        this.router.navigate(['/auth/login']);
-      });
+    this.apiService.post(`${this.path}/logout`, {}).subscribe(() => {
+      this.currentUserSubject.next(null);
+      this.router.navigate(['/auth/login']);
+    });
   }
 
   isAuthenticated(): boolean {

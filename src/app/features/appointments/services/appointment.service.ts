@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
+import { ApiService } from '../../../core/services/api.service';
 import {
   AppointmentRequest,
   AppointmentResponse,
@@ -11,12 +11,12 @@ import {
   providedIn: 'root',
 })
 export class AppointmentService {
-  private apiUrl = `${environment.apiUrl}/appointments`;
+  private path = 'appointments';
 
-  constructor(private http: HttpClient) {}
+  constructor(private apiService: ApiService) {}
 
   getAppointments(): Observable<AppointmentResponse[]> {
-    return this.http.get<AppointmentResponse[]>(this.apiUrl);
+    return this.apiService.get<AppointmentResponse[]>(this.path);
   }
 
   getAppointmentsByDate(date: string): Observable<AppointmentResponse[]> {
@@ -24,11 +24,11 @@ export class AppointmentService {
     // We might need to adjust the controller to accept a date for the general list if not restricted to doctor
     // But for now, let's stick to what's available.
     // If we want doctor specific: /doctor/{id}
-    return this.http.get<AppointmentResponse[]>(`${this.apiUrl}/today`); // Fallback until we have a date filter endpoint for all
+    return this.apiService.get<AppointmentResponse[]>(`${this.path}/today`); // Fallback until we have a date filter endpoint for all
   }
 
   getAppointmentById(id: number): Observable<AppointmentResponse> {
-    return this.http.get<AppointmentResponse>(`${this.apiUrl}/${id}`);
+    return this.apiService.get<AppointmentResponse>(`${this.path}/${id}`);
   }
 
   // Helper to get doctor appointments if needed
@@ -37,17 +37,17 @@ export class AppointmentService {
     date: string,
   ): Observable<AppointmentResponse[]> {
     const params = new HttpParams().set('date', date);
-    return this.http.get<AppointmentResponse[]>(
-      `${this.apiUrl}/doctor/${doctorId}`,
-      { params },
+    return this.apiService.get<AppointmentResponse[]>(
+      `${this.path}/doctor/${doctorId}`,
+      params,
     );
   }
 
   createAppointment(
     appointment: AppointmentRequest,
   ): Observable<AppointmentResponse> {
-    return this.http.post<AppointmentResponse>(
-      `${this.apiUrl}/book`,
+    return this.apiService.post<AppointmentResponse>(
+      `${this.path}/book`,
       appointment,
     );
   }
@@ -56,8 +56,8 @@ export class AppointmentService {
     id: number,
     appointment: AppointmentRequest,
   ): Observable<AppointmentResponse> {
-    return this.http.put<AppointmentResponse>(
-      `${this.apiUrl}/${id}`,
+    return this.apiService.put<AppointmentResponse>(
+      `${this.path}/${id}`,
       appointment,
     );
   }
@@ -66,40 +66,43 @@ export class AppointmentService {
     id: number,
     reason: string,
   ): Observable<AppointmentResponse> {
-    return this.http.put<AppointmentResponse>(
-      `${this.apiUrl}/${id}/cancel`,
+    return this.apiService.put<AppointmentResponse>(
+      `${this.path}/${id}/cancel`,
       reason,
     );
   }
 
   checkInAppointment(id: number): Observable<AppointmentResponse> {
-    return this.http.put<AppointmentResponse>(
-      `${this.apiUrl}/${id}/check-in`,
+    return this.apiService.put<AppointmentResponse>(
+      `${this.path}/${id}/check-in`,
       {},
     );
   }
 
   startConsultation(id: number): Observable<AppointmentResponse> {
-    return this.http.put<AppointmentResponse>(`${this.apiUrl}/${id}/start`, {});
+    return this.apiService.put<AppointmentResponse>(
+      `${this.path}/${id}/start`,
+      {},
+    );
   }
 
   completeAppointment(id: number): Observable<AppointmentResponse> {
-    return this.http.put<AppointmentResponse>(
-      `${this.apiUrl}/${id}/complete`,
+    return this.apiService.put<AppointmentResponse>(
+      `${this.path}/${id}/complete`,
       {},
     );
   }
 
   markNoShow(id: number): Observable<AppointmentResponse> {
-    return this.http.put<AppointmentResponse>(
-      `${this.apiUrl}/${id}/no-show`,
+    return this.apiService.put<AppointmentResponse>(
+      `${this.path}/${id}/no-show`,
       {},
     );
   }
 
   restoreAppointment(id: number): Observable<AppointmentResponse> {
-    return this.http.put<AppointmentResponse>(
-      `${this.apiUrl}/${id}/restore`,
+    return this.apiService.put<AppointmentResponse>(
+      `${this.path}/${id}/restore`,
       {},
     );
   }
@@ -112,17 +115,17 @@ export class AppointmentService {
     if (status) {
       params = params.set('status', status);
     }
-    return this.http.get<AppointmentResponse[]>(
-      `${this.apiUrl}/patient/${patientId}`,
-      { params },
+    return this.apiService.get<AppointmentResponse[]>(
+      `${this.path}/patient/${patientId}`,
+      params,
     );
   }
 
   getUpcomingAppointmentsForDoctor(
     doctorId: number,
   ): Observable<AppointmentResponse[]> {
-    return this.http.get<AppointmentResponse[]>(
-      `${this.apiUrl}/doctor/${doctorId}/upcoming`,
+    return this.apiService.get<AppointmentResponse[]>(
+      `${this.path}/doctor/${doctorId}/upcoming`,
     );
   }
 }

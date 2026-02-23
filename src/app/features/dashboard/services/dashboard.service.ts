@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { ApiService } from '../../../core/services/api.service';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
 
 export interface DashboardDTO {
   totalPatients: number;
@@ -24,15 +23,15 @@ export interface ActivityDTO {
   providedIn: 'root',
 })
 export class DashboardService {
-  private apiUrl = `${environment.apiUrl}/dashboard`;
+  private path = 'dashboard';
 
-  constructor(private http: HttpClient) {}
+  constructor(private apiService: ApiService) {}
 
   getStats(): Observable<DashboardDTO> {
-    return this.http.get<DashboardDTO>(`${this.apiUrl}/stats`);
+    return this.apiService.get<DashboardDTO>(`${this.path}/stats`);
   }
 
   getRecentActivity(): Observable<ActivityDTO[]> {
-    return this.http.get<ActivityDTO[]>(`${this.apiUrl}/activity`);
+    return this.apiService.get<ActivityDTO[]>(`${this.path}/activity`);
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
+import { ApiService } from '../../../core/services/api.service';
 import {
   LabRequest,
   LabTest,
@@ -14,16 +14,14 @@ import {
   providedIn: 'root',
 })
 export class LabService {
-  private apiUrl = `${environment.apiUrl}`;
-
-  constructor(private http: HttpClient) {}
+  constructor(private apiService: ApiService) {}
 
   getAllLabTests(): Observable<LabTest[]> {
-    return this.http.get<LabTest[]>(`${this.apiUrl}/lab-tests`);
+    return this.apiService.get<LabTest[]>(`lab-tests`);
   }
 
   createLabRequest(request: CreateLabRequest): Observable<LabRequest> {
-    return this.http.post<LabRequest>(`${this.apiUrl}/lab-requests`, request);
+    return this.apiService.post<LabRequest>(`lab-requests`, request);
   }
 
   getLabQueue(
@@ -37,21 +35,19 @@ export class LabService {
     if (encounterId) {
       params = params.append('encounterId', encounterId);
     }
-    return this.http.get<LabRequest[]>(`${this.apiUrl}/lab-requests`, {
-      params,
-    });
+    return this.apiService.get<LabRequest[]>(`lab-requests`, params);
   }
 
   getLabRequestById(id: number): Observable<LabRequest> {
-    return this.http.get<LabRequest>(`${this.apiUrl}/lab-requests/${id}`);
+    return this.apiService.get<LabRequest>(`lab-requests/${id}`);
   }
 
   updateStatus(id: number, status: LabRequestStatus): Observable<LabRequest> {
     const params = new HttpParams().set('status', status);
-    return this.http.patch<LabRequest>(
-      `${this.apiUrl}/lab-requests/${id}/status`,
+    return this.apiService.patch<LabRequest>(
+      `lab-requests/${id}/status`,
       {},
-      { params },
+      params,
     );
   }
 
@@ -59,8 +55,8 @@ export class LabService {
     id: number,
     results: AddLabResultRequest[],
   ): Observable<LabRequest> {
-    return this.http.post<LabRequest>(
-      `${this.apiUrl}/lab-requests/${id}/results`,
+    return this.apiService.post<LabRequest>(
+      `lab-requests/${id}/results`,
       results,
     );
   }

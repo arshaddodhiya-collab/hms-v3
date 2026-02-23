@@ -18,28 +18,59 @@ export class ApiService {
     });
   }
 
+  private getUrl(path: string): string {
+    if (path.startsWith('http')) return path;
+    const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+    return `${this.baseUrl}/${cleanPath}`;
+  }
+
   get<T>(path: string, params: HttpParams = new HttpParams()): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}/${path}`, {
+    return this.http.get<T>(this.getUrl(path), {
       headers: this.getHeaders(),
       params,
     });
   }
 
-  post<T>(path: string, body: unknown): Observable<T> {
-    return this.http.post<T>(`${this.baseUrl}/${path}`, JSON.stringify(body), {
+  post<T>(
+    path: string,
+    body: unknown,
+    params: HttpParams = new HttpParams(),
+  ): Observable<T> {
+    return this.http.post<T>(this.getUrl(path), JSON.stringify(body), {
       headers: this.getHeaders(),
+      params,
     });
   }
 
-  put<T>(path: string, body: unknown): Observable<T> {
-    return this.http.put<T>(`${this.baseUrl}/${path}`, JSON.stringify(body), {
+  put<T>(
+    path: string,
+    body: unknown,
+    params: HttpParams = new HttpParams(),
+  ): Observable<T> {
+    return this.http.put<T>(this.getUrl(path), JSON.stringify(body), {
       headers: this.getHeaders(),
+      params,
     });
   }
 
-  delete<T>(path: string): Observable<T> {
-    return this.http.delete<T>(`${this.baseUrl}/${path}`, {
+  patch<T>(
+    path: string,
+    body: unknown,
+    params: HttpParams = new HttpParams(),
+  ): Observable<T> {
+    return this.http.patch<T>(this.getUrl(path), JSON.stringify(body), {
       headers: this.getHeaders(),
+      params,
+    });
+  }
+
+  delete<T>(
+    path: string,
+    params: HttpParams = new HttpParams(),
+  ): Observable<T> {
+    return this.http.delete<T>(this.getUrl(path), {
+      headers: this.getHeaders(),
+      params,
     });
   }
 }

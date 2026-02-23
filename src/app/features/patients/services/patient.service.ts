@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Patient } from '../../../core/models/patient.model';
-import { environment } from '../../../../environments/environment';
+import { ApiService } from '../../../core/services/api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PatientService {
-  private apiUrl = `${environment.apiUrl}/patients`;
+  private path = 'patients';
 
-  constructor(private http: HttpClient) {}
+  constructor(private apiService: ApiService) {}
 
   getPatients(
     query?: string,
@@ -26,23 +26,23 @@ export class PatientService {
       params = params.set('query', query);
     }
 
-    return this.http.get<any>(this.apiUrl, { params });
+    return this.apiService.get<any>(this.path, params);
   }
 
   getPatientById(id: number): Observable<Patient> {
-    return this.http.get<Patient>(`${this.apiUrl}/${id}`);
+    return this.apiService.get<Patient>(`${this.path}/${id}`);
   }
 
   registerPatient(patient: any): Observable<Patient> {
-    return this.http.post<Patient>(this.apiUrl, patient);
+    return this.apiService.post<Patient>(this.path, patient);
   }
 
   updatePatient(id: number, patient: any): Observable<Patient> {
-    return this.http.put<Patient>(`${this.apiUrl}/${id}`, patient);
+    return this.apiService.put<Patient>(`${this.path}/${id}`, patient);
   }
 
   deletePatient(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.apiService.delete<void>(`${this.path}/${id}`);
   }
 
   // Helper method to calculate age from DOB if needed on client side

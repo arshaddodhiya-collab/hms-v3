@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { ApiService } from '../../../core/services/api.service';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
 import {
   EncounterResponse,
   EncounterCreateRequest,
@@ -16,26 +15,26 @@ import {
   providedIn: 'root',
 })
 export class EncounterService {
-  private apiUrl = `${environment.apiUrl}/encounters`;
+  private path = 'encounters';
 
-  constructor(private http: HttpClient) {}
+  constructor(private apiService: ApiService) {}
 
   // 1. Start or Resume Encounter
   startEncounter(
     request: EncounterCreateRequest,
   ): Observable<EncounterResponse> {
-    return this.http.post<EncounterResponse>(this.apiUrl, request);
+    return this.apiService.post<EncounterResponse>(this.path, request);
   }
 
   getEncounterById(id: number): Observable<EncounterResponse> {
-    return this.http.get<EncounterResponse>(`${this.apiUrl}/${id}`);
+    return this.apiService.get<EncounterResponse>(`${this.path}/${id}`);
   }
 
   getEncounterByAppointmentId(
     appointmentId: number,
   ): Observable<EncounterResponse> {
-    return this.http.get<EncounterResponse>(
-      `${this.apiUrl}/by-appointment/${appointmentId}`,
+    return this.apiService.get<EncounterResponse>(
+      `${this.path}/by-appointment/${appointmentId}`,
     );
   }
 
@@ -44,8 +43,8 @@ export class EncounterService {
     id: number,
     request: EncounterUpdateRequest,
   ): Observable<EncounterResponse> {
-    return this.http.patch<EncounterResponse>(
-      `${this.apiUrl}/${id}/clinical-notes`,
+    return this.apiService.patch<EncounterResponse>(
+      `${this.path}/${id}/clinical-notes`,
       request,
     );
   }
@@ -55,43 +54,43 @@ export class EncounterService {
     encounterId: number,
     request: PrescriptionRequest,
   ): Observable<PrescriptionResponse> {
-    return this.http.post<PrescriptionResponse>(
-      `${this.apiUrl}/${encounterId}/prescriptions`,
+    return this.apiService.post<PrescriptionResponse>(
+      `${this.path}/${encounterId}/prescriptions`,
       request,
     );
   }
 
   getPrescription(encounterId: number): Observable<PrescriptionResponse> {
-    return this.http.get<PrescriptionResponse>(
-      `${this.apiUrl}/${encounterId}/prescriptions`,
+    return this.apiService.get<PrescriptionResponse>(
+      `${this.path}/${encounterId}/prescriptions`,
     );
   }
 
   // 4. End Encounter
   completeEncounter(id: number): Observable<EncounterResponse> {
-    return this.http.patch<EncounterResponse>(
-      `${this.apiUrl}/${id}/complete`,
+    return this.apiService.patch<EncounterResponse>(
+      `${this.path}/${id}/complete`,
       {},
     );
   }
 
   // queue
   getDoctorQueue(doctorId: number): Observable<EncounterResponse[]> {
-    return this.http.get<EncounterResponse[]>(
-      `${this.apiUrl}/queue/doctor/${doctorId}`,
+    return this.apiService.get<EncounterResponse[]>(
+      `${this.path}/queue/doctor/${doctorId}`,
     );
   }
 
   getOpdDoctorQueue(doctorId: number): Observable<EncounterResponse[]> {
-    return this.http.get<EncounterResponse[]>(
-      `${this.apiUrl}/queue/opd/doctor/${doctorId}`,
+    return this.apiService.get<EncounterResponse[]>(
+      `${this.path}/queue/opd/doctor/${doctorId}`,
     );
   }
 
   // Get patient encounter history
   getPatientEncounters(patientId: number): Observable<EncounterResponse[]> {
-    return this.http.get<EncounterResponse[]>(
-      `${this.apiUrl}/patient/${patientId}`,
+    return this.apiService.get<EncounterResponse[]>(
+      `${this.path}/patient/${patientId}`,
     );
   }
 }

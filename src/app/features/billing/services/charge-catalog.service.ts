@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
+import { ApiService } from '../../../core/services/api.service';
 
 export interface ChargeCatalogResponse {
   id: number;
@@ -17,11 +16,11 @@ export interface ChargeCatalogResponse {
   providedIn: 'root',
 })
 export class ChargeCatalogService {
-  private apiUrl = `${environment.apiUrl}/charge-catalog`;
+  private path = 'charge-catalog';
 
-  constructor(private http: HttpClient) {}
+  constructor(private apiService: ApiService) {}
 
   getAllCharges(): Observable<ChargeCatalogResponse[]> {
-    return this.http.get<ChargeCatalogResponse[]>(`${this.apiUrl}`);
+    return this.apiService.get<ChargeCatalogResponse[]>(`${this.path}`);
   }
 }

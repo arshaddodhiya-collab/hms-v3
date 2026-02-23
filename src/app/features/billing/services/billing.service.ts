@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
+import { ApiService } from '../../../core/services/api.service';
 import {
   InvoiceRequest,
   InvoiceResponse,
@@ -14,36 +14,43 @@ import {
   providedIn: 'root',
 })
 export class BillingService {
-  private apiUrl = `${environment.apiUrl}/billing`;
+  private path = 'billing';
 
-  constructor(private http: HttpClient) {}
+  constructor(private apiService: ApiService) {}
 
   createInvoice(request: InvoiceRequest): Observable<InvoiceResponse> {
-    return this.http.post<InvoiceResponse>(`${this.apiUrl}/invoices`, request);
+    return this.apiService.post<InvoiceResponse>(
+      `${this.path}/invoices`,
+      request,
+    );
   }
 
   processPayment(request: PaymentRequest): Observable<PaymentResponse> {
-    return this.http.post<PaymentResponse>(`${this.apiUrl}/payments`, request);
+    return this.apiService.post<PaymentResponse>(
+      `${this.path}/payments`,
+      request,
+    );
   }
 
   getBillingSummary(patientId: number): Observable<BillingSummaryResponse> {
-    return this.http.get<BillingSummaryResponse>(
-      `${this.apiUrl}/summary/${patientId}`,
+    return this.apiService.get<BillingSummaryResponse>(
+      `${this.path}/summary/${patientId}`,
     );
   }
 
   getOutstandingInvoices(patientId: number): Observable<InvoiceResponse[]> {
     const params = new HttpParams().set('patientId', patientId.toString());
-    return this.http.get<InvoiceResponse[]>(`${this.apiUrl}/outstanding`, {
+    return this.apiService.get<InvoiceResponse[]>(
+      `${this.path}/outstanding`,
       params,
-    });
+    );
   }
 
   getAllInvoices(): Observable<InvoiceResponse[]> {
-    return this.http.get<InvoiceResponse[]>(`${this.apiUrl}/invoices`);
+    return this.apiService.get<InvoiceResponse[]>(`${this.path}/invoices`);
   }
 
   getInvoiceById(id: number): Observable<InvoiceResponse> {
-    return this.http.get<InvoiceResponse>(`${this.apiUrl}/invoices/${id}`);
+    return this.apiService.get<InvoiceResponse>(`${this.path}/invoices/${id}`);
   }
 }

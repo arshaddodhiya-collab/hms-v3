@@ -54,17 +54,17 @@ export class ErrorInterceptor implements HttpInterceptor {
           } else if (error.status === 404) {
             this.router.navigate(['/error/not-found']);
           } else if (error.status === 500) {
-            // Store error details before redirecting
-            this.errorStateService.setError({
-              message:
+            // Use MessageService instead of forcibly redirecting on 500 errors
+            // This prevents lost state when an API call fails mid-workflow
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Server Error',
+              detail:
                 error.error?.message ||
                 error.message ||
                 'Internal Server Error',
-              status: error.status,
-              timestamp: new Date(),
-              url: error.url || undefined,
+              life: 5000,
             });
-            this.router.navigate(['/error/server-error']);
           } else {
             // Other errors (400, etc)
             if (error.error && error.error.message) {

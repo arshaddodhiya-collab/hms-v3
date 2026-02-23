@@ -1,41 +1,35 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Department } from '../../../core/models/department.model';
 import { User } from '../../../core/models/user.model';
-import { environment } from '../../../../environments/environment';
+import { ApiService } from '../../../core/services/api.service';
 // import { MockUser } from '../../../core/config/mock-users.config'; // Keep for legacy if needed, but prefer User
 
 @Injectable({
   providedIn: 'root',
 })
 export class AdminService {
-  private apiUrl = environment.apiUrl;
-
-  constructor(private http: HttpClient) {}
+  constructor(private apiService: ApiService) {}
 
   // Departments
   getDepartments(): Observable<Department[]> {
-    return this.http.get<Department[]>(`${this.apiUrl}/departments`);
+    return this.apiService.get<Department[]>(`departments`);
   }
 
   getDepartmentById(id: number): Observable<Department> {
-    return this.http.get<Department>(`${this.apiUrl}/departments/${id}`);
+    return this.apiService.get<Department>(`departments/${id}`);
   }
 
   addDepartment(dept: Department): Observable<Department> {
-    return this.http.post<Department>(`${this.apiUrl}/departments`, dept);
+    return this.apiService.post<Department>(`departments`, dept);
   }
 
   updateDepartment(dept: Department): Observable<Department> {
-    return this.http.put<Department>(
-      `${this.apiUrl}/departments/${dept.id}`,
-      dept,
-    );
+    return this.apiService.put<Department>(`departments/${dept.id}`, dept);
   }
 
   deleteDepartment(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/departments/${id}`);
+    return this.apiService.delete<void>(`departments/${id}`);
   }
 
   // Users (Assuming we have user endpoints, if not we'll need to add them to backend)
@@ -46,37 +40,34 @@ export class AdminService {
   // Users
   // Users
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}/users`);
+    return this.apiService.get<User[]>(`users`);
   }
 
   getUserById(id: number): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/users/${id}`);
+    return this.apiService.get<User>(`users/${id}`);
   }
 
   createUser(user: User): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/users`, user);
+    return this.apiService.post<User>(`users`, user);
   }
 
   updateUser(id: number, user: User): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/users/${id}`, user);
+    return this.apiService.put<User>(`users/${id}`, user);
   }
 
   // Roles & Permissions
   getRoles(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/roles`);
+    return this.apiService.get<any[]>(`roles`);
   }
 
   getAllPermissions(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/roles/permissions`);
+    return this.apiService.get<any[]>(`roles/permissions`);
   }
 
   updateRolePermissions(
     roleId: number,
     permissionIds: number[],
   ): Observable<any> {
-    return this.http.put(
-      `${this.apiUrl}/roles/${roleId}/permissions`,
-      permissionIds,
-    );
+    return this.apiService.put(`roles/${roleId}/permissions`, permissionIds);
   }
 }
