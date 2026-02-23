@@ -1,4 +1,9 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import {
@@ -33,6 +38,7 @@ export class PaymentReceiptComponent implements OnInit {
     private billingService: BillingService,
     private location: Location,
     private messageService: MessageService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -47,6 +53,7 @@ export class PaymentReceiptComponent implements OnInit {
       next: (data) => {
         this.invoice = data;
         this.paymentAmount = data.dueAmount;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error(err);

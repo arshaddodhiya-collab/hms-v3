@@ -1,4 +1,9 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LabRequest } from '../../../../core/models/lab.models';
 import { Location } from '@angular/common';
@@ -21,6 +26,7 @@ export class LabReportViewComponent implements OnInit {
     public facade: LabFacade,
     private labService: LabService,
     private location: Location,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -30,6 +36,7 @@ export class LabReportViewComponent implements OnInit {
       this.labService.getLabRequestById(+id).subscribe(
         (data) => {
           this.request = data;
+          this.cdr.markForCheck();
         },
         (error) => {
           this.router.navigate(['/lab']);
