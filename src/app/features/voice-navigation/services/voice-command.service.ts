@@ -44,6 +44,11 @@ export class VoiceCommandService {
         action: () => this.router.navigate(['/patients']),
       },
       {
+        id: 'nav-patients-register',
+        phrases: ['Register Patient', 'New Patient', 'Add Patient'],
+        action: () => this.router.navigate(['/patients/register']),
+      },
+      {
         id: 'nav-appointments',
         phrases: [
           'Appointments',
@@ -54,14 +59,29 @@ export class VoiceCommandService {
         action: () => this.router.navigate(['/appointments']),
       },
       {
+        id: 'nav-appointments-create',
+        phrases: ['New Appointment', 'Create Appointment', 'Book Appointment'],
+        action: () => this.router.navigate(['/appointments/create']),
+      },
+      {
         id: 'nav-billing',
         phrases: ['Billing', 'Bill ing', 'Go to billing'],
         action: () => this.router.navigate(['/billing']),
       },
       {
+        id: 'nav-billing-new-invoice',
+        phrases: ['New Invoice', 'Create Invoice', 'Generate Invoice'],
+        action: () => this.router.navigate(['/billing/invoice/new']),
+      },
+      {
         id: 'nav-triage',
-        phrases: ['Triage', 'Tree azh', 'Go to triage'],
+        phrases: ['Triage', 'Tree azh', 'Go to triage', 'Triage Queue'],
         action: () => this.router.navigate(['/triage']),
+      },
+      {
+        id: 'nav-triage-list',
+        phrases: ['Triage List', 'All Triage'],
+        action: () => this.router.navigate(['/triage/list']),
       },
       {
         id: 'nav-admin',
@@ -89,6 +109,11 @@ export class VoiceCommandService {
         action: () => this.router.navigate(['/lab']),
       },
       {
+        id: 'nav-lab-request',
+        phrases: ['New Lab Request', 'Request Test', 'Lab Request'],
+        action: () => this.router.navigate(['/lab/request']),
+      },
+      {
         id: 'nav-consultation',
         phrases: ['Consultation', 'Consult', 'Go to consultation'],
         action: () => this.router.navigate(['/consultation']),
@@ -97,11 +122,6 @@ export class VoiceCommandService {
         id: 'nav-roles',
         phrases: ['Roles', 'Role List', 'Go to roles', 'rolls'],
         action: () => this.router.navigate(['/admin/roles']),
-      },
-      {
-        id: 'nav-permissions',
-        phrases: ['Permissions', 'Permission List', 'Go to permissions'],
-        action: () => this.router.navigate(['/admin/permissions']),
       },
 
       // IPD Module

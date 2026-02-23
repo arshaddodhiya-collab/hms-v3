@@ -7,7 +7,7 @@
   <p-tabView>
     <p-tabPanel header="OPD (Appt)">
       <app-table
-        [data]="facade.doctorQueue()"
+        [data]="mappedQueue()"
         [columns]="cols"
         [actionsTemplate]="actions"
         [loading]="facade.loading()"

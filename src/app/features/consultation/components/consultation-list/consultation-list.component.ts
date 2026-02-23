@@ -5,6 +5,7 @@ import {
   TemplateRef,
   AfterViewInit,
   ChangeDetectionStrategy,
+  computed,
 } from '@angular/core';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 import { AuthService } from '../../../auth/services/auth.service';
@@ -23,7 +24,8 @@ export class ConsultationListComponent implements OnInit, AfterViewInit {
   @ViewChild('statusTemplate') statusTemplate!: TemplateRef<any>;
 
   permissions = PERMISSIONS;
-  opdQueue: any[] = [];
+
+  mappedQueue = computed(() => this.mapEncounters(this.facade.doctorQueue()));
 
   cols: any[] = [
     { field: 'patientName', header: 'Patient' },
@@ -55,7 +57,7 @@ export class ConsultationListComponent implements OnInit, AfterViewInit {
       ...e,
       age: this.calculateAge(e.patientDob),
       gender: e.patientGender,
-      priority: 'Normal',
+      priority: e.priority || 'Normal',
       waitTime: e.startedAt,
     }));
   }
