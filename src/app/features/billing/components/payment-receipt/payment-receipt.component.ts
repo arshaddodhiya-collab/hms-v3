@@ -81,6 +81,30 @@ export class PaymentReceiptComponent implements OnInit {
     window.print();
   }
 
+  downloadPdf(): void {
+    if (!this.invoice) return;
+    this.billingService.downloadInvoicePdf(this.invoice.id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Invoice_${this.invoice!.invoiceNumber}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Failed to download PDF', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to download invoice PDF',
+        });
+      },
+    });
+  }
+
   goBack(): void {
     this.location.back();
   }

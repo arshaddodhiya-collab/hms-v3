@@ -9,13 +9,22 @@
       class="p-button-text"
       (click)="goBack()"
     ></button>
-    <button
-      pButton
-      icon="pi pi-print"
-      label="Print Receipt"
-      class="p-button-outlined"
-      (click)="print()"
-    ></button>
+    <div class="flex gap-2">
+      <button
+        pButton
+        icon="pi pi-download"
+        label="Download PDF"
+        class="p-button-outlined p-button-secondary"
+        (click)="downloadPdf()"
+      ></button>
+      <button
+        pButton
+        icon="pi pi-print"
+        label="Print Receipt"
+        class="p-button-outlined"
+        (click)="print()"
+      ></button>
+    </div>
   </div>
 
   <div class="receipt-container p-5 border-1 border-300 border-round surface-0">

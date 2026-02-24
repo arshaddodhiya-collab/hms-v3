@@ -31,6 +31,17 @@ export class ApiService {
     });
   }
 
+  getBlob(
+    path: string,
+    params: HttpParams = new HttpParams(),
+  ): Observable<Blob> {
+    return this.http.get(this.getUrl(path), {
+      headers: this.getHeaders(),
+      params,
+      responseType: 'blob',
+    });
+  }
+
   post<T>(
     path: string,
     body: unknown,

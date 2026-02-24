@@ -53,4 +53,8 @@ export class BillingService {
   getInvoiceById(id: number): Observable<InvoiceResponse> {
     return this.apiService.get<InvoiceResponse>(`${this.path}/invoices/${id}`);
   }
+
+  downloadInvoicePdf(id: number): Observable<Blob> {
+    return this.apiService.getBlob(`${this.path}/invoices/${id}/pdf`);
+  }
 }

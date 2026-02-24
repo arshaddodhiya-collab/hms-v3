@@ -52,4 +52,24 @@ export class LabReportViewComponent implements OnInit {
   print(): void {
     window.print();
   }
+
+  downloadPdf(): void {
+    if (!this.request) return;
+    this.labService.downloadLabReportPdf(this.request.id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `LabReport_${this.request!.id}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Failed to download PDF', err);
+        // Error handling could use messageService if it was injected
+      },
+    });
+  }
 }

@@ -60,4 +60,8 @@ export class LabService {
       results,
     );
   }
+
+  downloadLabReportPdf(id: number): Observable<Blob> {
+    return this.apiService.getBlob(`lab-requests/${id}/pdf`);
+  }
 }
