@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -15,7 +15,6 @@ import { BillingFacade } from '../../facades/billing.facade';
   selector: 'app-invoice-generate',
   templateUrl: './invoice-generate.component.html',
   providers: [MessageService],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvoiceGenerateComponent implements OnInit {
   invoiceForm: FormGroup;
@@ -31,6 +30,7 @@ export class InvoiceGenerateComponent implements OnInit {
     private router: Router,
     private location: Location,
     private messageService: MessageService,
+    private cdr: ChangeDetectorRef,
   ) {
     this.invoiceForm = this.fb.group({
       selectedPatient: [null, Validators.required],
@@ -44,6 +44,32 @@ export class InvoiceGenerateComponent implements OnInit {
   ngOnInit(): void {
     this.loadChargeCatalog();
     this.addItem();
+
+    // Automatically update patient fields when a patient is selected
+    this.invoiceForm
+      .get('selectedPatient')
+      ?.valueChanges.subscribe((patient) => {
+        if (patient && typeof patient === 'object') {
+          this.invoiceForm.patchValue(
+            {
+              patientName:
+                patient.name || `${patient.firstName} ${patient.lastName}`,
+              patientId: patient.id,
+            },
+            { emitEvent: false },
+          );
+          this.cdr.detectChanges();
+        } else {
+          this.invoiceForm.patchValue(
+            {
+              patientName: '',
+              patientId: '',
+            },
+            { emitEvent: false },
+          );
+          this.cdr.detectChanges();
+        }
+      });
   }
 
   loadChargeCatalog() {
@@ -66,8 +92,12 @@ export class InvoiceGenerateComponent implements OnInit {
     this.isLoadingPatients = true;
     this.patientService.getPatients(query).subscribe({
       next: (data) => {
-        this.filteredPatients = data.content;
+        this.filteredPatients = data.content.map((p: any) => ({
+          ...p,
+          name: p.name || `${p.firstName} ${p.lastName}`,
+        }));
         this.isLoadingPatients = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.isLoadingPatients = false;
@@ -83,13 +113,7 @@ export class InvoiceGenerateComponent implements OnInit {
   }
 
   onPatientSelect(event: any) {
-    const patient = event;
-    if (patient) {
-      this.invoiceForm.patchValue({
-        patientName: patient.name || patient.firstName + ' ' + patient.lastName,
-        patientId: patient.id,
-      });
-    }
+    // Handled by valueChanges subscription in ngOnInit
   }
 
   get items(): FormArray {
@@ -128,6 +152,7 @@ export class InvoiceGenerateComponent implements OnInit {
     const price = itemGroup.get('unitPrice')?.value || 0;
     const qty = itemGroup.get('quantity')?.value || 0;
     itemGroup.patchValue({ total: price * qty }, { emitEvent: false });
+    this.cdr.markForCheck(); // Update total display
   }
 
   get invoiceTotal(): number {
