@@ -7,7 +7,7 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class ApiService {
-  private baseUrl = environment.apiUrl || 'http://localhost:3000/api'; // Fallback for dev
+  private baseUrl = environment.apiUrl || 'http://localhost:8080/api/v1'; // Fallback for dev
 
   constructor(private http: HttpClient) {}
 
