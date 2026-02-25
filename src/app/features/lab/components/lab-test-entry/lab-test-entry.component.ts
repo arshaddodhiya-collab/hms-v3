@@ -1,4 +1,9 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
@@ -28,6 +33,7 @@ export class LabTestEntryComponent implements OnInit {
     private location: Location,
     private fb: FormBuilder,
     private messageService: MessageService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -93,6 +99,7 @@ export class LabTestEntryComponent implements OnInit {
             technicianNotes: this.request.technicianNotes,
           });
         }
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.messageService.add({

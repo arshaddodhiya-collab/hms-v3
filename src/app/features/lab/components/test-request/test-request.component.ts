@@ -29,13 +29,22 @@ export class TestRequestComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const encId = this.route.snapshot.queryParamMap.get('encounterId');
+    if (encId) {
+      this.encounterId = +encId;
+    }
+    const patId = this.route.snapshot.queryParamMap.get('patientId');
+    if (patId) {
+      this.selectedPatient = +patId;
+    }
+    this.checkParams();
+
     this.patientService.getPatients().subscribe((data) => {
       const content = data.content || data;
       this.patients = content.map((p: Patient) => ({
         ...p,
         name: `${p.firstName} ${p.lastName}`,
       }));
-      this.checkParams();
     });
     this.facade.loadLabTests();
   }

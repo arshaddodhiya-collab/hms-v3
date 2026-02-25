@@ -1,4 +1,9 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Admission } from '../../../../core/models/patient.model';
@@ -26,6 +31,7 @@ export class DischargeSummaryComponent implements OnInit {
     private router: Router,
     public facade: IpdFacade,
     private messageService: MessageService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -51,10 +57,14 @@ export class DischargeSummaryComponent implements OnInit {
           } else {
             this.diagnosis = this.admission.diagnosis || '';
           }
+          this.cdr.markForCheck();
+        } else {
+          // Data hasn't loaded yet, try again
+          setTimeout(checkAdmission, 500);
         }
       };
       // Retry after a small delay to allow the signal to populate
-      setTimeout(checkAdmission, 1000);
+      setTimeout(checkAdmission, 500);
     }
   }
 
