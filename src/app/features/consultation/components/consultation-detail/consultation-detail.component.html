@@ -67,7 +67,10 @@
 
     <p-tabPanel header="Prescription" leftIcon="pi pi-file-edit">
       <!-- We might want to pass existing items if any. For now, empty or load from service -->
-      <app-prescription (save)="onPrescriptionSave($event)"></app-prescription>
+      <app-prescription
+        [medicines]="facade.prescriptionItems()"
+        (save)="onPrescriptionSave($event)"
+      ></app-prescription>
     </p-tabPanel>
 
     <p-tabPanel header="Lab Requests" leftIcon="pi pi-file">

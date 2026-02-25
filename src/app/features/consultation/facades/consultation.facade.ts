@@ -31,6 +31,7 @@ export class ConsultationFacade {
 
   // --- Computed ---
   readonly queueCount = computed(() => this.doctorQueue().length);
+  readonly prescriptionItems = computed(() => this.prescription()?.items || []);
 
   constructor(
     private encounterService: EncounterService,
@@ -70,6 +71,7 @@ export class ConsultationFacade {
     this.encounterService.getEncounterById(id).subscribe({
       next: (encounter) => {
         this.encounter.set(encounter);
+        this.loadPrescription(encounter.id);
         this.loading.set(false);
       },
       error: () => {
@@ -108,6 +110,7 @@ export class ConsultationFacade {
         this.encounterService.startEncounter(request).subscribe({
           next: (encounter) => {
             this.encounter.set(encounter);
+            this.loadPrescription(encounter.id);
             this.loading.set(false);
             onSuccess(encounter);
           },
@@ -150,6 +153,17 @@ export class ConsultationFacade {
     });
   }
 
+  loadPrescription(encounterId: number): void {
+    this.encounterService.getPrescription(encounterId).subscribe({
+      next: (prescription) => {
+        this.prescription.set(prescription);
+      },
+      error: () => {
+        this.prescription.set(null);
+      },
+    });
+  }
+
   savePrescription(encounterId: number, items: PrescriptionItem[]): void {
     this.saving.set(true);
     const request: PrescriptionRequest = {
@@ -158,8 +172,9 @@ export class ConsultationFacade {
     };
 
     this.encounterService.savePrescription(encounterId, request).subscribe({
-      next: () => {
+      next: (res) => {
         this.saving.set(false);
+        this.prescription.set(res);
         this.messageService.add({
           severity: 'success',
           summary: 'Saved',
