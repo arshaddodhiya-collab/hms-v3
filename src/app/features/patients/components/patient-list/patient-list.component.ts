@@ -51,7 +51,7 @@ export class PatientListComponent
     this.patientService.getPatients().subscribe({
       next: (response) => {
         this.data = response.content;
-        this.totalRecords = response.totalElements; // If BaseCrudComponent supports pagination
+        this.totalRecords = response.totalElements || 0; // Slice does not return totalElements
         this.loading = false;
       },
       error: (err) => {
