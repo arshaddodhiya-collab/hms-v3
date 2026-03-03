@@ -1,10 +1,16 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { MessageService, ConfirmationService } from 'primeng/api';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  TemplateRef,
+  effect,
+} from '@angular/core';
+import { ConfirmationService } from 'primeng/api';
 import { BaseCrudComponent } from '../../../../shared/components/base-crud.component';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 import { Patient } from '../../../../core/models/patient.model';
 import { TableColumn } from '../../../../shared/models/table.model';
-import { PatientService } from '../../services/patient.service';
+import { PatientFacade } from '../../facades/patient.facade';
 
 @Component({
   selector: 'app-patient-list',
@@ -31,11 +37,15 @@ export class PatientListComponent
   ];
 
   constructor(
-    private messageService: MessageService,
-    private patientService: PatientService,
+    private patientFacade: PatientFacade,
     private confirmationService: ConfirmationService,
   ) {
     super();
+    effect(() => {
+      this.data = this.patientFacade.patients();
+      this.totalRecords = this.patientFacade.totalRecords();
+      this.loading = this.patientFacade.loading();
+    });
   }
 
   override ngOnInit(): void {
@@ -47,53 +57,27 @@ export class PatientListComponent
   }
 
   override refreshData() {
-    this.loading = true;
-    this.patientService.getPatients().subscribe({
-      next: (response) => {
-        this.data = response.content;
-        this.totalRecords = response.totalElements || 0; // Slice does not return totalElements
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error fetching patients', err);
-        this.loading = false;
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load patients',
-        });
-      },
-    });
+    this.patientFacade.loadPatients();
   }
 
   override onSave(patientData: Patient) {
-    // Determine if update or create based on existence of ID in selectedItem or patientData
     const isUpdate = !!this.selectedItem?.id;
 
-    // We can use an observable to handle both cases cleanly
-    const request$ = isUpdate
-      ? this.patientService.updatePatient(this.selectedItem!.id, patientData)
-      : this.patientService.registerPatient(patientData);
-
-    request$.subscribe({
-      next: () => {
+    if (isUpdate) {
+      this.patientFacade.updatePatient(
+        this.selectedItem!.id,
+        patientData,
+        () => {
+          this.hideDialog();
+          this.refreshData();
+        },
+      );
+    } else {
+      this.patientFacade.registerPatient(patientData, () => {
         this.hideDialog();
         this.refreshData();
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: isUpdate ? 'Patient Updated' : 'Patient Registered',
-        });
-      },
-      error: (err) => {
-        console.error('Error saving patient', err);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to save patient',
-        });
-      },
-    });
+      });
+    }
   }
 
   // Implement delete if BaseCrudComponent calls a method for it, or just use deleteItem from template

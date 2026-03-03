@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { AdminService } from '../../services/admin.service';
+import { Component, OnInit, effect } from '@angular/core';
+import { AdminFacade } from '../../facades/admin.facade';
 import { MessageService } from 'primeng/api';
 
 @Component({
@@ -18,10 +18,19 @@ export class RolePermissionComponent implements OnInit {
   loading = false;
   saving = false;
 
-  constructor(
-    private adminService: AdminService,
-    private messageService: MessageService,
-  ) {}
+  constructor(private adminFacade: AdminFacade) {
+    effect(() => {
+      this.roles = this.adminFacade.roles();
+      this.loading = false;
+    });
+    effect(() => {
+      this.permissions = this.adminFacade.permissions();
+      this.groupPermissions();
+    });
+    effect(() => {
+      this.saving = this.adminFacade.saving();
+    });
+  }
 
   ngOnInit(): void {
     this.loadData();
@@ -29,34 +38,8 @@ export class RolePermissionComponent implements OnInit {
 
   loadData() {
     this.loading = true;
-    this.adminService.getRoles().subscribe({
-      next: (roles: any[]) => {
-        this.roles = roles;
-        this.loading = false;
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load roles',
-        });
-        this.loading = false;
-      },
-    });
-
-    this.adminService.getAllPermissions().subscribe({
-      next: (perms: any[]) => {
-        this.permissions = perms;
-        this.groupPermissions();
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load permissions',
-        });
-      },
-    });
+    this.adminFacade.loadRoles();
+    this.adminFacade.loadPermissions();
   }
 
   groupPermissions() {
@@ -102,34 +85,19 @@ export class RolePermissionComponent implements OnInit {
   save() {
     if (!this.selectedRole) return;
 
-    this.saving = true;
     const permissionIds = Array.from(this.selectedPermissionIds);
 
-    this.adminService
-      .updateRolePermissions(this.selectedRole.id, permissionIds)
-      .subscribe({
-        next: (updatedRole: any) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Permissions updated successfully',
-          });
-          // Update local role data
-          const index = this.roles.findIndex((r) => r.id === updatedRole.id);
-          if (index !== -1) {
-            this.roles[index] = updatedRole;
-            this.selectedRole = updatedRole; // Re-select to ensure consistency
-          }
-          this.saving = false;
-        },
-        error: () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to update permissions',
-          });
-          this.saving = false;
-        },
-      });
+    this.adminFacade.updateRolePermissions(
+      this.selectedRole.id,
+      permissionIds,
+      (updatedRole: any) => {
+        // Update local role data
+        const index = this.roles.findIndex((r) => r.id === updatedRole.id);
+        if (index !== -1) {
+          this.roles[index] = updatedRole;
+          this.selectedRole = updatedRole; // Re-select to ensure consistency
+        }
+      },
+    );
   }
 }

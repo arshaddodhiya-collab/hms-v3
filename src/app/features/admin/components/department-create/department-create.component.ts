@@ -6,9 +6,10 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  effect,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AdminService } from '../../services/admin.service';
+import { AdminFacade } from '../../facades/admin.facade';
 import { Department } from '../../../../core/models/department.model';
 import { User } from '../../../../core/models/user.model';
 
@@ -43,7 +44,7 @@ export class DepartmentCreateComponent implements OnChanges, OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private adminService: AdminService,
+    private adminFacade: AdminFacade,
   ) {
     this.deptForm = this.fb.group({
       name: ['', Validators.required],
@@ -51,12 +52,14 @@ export class DepartmentCreateComponent implements OnChanges, OnInit {
       headOfDepartmentId: [null], // We will map this to User ID
       active: [true],
     });
+
+    effect(() => {
+      this.users = this.adminFacade.users();
+    });
   }
 
   ngOnInit(): void {
-    this.adminService.getUsers().subscribe((users: User[]) => {
-      this.users = users;
-    });
+    this.adminFacade.loadUsers();
   }
 
   ngOnChanges(changes: SimpleChanges): void {

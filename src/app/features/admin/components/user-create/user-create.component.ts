@@ -6,11 +6,12 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  effect,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User } from '../../../../core/models/user.model';
 import { Department } from '../../../../core/models/department.model';
-import { AdminService } from '../../services/admin.service';
+import { AdminFacade } from '../../facades/admin.facade';
 
 @Component({
   selector: 'app-user-create',
@@ -34,7 +35,7 @@ export class UserCreateComponent implements OnChanges, OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private adminService: AdminService,
+    private adminFacade: AdminFacade,
   ) {
     this.userForm = this.fb.group({
       username: ['', Validators.required],
@@ -44,12 +45,14 @@ export class UserCreateComponent implements OnChanges, OnInit {
       departmentId: [null],
       active: [true],
     });
+
+    effect(() => {
+      this.departments = this.adminFacade.departments();
+    });
   }
 
   ngOnInit(): void {
-    this.adminService.getDepartments().subscribe((depts: Department[]) => {
-      this.departments = depts;
-    });
+    this.adminFacade.loadDepartments();
   }
 
   ngOnChanges(changes: SimpleChanges): void {

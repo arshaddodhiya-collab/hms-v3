@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
 import { Router } from '@angular/router';
-import { TriageService } from '../../services/triage.service';
+import { TriageFacade } from '../../facades/triage.facade';
 import { EncounterResponse } from '../../../../core/models/encounter.model';
 
 @Component({
@@ -19,22 +19,19 @@ export class TriageQueueComponent implements OnInit {
   ];
 
   constructor(
-    private triageService: TriageService,
+    private triageFacade: TriageFacade,
     private router: Router,
-  ) {}
+  ) {
+    effect(() => {
+      this.queue = this.triageFacade.queue();
+    });
+    effect(() => {
+      this.loading = this.triageFacade.loading();
+    });
+  }
 
   ngOnInit(): void {
-    this.loading = true;
-    this.triageService.getTriageQueue().subscribe({
-      next: (encounters) => {
-        this.queue = encounters;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Failed to load triage queue', err);
-        this.loading = false;
-      },
-    });
+    this.triageFacade.loadQueue();
   }
 
   onRecordVitals(visit: EncounterResponse) {

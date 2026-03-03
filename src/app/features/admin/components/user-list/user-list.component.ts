@@ -4,8 +4,9 @@ import {
   ViewChild,
   TemplateRef,
   AfterViewInit,
+  effect,
 } from '@angular/core';
-import { AdminService } from '../../services/admin.service';
+import { AdminFacade } from '../../facades/admin.facade';
 import { User } from '../../../../core/models/user.model';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 import { BaseCrudComponent } from '../../../../shared/components/base-crud.component';
@@ -35,8 +36,11 @@ export class UserListComponent
     { field: 'active', header: 'Active' },
   ];
 
-  constructor(private adminService: AdminService) {
+  constructor(private adminFacade: AdminFacade) {
     super();
+    effect(() => {
+      this.data = this.adminFacade.users();
+    });
   }
 
   override ngOnInit(): void {
@@ -51,21 +55,17 @@ export class UserListComponent
   }
 
   override refreshData() {
-    this.adminService.getUsers().subscribe((data: User[]) => {
-      this.data = data;
-    });
+    this.adminFacade.loadUsers();
   }
 
   override onSave(user: User) {
     if (this.selectedItem && this.selectedItem.id) {
-      this.adminService.updateUser(this.selectedItem.id, user).subscribe(() => {
+      this.adminFacade.updateUser(this.selectedItem.id, user, () => {
         this.hideDialog();
-        this.refreshData();
       });
     } else {
-      this.adminService.createUser(user).subscribe(() => {
+      this.adminFacade.createUser(user, () => {
         this.hideDialog();
-        this.refreshData();
       });
     }
   }

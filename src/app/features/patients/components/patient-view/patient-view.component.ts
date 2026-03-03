@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PatientService } from '../../services/patient.service';
+import { PatientFacade } from '../../facades/patient.facade';
 import { EncounterService } from '../../../consultation/services/encounter.service';
 import { AppointmentService } from '../../../appointments/services/appointment.service';
 import { Patient, MedicalHistory } from '../../../../core/models/patient.model';
@@ -38,10 +38,27 @@ export class PatientViewComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private patientService: PatientService,
+    private patientFacade: PatientFacade,
     private encounterService: EncounterService,
     private appointmentService: AppointmentService,
-  ) {}
+  ) {
+    effect(() => {
+      const patient = this.patientFacade.selectedPatient();
+      if (patient) {
+        this.patient = patient;
+        this.medicalHistory = patient.medicalHistory || [];
+        this.loading = false;
+        // Load encounter history and appointments
+        if (this.patientId) {
+          this.loadEncounters(this.patientId);
+          this.loadAppointments(this.patientId);
+        }
+      }
+    });
+    effect(() => {
+      this.loading = this.patientFacade.loading();
+    });
+  }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -52,21 +69,7 @@ export class PatientViewComponent implements OnInit {
   }
 
   loadPatientDetails(id: number): void {
-    this.loading = true;
-    this.patientService.getPatientById(id).subscribe({
-      next: (data) => {
-        this.patient = data;
-        this.medicalHistory = data.medicalHistory || [];
-        this.loading = false;
-        // Load encounter history and appointments
-        this.loadEncounters(id);
-        this.loadAppointments(id);
-      },
-      error: (err) => {
-        console.error('Error loading patient details', err);
-        this.loading = false;
-      },
-    });
+    this.patientFacade.loadPatientById(id);
   }
 
   loadEncounters(patientId: number): void {
@@ -111,9 +114,7 @@ export class PatientViewComponent implements OnInit {
 
   extractLatestVitals(encounters: EncounterResponse[]): void {
     // Find the most recent encounter with vitals
-    // console.log('All Encounters:', encounters);
     const encountersWithVitals = encounters.filter((e) => e.vitals);
-    // console.log('Encounters with Vitals:', encountersWithVitals);
 
     if (encountersWithVitals.length > 0) {
       // Sort by startedAt descending (newest first)
@@ -121,7 +122,6 @@ export class PatientViewComponent implements OnInit {
         (a, b) =>
           new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime(),
       )[0];
-      // console.log('Latest Encounter with Vitals:', latest);
 
       if (latest.vitals) {
         this.activeVitals = {

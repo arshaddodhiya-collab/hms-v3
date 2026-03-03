@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PatientService } from '../../services/patient.service';
+import { PatientFacade } from '../../facades/patient.facade';
 import { Patient } from '../../../../core/models/patient.model';
 
 @Component({
@@ -14,25 +14,18 @@ export class PatientEditComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private patientService: PatientService,
-  ) {}
+    private patientFacade: PatientFacade,
+  ) {
+    effect(() => {
+      this.patient = this.patientFacade.selectedPatient();
+    });
+  }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.patientId = +id;
-      this.loadPatient(this.patientId);
+      this.patientFacade.loadPatientById(this.patientId);
     }
-  }
-
-  loadPatient(id: number) {
-    this.patientService.getPatientById(id).subscribe({
-      next: (data) => {
-        this.patient = data;
-      },
-      error: (err: any) => {
-        console.error('Error loading patient', err);
-      },
-    });
   }
 }

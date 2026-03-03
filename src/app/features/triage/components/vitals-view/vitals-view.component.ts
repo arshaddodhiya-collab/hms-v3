@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, effect } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { TriageService } from '../../services/triage.service';
+import { TriageFacade } from '../../facades/triage.facade';
 import { EncounterService } from '../../../consultation/services/encounter.service';
 import { VitalsResponse } from '../../../../core/models/vitals.model';
 
@@ -16,9 +16,16 @@ export class VitalsViewComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private triageService: TriageService,
+    private triageFacade: TriageFacade,
     private encounterService: EncounterService,
-  ) {}
+  ) {
+    effect(() => {
+      const facadeVitals = this.triageFacade.vitals();
+      if (facadeVitals) {
+        this.vitals = facadeVitals;
+      }
+    });
+  }
 
   ngOnInit(): void {
     if (this.vitals) {
@@ -27,7 +34,7 @@ export class VitalsViewComponent implements OnInit {
 
     // Priority: Input encounterId > Input appointmentId > Route appointmentId
     if (this.encounterId) {
-      this.loadVitals(this.encounterId);
+      this.triageFacade.loadVitals(this.encounterId);
       return;
     }
 
@@ -44,7 +51,7 @@ export class VitalsViewComponent implements OnInit {
             if (encounter.vitals) {
               this.vitals = encounter.vitals as unknown as VitalsResponse;
             } else {
-              this.loadVitals(encounter.id);
+              this.triageFacade.loadVitals(encounter.id);
             }
           },
           error: () => {
@@ -53,15 +60,6 @@ export class VitalsViewComponent implements OnInit {
           },
         });
     }
-  }
-
-  loadVitals(encounterId: number) {
-    this.triageService.getVitals(encounterId).subscribe({
-      next: (data) => {
-        this.vitals = data;
-      },
-      error: (err) => console.error(err),
-    });
   }
 
   isEmergency(type: string, value: any): boolean {

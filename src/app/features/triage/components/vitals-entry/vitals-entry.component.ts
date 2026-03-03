@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { TriageService } from '../../services/triage.service';
+import { TriageFacade } from '../../facades/triage.facade';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -19,7 +19,7 @@ export class VitalsEntryComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private messageService: MessageService,
-    private triageService: TriageService,
+    private triageFacade: TriageFacade,
     private fb: FormBuilder,
   ) {
     this.vitalsForm = this.fb.group({
@@ -92,24 +92,8 @@ export class VitalsEntryComponent implements OnInit {
       height,
     };
 
-    this.triageService.saveVitals(this.encounterId, request).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Vitals Recorded',
-        });
-        this.router.navigate(['/triage']);
-      },
-      error: (err) => {
-        this.loading = false;
-        console.error('Failed to save vitals', err);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to save',
-        });
-      },
+    this.triageFacade.saveVitals(this.encounterId, request, () => {
+      this.router.navigate(['/triage']);
     });
   }
 

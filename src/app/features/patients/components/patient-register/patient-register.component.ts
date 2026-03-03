@@ -11,7 +11,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Patient } from '../../../../core/models/patient.model';
-import { PatientService } from '../../services/patient.service';
+import { PatientFacade } from '../../facades/patient.facade';
 
 @Component({
   selector: 'app-patient-register',
@@ -38,7 +38,7 @@ export class PatientRegisterComponent implements OnInit, OnChanges {
     private fb: FormBuilder,
     private router: Router,
     private messageService: MessageService,
-    private patientService: PatientService,
+    private patientFacade: PatientFacade,
   ) {}
 
   ngOnInit(): void {
@@ -114,35 +114,24 @@ export class PatientRegisterComponent implements OnInit, OnChanges {
         dob: this.formatDate(formValue.dob),
       };
 
-      const request$ = this.patientData?.id
-        ? this.patientService.updatePatient(this.patientData.id, result)
-        : this.patientService.registerPatient(result);
-
       if (this.isModal) {
         this.onSave.emit(result);
       } else {
-        request$.subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Success',
-              detail: this.patientData
-                ? 'Patient Updated'
-                : 'Patient Registered',
-            });
-            setTimeout(() => {
-              this.router.navigate(['/patients']);
-            }, 1000);
-          },
-          error: (err) => {
-            console.error('Error saving patient', err);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Failed to save patient',
-            });
-          },
-        });
+        const onSuccess = () => {
+          setTimeout(() => {
+            this.router.navigate(['/patients']);
+          }, 1000);
+        };
+
+        if (this.patientData?.id) {
+          this.patientFacade.updatePatient(
+            this.patientData.id,
+            result,
+            onSuccess,
+          );
+        } else {
+          this.patientFacade.registerPatient(result, onSuccess);
+        }
       }
     } else {
       this.patientForm.markAllAsTouched();
