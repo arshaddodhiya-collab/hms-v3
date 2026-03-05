@@ -21,7 +21,7 @@ export class DepartmentListComponent
     { field: 'id', header: 'ID' },
     { field: 'name', header: 'Name' },
     { field: 'description', header: 'Description' },
-    { field: 'headOfDepartmentName', header: 'Head of Dept' },
+    // { field: 'headOfDepartmentName', header: 'Head of Dept' },
     { field: 'staffCount', header: 'Staff Count' },
     { field: 'active', header: 'Active' },
   ];
