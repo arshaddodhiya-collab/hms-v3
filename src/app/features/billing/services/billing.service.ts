@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ApiService } from '../../../core/services/api.service';
 import {
   InvoiceRequest,
@@ -39,15 +40,19 @@ export class BillingService {
   }
 
   getOutstandingInvoices(patientId: number): Observable<InvoiceResponse[]> {
-    const params = new HttpParams().set('patientId', patientId.toString());
-    return this.apiService.get<InvoiceResponse[]>(
-      `${this.path}/outstanding`,
-      params,
-    );
+    const params = new HttpParams()
+      .set('patientId', patientId.toString())
+      .set('size', '100');
+    return this.apiService
+      .get<any>(`${this.path}/outstanding`, params)
+      .pipe(map((res) => res.content || res));
   }
 
   getAllInvoices(): Observable<InvoiceResponse[]> {
-    return this.apiService.get<InvoiceResponse[]>(`${this.path}/invoices`);
+    const params = new HttpParams().set('size', '100');
+    return this.apiService
+      .get<any>(`${this.path}/invoices`, params)
+      .pipe(map((res) => res.content || res));
   }
 
   getInvoiceById(id: number): Observable<InvoiceResponse> {

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../../../core/services/api.service';
+import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export interface DashboardDTO {
   totalPatients: number;
@@ -32,6 +34,9 @@ export class DashboardService {
   }
 
   getRecentActivity(): Observable<ActivityDTO[]> {
-    return this.apiService.get<ActivityDTO[]>(`${this.path}/activity`);
+    const params = new HttpParams().set('size', '100');
+    return this.apiService
+      .get<any>(`${this.path}/activity`, params)
+      .pipe(map((res) => res.content || res));
   }
 }

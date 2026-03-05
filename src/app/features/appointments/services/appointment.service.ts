@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ApiService } from '../../../core/services/api.service';
 import {
   AppointmentRequest,
@@ -16,15 +17,17 @@ export class AppointmentService {
   constructor(private apiService: ApiService) {}
 
   getAppointments(): Observable<AppointmentResponse[]> {
-    return this.apiService.get<AppointmentResponse[]>(this.path);
+    const params = new HttpParams().set('size', '100');
+    return this.apiService
+      .get<any>(this.path, params)
+      .pipe(map((res) => res.content || res));
   }
 
   getAppointmentsByDate(date: string): Observable<AppointmentResponse[]> {
-    const params = new HttpParams().set('date', date);
-    // We might need to adjust the controller to accept a date for the general list if not restricted to doctor
-    // But for now, let's stick to what's available.
-    // If we want doctor specific: /doctor/{id}
-    return this.apiService.get<AppointmentResponse[]>(`${this.path}/today`); // Fallback until we have a date filter endpoint for all
+    const params = new HttpParams().set('date', date).set('size', '100');
+    return this.apiService
+      .get<any>(`${this.path}/today`, params)
+      .pipe(map((res) => res.content || res));
   }
 
   getAppointmentById(id: number): Observable<AppointmentResponse> {
@@ -36,11 +39,10 @@ export class AppointmentService {
     doctorId: number,
     date: string,
   ): Observable<AppointmentResponse[]> {
-    const params = new HttpParams().set('date', date);
-    return this.apiService.get<AppointmentResponse[]>(
-      `${this.path}/doctor/${doctorId}`,
-      params,
-    );
+    const params = new HttpParams().set('date', date).set('size', '100');
+    return this.apiService
+      .get<any>(`${this.path}/doctor/${doctorId}`, params)
+      .pipe(map((res) => res.content || res));
   }
 
   createAppointment(
@@ -111,21 +113,21 @@ export class AppointmentService {
     patientId: number,
     status?: string,
   ): Observable<AppointmentResponse[]> {
-    let params = new HttpParams();
+    let params = new HttpParams().set('size', '100');
     if (status) {
       params = params.set('status', status);
     }
-    return this.apiService.get<AppointmentResponse[]>(
-      `${this.path}/patient/${patientId}`,
-      params,
-    );
+    return this.apiService
+      .get<any>(`${this.path}/patient/${patientId}`, params)
+      .pipe(map((res) => res.content || res));
   }
 
   getUpcomingAppointmentsForDoctor(
     doctorId: number,
   ): Observable<AppointmentResponse[]> {
-    return this.apiService.get<AppointmentResponse[]>(
-      `${this.path}/doctor/${doctorId}/upcoming`,
-    );
+    const params = new HttpParams().set('size', '100');
+    return this.apiService
+      .get<any>(`${this.path}/doctor/${doctorId}/upcoming`, params)
+      .pipe(map((res) => res.content || res));
   }
 }

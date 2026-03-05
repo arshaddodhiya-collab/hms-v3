@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ApiService } from '../../../core/services/api.service';
 
 export interface ChargeCatalogResponse {
@@ -21,6 +23,9 @@ export class ChargeCatalogService {
   constructor(private apiService: ApiService) {}
 
   getAllCharges(): Observable<ChargeCatalogResponse[]> {
-    return this.apiService.get<ChargeCatalogResponse[]>(`${this.path}`);
+    const params = new HttpParams().set('size', '100');
+    return this.apiService
+      .get<any>(`${this.path}`, params)
+      .pipe(map((res) => res.content || res));
   }
 }

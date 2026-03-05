@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { HttpParams } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 import { Department } from '../../../core/models/department.model';
 import { User } from '../../../core/models/user.model';
 import { ApiService } from '../../../core/services/api.service';
@@ -13,7 +15,10 @@ export class AdminService {
 
   // Departments
   getDepartments(): Observable<Department[]> {
-    return this.apiService.get<Department[]>(`departments`);
+    const params = new HttpParams().set('size', '100');
+    return this.apiService
+      .get<any>(`departments`, params)
+      .pipe(map((res) => res.content || res));
   }
 
   getDepartmentById(id: number): Observable<Department> {
@@ -40,7 +45,10 @@ export class AdminService {
   // Users
   // Users
   getUsers(): Observable<User[]> {
-    return this.apiService.get<User[]>(`users`);
+    const params = new HttpParams().set('size', '100');
+    return this.apiService
+      .get<any>(`users`, params)
+      .pipe(map((res) => res.content || res));
   }
 
   getUserById(id: number): Observable<User> {
@@ -57,11 +65,17 @@ export class AdminService {
 
   // Roles & Permissions
   getRoles(): Observable<any[]> {
-    return this.apiService.get<any[]>(`roles`);
+    const params = new HttpParams().set('size', '100');
+    return this.apiService
+      .get<any>(`roles`, params)
+      .pipe(map((res) => res.content || res));
   }
 
   getAllPermissions(): Observable<any[]> {
-    return this.apiService.get<any[]>(`roles/permissions`);
+    const params = new HttpParams().set('size', '100');
+    return this.apiService
+      .get<any>(`roles/permissions`, params)
+      .pipe(map((res) => res.content || res));
   }
 
   updateRolePermissions(

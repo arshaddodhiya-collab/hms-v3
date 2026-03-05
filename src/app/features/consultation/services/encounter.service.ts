@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
 import { ApiService } from '../../../core/services/api.service';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import {
   EncounterResponse,
   EncounterCreateRequest,
@@ -76,21 +78,24 @@ export class EncounterService {
 
   // queue
   getDoctorQueue(doctorId: number): Observable<EncounterResponse[]> {
-    return this.apiService.get<EncounterResponse[]>(
-      `${this.path}/queue/doctor/${doctorId}`,
-    );
+    const params = new HttpParams().set('size', '100');
+    return this.apiService
+      .get<any>(`${this.path}/queue/doctor/${doctorId}`, params)
+      .pipe(map((res) => res.content || res));
   }
 
   getOpdDoctorQueue(doctorId: number): Observable<EncounterResponse[]> {
-    return this.apiService.get<EncounterResponse[]>(
-      `${this.path}/queue/opd/doctor/${doctorId}`,
-    );
+    const params = new HttpParams().set('size', '100');
+    return this.apiService
+      .get<any>(`${this.path}/queue/opd/doctor/${doctorId}`, params)
+      .pipe(map((res) => res.content || res));
   }
 
   // Get patient encounter history
   getPatientEncounters(patientId: number): Observable<EncounterResponse[]> {
-    return this.apiService.get<EncounterResponse[]>(
-      `${this.path}/patient/${patientId}`,
-    );
+    const params = new HttpParams().set('size', '100');
+    return this.apiService
+      .get<any>(`${this.path}/patient/${patientId}`, params)
+      .pipe(map((res) => res.content || res));
   }
 }

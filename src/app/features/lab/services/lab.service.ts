@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ApiService } from '../../../core/services/api.service';
 import {
   LabRequest,
@@ -17,7 +18,10 @@ export class LabService {
   constructor(private apiService: ApiService) {}
 
   getAllLabTests(): Observable<LabTest[]> {
-    return this.apiService.get<LabTest[]>(`lab-tests`);
+    const params = new HttpParams().set('size', '100');
+    return this.apiService
+      .get<any>(`lab-tests`, params)
+      .pipe(map((res) => res.content || res));
   }
 
   createLabRequest(request: CreateLabRequest): Observable<LabRequest> {
@@ -28,14 +32,16 @@ export class LabService {
     status?: LabRequestStatus[],
     encounterId?: number,
   ): Observable<LabRequest[]> {
-    let params = new HttpParams();
+    let params = new HttpParams().set('size', '100');
     if (status && status.length > 0) {
       status.forEach((s) => (params = params.append('status', s)));
     }
     if (encounterId) {
       params = params.append('encounterId', encounterId);
     }
-    return this.apiService.get<LabRequest[]>(`lab-requests`, params);
+    return this.apiService
+      .get<any>(`lab-requests`, params)
+      .pipe(map((res) => res.content || res));
   }
 
   getLabRequestById(id: number): Observable<LabRequest> {

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ApiService } from '../../../core/services/api.service';
 import { Admission, Bed } from '../../../core/models/patient.model';
 
@@ -14,7 +15,10 @@ export class IpdService {
 
   // Admissions
   getAdmissions(): Observable<Admission[]> {
-    return this.apiService.get<Admission[]>(`${this.path}/admissions/active`);
+    const params = new HttpParams().set('size', '100');
+    return this.apiService
+      .get<any>(`${this.path}/admissions/active`, params)
+      .pipe(map((res) => res.content || res));
   }
 
   getAdmissionById(id: number): Observable<Admission> {
@@ -37,12 +41,19 @@ export class IpdService {
 
   // Beds
   getBeds(): Observable<Bed[]> {
-    return this.apiService.get<Bed[]>(`${this.path}/beds`);
+    const params = new HttpParams().set('size', '100');
+    return this.apiService
+      .get<any>(`${this.path}/beds`, params)
+      .pipe(map((res) => res.content || res));
   }
 
   getAvailableBeds(wardId: number): Observable<Bed[]> {
-    const params = new HttpParams().set('wardId', wardId.toString());
-    return this.apiService.get<Bed[]>(`${this.path}/beds/available`, params);
+    const params = new HttpParams()
+      .set('wardId', wardId.toString())
+      .set('size', '100');
+    return this.apiService
+      .get<any>(`${this.path}/beds/available`, params)
+      .pipe(map((res) => res.content || res));
   }
 
   updateBedStatus(bedId: number, isActive: boolean): Observable<Bed> {

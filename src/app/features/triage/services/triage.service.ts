@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ApiService } from '../../../core/services/api.service';
 import { EncounterResponse } from '../../../core/models/encounter.model';
 import {
@@ -17,9 +19,10 @@ export class TriageService {
 
   // Get Triage Queue (Encounters with status TRIAGE)
   getTriageQueue(): Observable<EncounterResponse[]> {
-    return this.apiService.get<EncounterResponse[]>(
-      `${this.path}/queue/triage`,
-    );
+    const params = new HttpParams().set('size', '100');
+    return this.apiService
+      .get<any>(`${this.path}/queue/triage`, params)
+      .pipe(map((res) => res.content || res));
   }
 
   // Get Encounter by Appointment ID
